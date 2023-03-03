@@ -11,8 +11,7 @@ Description: Provides tools for Human Leukocyte Antigen (HLA) data:
     Including: standardizing HLA typings to a common format (GLstrings),
     reducing and increasing HLA typing resolution, determining bead
     positivity and assessing donor-specific antibodies (DSAs).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+License: MIT + file LICENSE
 Depends:
     R (>= 4.1.0)
 Imports: 
