@@ -1,17 +1,17 @@
 extract_alleles <- function(df, col_typing) {
   # TODO: vectorize with locus argument, and named list that can be indexed with it
-  match_anything <- ".*"
-  neg_nmdp <- "(?<![:A-Z])"
-  match_allele <- r"(A\S+)"
-  inbetween_alleles <- r"((?:\s(?!A)\S+)*\s?)"
+  anything <- ".*" # at the start
+  neg_nmdp <- "(?<![:A-Z])" # don't match NMDP Multiple Allele codes
+  a <- r"(A\*?)" # locus
+  allele <- r"(\S+)" # allele
+  inbetween <- r"((?:\s(?!A)\S+)*\s?)" # other HLAs inbetween
 
-  pattern <- c(
-    match_anything,
-    neg_nmdp,
-    A_1 = match_allele,
-    inbetween_alleles,
-    neg_nmdp,
-    A_2 = match_allele
+  pattern <- c(anything,
+    neg_nmdp, a,
+    A_1 = allele,
+    inbetween,
+    neg_nmdp, a,
+    A_2 = allele
   )
 
   tidyr::separate_wider_regex(df, {{ col_typing }},
