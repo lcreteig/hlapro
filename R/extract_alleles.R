@@ -1,31 +1,32 @@
 extract_alleles <- function(df, col_typing, locus = c("A")) {
   locus <- rlang::arg_match(locus)
+  #TODO: test named groups (cf. stringr::str_match() in tidyr::extract())
 
   regexps <- list(
-    anything = ".*", # at the start
-    neg_nmdp = "(?<![:A-Z])", # don't match NMDP Multiple Allele codes
-    allele = r"(\S+)", # allele
+    # don't match if locus is preceded by : or other capital letter. This
+    # prevents matching in NMDP Multiple Allele Codes (":AABJE") or other loci
+    # ("B" in "DRB1") or other prefixes (e.g. "A" in "HLA-")
+    neg = "(?<![:A-Z])",
+    allele = r"((?:{locus}\*?(\S+)))", # match locus and all following non-spaces
     loci = list(
-      A = r"(A\*?)"
-                 ),
-    inbetween = list( # other HLAs inbetween
-      A = r"((?:\s(?!A)\S+)*\s?)"
-                     ))
-
-  pattern <- c(regexps$anything,
-    regexps$neg_nmdp, regexps$loci[[locus]],
-    regexps$allele,
-    regexps$inbetween[[locus]],
-    regexps$neg_nmdp, regexps$loci[[locus]],
-    regexps$allele
+      A = "A"),
+    # don't capture other alleles in between: i.e. any that aren't the current locus
+    inbetween = r"((?:\s(?!{locus})\S+)*\s?)"
   )
 
-  names(pattern)[4] <- paste0(locus,"_1")
-  names(pattern)[8] <- paste0(locus,"_2")
+  column_names <- stringr::str_c(locus, c("_1", "_2"))
+  # build the regular expression from its sub-parts
+  pattern <- stringr::str_c(
+    regexps$neg,
+    stringr::str_glue(regexps$allele, locus = regexps$loci[locus]),
+    stringr::str_glue(regexps$inbetween, locus = regexps$loci[locus]),
+    stringr::str_glue(regexps$allele, locus = regexps$loci[locus]),
+    "?" # second allele is optional
+  )
 
-  tidyr::separate_wider_regex(df, {{ col_typing }},
-    patterns = pattern,
-    too_few = "align_start",
-    cols_remove = FALSE
+  tidyr::extract(df, {{ col_typing }},
+                 into = column_names,
+                 regex = pattern,
+                 remove = FALSE
   )
 }
