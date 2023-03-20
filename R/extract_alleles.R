@@ -1,4 +1,4 @@
-extract_alleles <- function(df, col_typing, locus = c("A")) {
+extract_alleles <- function(df, col_typing, locus = c("A", "B")) {
   locus <- rlang::arg_match(locus)
   #TODO: test named groups (cf. stringr::str_match() in tidyr::extract())
 
@@ -9,7 +9,9 @@ extract_alleles <- function(df, col_typing, locus = c("A")) {
     neg = "(?<![:A-Z])",
     allele = r"((?:{locus}\*?(\S+)))", # match locus and all following non-spaces
     loci = list(
-      A = "A"),
+      A = "A",
+      B = "B(?![Ww])" # B cannot be followed by "W"
+      ),
     # don't capture other alleles in between: i.e. any that aren't the current locus
     inbetween = r"((?:\s(?!{locus})\S+)*\s?)"
   )
