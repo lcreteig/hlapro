@@ -81,8 +81,8 @@ test_that("double-digit HLA-A alleles are extracted", {
 })
 
 test_that("high resolution HLA-A alleles are extracted", {
-  df_in <- tidyr::tibble(typing = "A*01:01 A*01:02 B*07:02 B*07:02")
-  df_out <- tidyr::tibble(df_in, A_1 = "01:01", A_2 = "01:02")
+  df_in <- tidyr::tibble(typing = "A*01:01 A*02:101:01:02N B*07:02 B*07:02")
+  df_out <- tidyr::tibble(df_in, A_1 = "01:01", A_2 = "02:101:01:02N")
   expect_equal(extract_alleles(df_in, "typing",  locus = "A"), df_out)
 })
 
@@ -168,8 +168,8 @@ test_that("double-digit HLA-B alleles are extracted", {
 })
 
 test_that("high resolution HLA-B alleles are extracted", {
-  df_in <- tidyr::tibble(typing = "A*01:01 A*01:02 B*07:02 B*07:03")
-  df_out <- tidyr::tibble(df_in, B_1 = "07:02", B_2 = "07:03")
+  df_in <- tidyr::tibble(typing = "A*01:01 A*01:02 B*07:02 B*07:03:01:02N")
+  df_out <- tidyr::tibble(df_in, B_1 = "07:02", B_2 = "07:03:01:02N")
   expect_equal(extract_alleles(df_in, "typing",  locus = "B"), df_out)
 })
 
@@ -249,8 +249,8 @@ test_that("double-digit HLA-C alleles are extracted", {
 })
 
 test_that("high resolution HLA-C alleles are extracted", {
-  df_in <- tidyr::tibble(typing = "A*01:01 A*01:02 B*07:02C*01:02 C*02:08")
-  df_out <- tidyr::tibble(df_in, C_1 = "01:02", C_2 = "02:08")
+  df_in <- tidyr::tibble(typing = "A*01:01 B*07:02 C*01:02 C*02:03:01:02N")
+  df_out <- tidyr::tibble(df_in, C_1 = "01:02", C_2 = "02:03:01:02N")
   expect_equal(extract_alleles(df_in, "typing",  locus = "C"), df_out)
 })
 
@@ -318,8 +318,8 @@ test_that("both alleles are NA when no HLA-DPB1 allele is present", {
 })
 
 test_that("more than single-digit HLA-DPB1 alleles are extracted", {
-  df_in <- tidyr::tibble(typing = "DPB1*129:01 DPB1*11:01")
-  df_out <- tidyr::tibble(df_in, DPB1_1 = "129:01", DPB1_2 = "11:01")
+  df_in <- tidyr::tibble(typing = "DPB1*129:01 DPB1*15:01:01:01")
+  df_out <- tidyr::tibble(df_in, DPB1_1 = "129:01", DPB1_2 = "15:01:01:01")
   expect_equal(extract_alleles(df_in, "typing",  locus = "DPB1"), df_out)
 })
 
