@@ -28,7 +28,7 @@ extract_alleles <- function(df, col_typing, locus = c("A", "B", "C", "DPB1")) {
     "?" # second allele is optional
   )
 
-  tidyr::extract(df, {{ col_typing }},
+  tidyr::extract(df, tidyr::all_of(col_typing),
     into = column_names,
     regex = pattern,
     remove = FALSE
