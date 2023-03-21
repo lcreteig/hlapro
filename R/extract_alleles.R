@@ -1,4 +1,4 @@
-extract_alleles <- function(df, col_typing, locus = c("A", "B", "C")) {
+extract_alleles <- function(df, col_typing, locus = c("A", "B", "C", "DPB1")) {
   locus <- rlang::arg_match(locus)
   # TODO: implement for character input via stringr's str_match() or str_extract()
 
@@ -11,7 +11,8 @@ extract_alleles <- function(df, col_typing, locus = c("A", "B", "C")) {
     loci = list(
       A = "A",
       B = "B(?![Ww])", # B cannot be followed by "W" (pubic)
-      C = "Cw?"
+      C = "Cw?",
+      DPB1 = "DPB1"
     ),
     # don't capture other alleles in between: i.e. any that aren't current locus
     inbetween = r"((?:\s(?!{locus})\S+)*\s?)"
