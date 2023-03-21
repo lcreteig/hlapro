@@ -2,6 +2,8 @@ extract_alleles <- function(df, col_typing, locus = c("A", "B", "C", "DPB1")) {
   locus <- rlang::arg_match(locus)
   # TODO: implement for character input via stringr's str_match() or str_extract()
 
+  df[col_typing] <- stringr::str_squish(df[col_typing])
+
   regexps <- list(
     # don't match if locus is preceded by : or other capital letter. This
     # prevents matching in NMDP Multiple Allele Codes (":AABJE") or other loci
