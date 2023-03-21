@@ -1,18 +1,19 @@
-extract_alleles <- function(df, col_typing, locus = c("A", "B")) {
+extract_alleles <- function(df, col_typing, locus = c("A", "B", "C")) {
   locus <- rlang::arg_match(locus)
-  #TODO: test named groups (cf. stringr::str_match() in tidyr::extract())
+  # TODO: implement for character input via stringr's str_match() or str_extract()
 
   regexps <- list(
     # don't match if locus is preceded by : or other capital letter. This
     # prevents matching in NMDP Multiple Allele Codes (":AABJE") or other loci
     # ("B" in "DRB1") or other prefixes (e.g. "A" in "HLA-")
     neg = "(?<![:A-Z])",
-    allele = r"((?:{locus}\*?(\S+)))", # match locus and all following non-spaces
+    allele = r"((?:{locus}\*?(\S+)))", # match locus and following non-spaces
     loci = list(
       A = "A",
-      B = "B(?![Ww])" # B cannot be followed by "W"
-      ),
-    # don't capture other alleles in between: i.e. any that aren't the current locus
+      B = "B(?![Ww])", # B cannot be followed by "W" (pubic)
+      C = "Cw?"
+    ),
+    # don't capture other alleles in between: i.e. any that aren't current locus
     inbetween = r"((?:\s(?!{locus})\S+)*\s?)"
   )
 
@@ -27,8 +28,8 @@ extract_alleles <- function(df, col_typing, locus = c("A", "B")) {
   )
 
   tidyr::extract(df, {{ col_typing }},
-                 into = column_names,
-                 regex = pattern,
-                 remove = FALSE
+    into = column_names,
+    regex = pattern,
+    remove = FALSE
   )
 }
