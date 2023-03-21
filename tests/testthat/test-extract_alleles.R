@@ -1,3 +1,34 @@
+# String issues -----------------------------------------------------------
+
+test_that("extraction is robust to double spaces", {
+  df_in <- tidyr::tibble(typing = "A1  A2 B7 B8 DR1 DQ5")
+  df_out <- tidyr::tibble(df_in, A_1 = "1", A_2 = "2")
+  df_out["typing"] <- stringr::str_squish(df_out["typing"])
+  expect_equal(extract_alleles(df_in, "typing", locus = "A"), df_out)
+})
+
+test_that("extraction is robust to tabs", {
+  df_in <- tidyr::tibble(typing = "A1   A2 B7 B8 Cw1 Cw2 ")
+  df_out <- tidyr::tibble(df_in, A_1 = "1", A_2 = "2")
+  df_out["typing"] <- stringr::str_squish(df_out["typing"])
+  expect_equal(extract_alleles(df_in, "typing", locus = "A"), df_out)
+})
+
+
+test_that("extraction is robust to trailing spaces", {
+  df_in <- tidyr::tibble(typing = "A1 A2 B7 B8 Cw1 Cw2 ")
+  df_out <- tidyr::tibble(df_in, C_1 = "1", C_2 = "2")
+  df_out["typing"] <- stringr::str_squish(df_out["typing"])
+  expect_equal(extract_alleles(df_in, "typing", locus = "C"), df_out)
+})
+
+test_that("extraction is robust to leading spaces", {
+  df_in <- tidyr::tibble(typing = " A1 A2 B7 B8 DR1 DQ5")
+  df_out <- tidyr::tibble(df_in, A_1 = "1", A_2 = "2")
+  df_out["typing"] <- stringr::str_squish(df_out["typing"])
+  expect_equal(extract_alleles(df_in, "typing", locus = "A"), df_out)
+})
+
 # HLA-A -------------------------------------------------------------------
 
 test_that("both HLA-A alleles are extracted from beginning", {
@@ -149,7 +180,7 @@ test_that("B's in other loci are not extracted", {
 })
 
 test_that("intermediate resolution HLA-B alleles are extracted", {
-  df_in <- tidyr::tibble(typing = "B*08:NMTJ A*02:HBMC ")
+  df_in <- tidyr::tibble(typing = "B*08:NMTJ A*02:HBMC")
   df_out <- tidyr::tibble(df_in, B_1 = "08:NMTJ", B_2 = "")
   expect_equal(extract_alleles(df_in, "typing",  locus = "B"), df_out)
 })
