@@ -1,7 +1,11 @@
-extract_alleles <- function(df, col_typing, locus = c("A", "B", "C", "DPB1")) {
+extract_alleles <- function(
+    df,
+    col_typing,
+    locus = c("A", "B", "C", "DPB1", "DQA1", "DQB1")) {
   locus <- rlang::arg_match(locus)
   # TODO: implement for character input via stringr's str_match() or str_extract()
 
+  # get rid of any leading/trailing/double spaces
   df[col_typing] <- stringr::str_squish(df[col_typing])
 
   regexps <- list(
@@ -13,8 +17,15 @@ extract_alleles <- function(df, col_typing, locus = c("A", "B", "C", "DPB1")) {
     loci = list(
       A = "A",
       B = "B(?![Ww])", # B cannot be followed by "W" (pubic)
-      C = "Cw?",
-      DPB1 = "DPB1"
+      C = "Cw?", # in serological notation, C is followed by "w"
+      DPB1 = "DPB1",
+      DQA1 = "DQA1", # DQA1 should always follow this format
+      DQB1 = "DQ(?!A)(?:B1)?", # could be "DQB1" but also "DQ" with no A after
+      DRB1 = "DR(?!A|B[2-9]|5[1-3])", # either "DR" (excluding DRA, or DR51-53),
+      # or "DRB1"
+      DRB3.4.5 = r"(DR5[1-3]|DRB[3-5](?!\*Neg))" # either DR51/52/53 or DRB3/4/5
+      # Sometimes all 3 are specified, with 1-2 having suffix "*Neg". These
+      # should be skipped, in order to still retrieve full typing
     ),
     # don't capture other alleles in between: i.e. any that aren't current locus
     inbetween = r"((?:\s(?!{locus})\S+)*\s?)"

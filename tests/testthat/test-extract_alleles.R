@@ -328,3 +328,133 @@ test_that("intermediate resolution HLA-DPB1 alleles are extracted", {
   df_out <- tidyr::tibble(df_in, DPB1_1 = "15:FNWN", DPB1_2 = "04:BDVU")
   expect_equal(extract_alleles(df_in, "typing",  locus = "DPB1"), df_out)
 })
+
+# HLA-DQA1 ----------------------------------------------------------------
+
+test_that("both HLA-DQA1 alleles are extracted from beginning", {
+  df_in <- tidyr::tibble(typing = "DQA1*01:03 DQA1*05:05 DPB1*05:01 DQB1*03:01")
+  df_out <- tidyr::tibble(df_in, DQA1_1 = "01:03", DQA1_2 = "05:05")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQA1"), df_out)
+})
+
+test_that("both HLA-DQA1 alleles are extracted from end", {
+  df_in <- tidyr::tibble(typing = "DPB1*05:01 DQB1*03:01 DQA1*01:03 DQA1*05:05")
+  df_out <- tidyr::tibble(df_in, DQA1_1 = "01:03", DQA1_2 = "05:05")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQA1"), df_out)
+})
+
+test_that("both HLA-DQA1 alleles are extracted from middle", {
+  df_in <- tidyr::tibble(typing = "DPB1*05:01 DQA1*01:03 DQA1*05:05 DQB1*03:01")
+  df_out <- tidyr::tibble(df_in, DQA1_1 = "01:03", DQA1_2 = "05:05")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQA1"), df_out)
+})
+
+test_that("both HLA-DQA1 alleles are extracted when separated by others", {
+  df_in <- tidyr::tibble(typing = "DPB1*05:01 DQA1*01:03 DQB1*03:01 DQA1*05:05")
+  df_out <- tidyr::tibble(df_in, DQA1_1 = "01:03", DQA1_2 = "05:05")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQA1"), df_out)
+})
+
+test_that("second allele is NA when only 1 HLA-DQA1 allele is present", {
+  df_in <- tidyr::tibble(typing = "DQA1*01:03 DPA1*02:02 B*39:09 DQB1*03:01")
+  df_out <- tidyr::tibble(df_in, DQA1_1 = "01:03", DQA1_2 = "")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQA1"), df_out)
+  df_in <- tidyr::tibble(typing = "DPA1*02:02 B*39:09 DQA1*01:03 DQB1*03:01")
+  df_out <- tidyr::tibble(df_in, DQA1_1 = "01:03", DQA1_2 = "")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQA1"), df_out)
+  df_in <- tidyr::tibble(typing = "DPA1*02:02 B*39:09 DQB1*03:01 DQA1*01:03")
+  df_out <- tidyr::tibble(df_in, DQA1_1 = "01:03", DQA1_2 = "")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQA1"), df_out)
+})
+
+#TODO: add serology
+test_that("both alleles are NA when no HLA-DQA1 allele is present", {
+  df_in <- tidyr::tibble(typing = "DPA1*02:02 DQB1*03:24 DQB1*03:01 DRB1*04:11")
+  # TODO: empty string if only no 2nd allele. Useful that it's NA here?
+  df_out <- tidyr::tibble(df_in, DQA1_1 = NA_character_, DQA1_2 = NA_character_)
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQA1"), df_out)
+  df_in <- tidyr::tibble(typing = "A1 A2 B7 B8 DR1 DQ3 DQ5")
+  df_out <- tidyr::tibble(df_in, DQA1_1 = NA_character_, DQA1_2 = NA_character_)
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQA1"), df_out)
+})
+
+test_that("more than single-digit HLA-DQA1 alleles are extracted", {
+  df_in <- tidyr::tibble(typing = "DQA1*01:01:01 DQA1*01:02:01")
+  df_out <- tidyr::tibble(df_in, DQA1_1 = "01:01:01", DQA1_2 = "01:02:01")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQA1"), df_out)
+})
+
+test_that("intermediate resolution HLA-DQA1 alleles are extracted", {
+  df_in <- tidyr::tibble(typing = "A*02:BMC DQA1*05:BCHD B*08:DQA DQA1*01:UKJA")
+  df_out <- tidyr::tibble(df_in, DQA1_1 = "05:BCHD", DQA1_2 = "01:UKJA")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQA1"), df_out)
+})
+
+# HLA-DQB1 ----------------------------------------------------------------
+
+test_that("both HLA-DQB1 alleles are extracted from beginning", {
+  df_in <- tidyr::tibble(typing = "DQ5 DQ8 A1 A2 B7 B8 Cw1 Cw2 DR1")
+  df_out <- tidyr::tibble(df_in, DQB1_1 = "5", DQB1_2 = "8")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQB1"), df_out)
+})
+
+test_that("both HLA-DQB1 alleles are extracted from end", {
+  df_in <- tidyr::tibble(typing = "A1 A2 B7 B8 Cw1 Cw2 DR1 DQ5 DQ8")
+  df_out <- tidyr::tibble(df_in, DQB1_1 = "5", DQB1_2 = "8")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQB1"), df_out)
+})
+
+test_that("both HLA-DQB1 alleles are extracted from middle", {
+  df_in <- tidyr::tibble(typing = "A1 A2 B7 B8 Cw1 Cw2 DQ5 DQ8 DR1")
+  df_out <- tidyr::tibble(df_in, DQB1_1 = "5", DQB1_2 = "8")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQB1"), df_out)
+})
+
+test_that("both HLA-DQB1 alleles are extracted when separated by others", {
+  df_in <- tidyr::tibble(typing = "A1 A2 B7 B8 DQ5 Cw1 Cw2 DQ8 DR1")
+  df_out <- tidyr::tibble(df_in, DQB1_1 = "5", DQB1_2 = "8")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQB1"), df_out)
+})
+
+test_that("second allele is NA when only 1 HLA-DQB1 allele is present", {
+  df_in <- tidyr::tibble(typing = "A1 Cw1 B7 DQ5")
+  df_out <- tidyr::tibble(df_in, DQB1_1 = "5", DQB1_2 = "")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQB1"), df_out)
+  df_in <- tidyr::tibble(typing = "DQ5 A1 B7 B8")
+  df_out <- tidyr::tibble(df_in, DQB1_1 = "5", DQB1_2 = "")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQB1"), df_out)
+  df_in <- tidyr::tibble(typing = "A1 B7 DQ5 Cw1")
+  df_out <- tidyr::tibble(df_in, DQB1_1 = "5", DQB1_2 = "")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQB1"), df_out)
+})
+
+test_that("both alleles are NA when no HLA-DQB1 allele is present", {
+  df_in <- tidyr::tibble(typing = "B7 B8 DR1 DQA1*01:03")
+  # TODO: empty string if only no 2nd allele. Useful that it's NA here?
+  df_out <- tidyr::tibble(df_in, DQB1_1 = NA_character_, DQB1_2 = NA_character_)
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQB1"), df_out)
+})
+
+test_that("high resolution HLA-DQB1 alleles are extracted", {
+  df_in <- tidyr::tibble(typing = "A*01:01 DQA1*01:03 DQB1*03:01 DQB1*05:01")
+  df_out <- tidyr::tibble(df_in, DQB1_1 = "03:01", DQB1_2 = "05:01")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQB1"), df_out)
+})
+
+test_that("intermediate resolution HLA-DQB1 alleles are extracted", {
+  df_in <- tidyr::tibble(typing = "DQA1*05:BC B*08:NM DQB1*03:AG DQB1*03:AFYYJ")
+  df_out <- tidyr::tibble(df_in, DQB1_1 = "03:AG", DQB1_2 = "03:AFYYJ")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQB1"), df_out)
+})
+
+test_that("'DQ's in MACs are not extracted", {
+  df_in <- tidyr::tibble(typing = "DQB1*03:AG A*02:DQMC DRB1*07:CYMD B*08:NMTJ")
+  df_out <- tidyr::tibble(df_in, DQB1_1 = "03:AG", DQB1_2 = "")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQB1"), df_out)
+  df_in <- tidyr::tibble(typing = "DQB1*03:AFYYJ DRB1*07:GDQM")
+  df_out <- tidyr::tibble(df_in, DQB1_1 = "03:AFYYJ", DQB1_2 = "")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQB1"), df_out)
+  df_in <- tidyr::tibble(typing = "C*04:CYMDQ DQB1*03:AG C*01:BZ DQB1*03:AFYYJ")
+  df_out <- tidyr::tibble(df_in, DQB1_1 = "03:AG", DQB1_2 = "03:AFYYJ")
+  expect_equal(extract_alleles(df_in, "typing",  locus = "DQB1"), df_out)
+})
