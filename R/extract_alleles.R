@@ -1,13 +1,4 @@
-extract_alleles <- function(
-    df,
-    col_typing,
-    locus = c("A", "B", "C", "DPB1", "DQA1", "DQB1", "DRB1", "DRB.")) {
-  locus <- rlang::arg_match(locus)
-  # TODO: implement for character input via stringr's str_match() or str_extract()
-  # TODO: vectorize locus arg
-
-  # get rid of any leading/trailing/double spaces
-  df[col_typing] <- stringr::str_squish(df[col_typing])
+build_pattern <- function(locus) {
 
   regexps <- list(
     # don't match if locus is preceded by : or other capital letter. This
@@ -32,9 +23,8 @@ extract_alleles <- function(
     inbetween = r"((?:\s(?!{locus})\S+)*\s?)"
   )
 
-  column_names <- stringr::str_c(locus, c("_1", "_2"))
   # build the regular expression from its sub-parts
-  pattern <- stringr::str_c(
+  stringr::str_c(
     regexps$neg,
     stringr::str_glue(regexps$allele, locus = regexps$loci[locus]),
     stringr::str_glue(regexps$inbetween, locus = regexps$loci[locus]),
@@ -42,9 +32,43 @@ extract_alleles <- function(
     "?" # second allele is optional
   )
 
+}
+
+extract_alleles_df <- function(
+    df,
+    col_typing,
+    locus = c("A", "B", "C", "DPB1", "DQA1", "DQB1", "DRB1", "DRB.")) {
+  locus <- rlang::arg_match(locus)
+  # TODO: vectorize locus arg
+  # TODO: document
+
+  # get rid of any leading/trailing/double spaces
+  df[col_typing] <- stringr::str_squish(df[col_typing])
+
+  pattern <- build_pattern(locus)
+  allele_names <- stringr::str_c(locus, c("_1", "_2"))
+
   tidyr::extract(df, tidyr::all_of(col_typing),
-    into = column_names,
+    into = allele_names,
     regex = pattern,
     remove = FALSE
   )
+}
+
+extract_alleles_str <- function(
+    string,
+    locus = c("A", "B", "C", "DPB1", "DQA1", "DQB1", "DRB1", "DRB.")) {
+  locus <- rlang::arg_match(locus)
+  # TODO: vectorize locus arg
+  # TODO: document
+
+  # get rid of any leading/trailing/double spaces
+  string <- stringr::str_squish(string)
+
+  pattern <- build_pattern(locus)
+  allele_names <- stringr::str_c(locus, c("_1", "_2"))
+
+  # return named list (locus_allele) with matches
+  rlang::set_names(stringr::str_match(string, pattern)[, 2:3],
+                   allele_names)
 }
