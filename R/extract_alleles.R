@@ -1,5 +1,4 @@
 build_pattern <- function(locus) {
-
   regexps <- list(
     # don't match if locus is preceded by : or other capital letter. This
     # prevents matching in NMDP Multiple Allele Codes (":AABJE") or other loci
@@ -31,44 +30,54 @@ build_pattern <- function(locus) {
     stringr::str_glue(regexps$allele, locus = regexps$loci[locus]),
     "?" # second allele is optional
   )
-
 }
 
 extract_alleles_df <- function(
     df,
     col_typing,
-    locus = c("A", "B", "C", "DPB1", "DQA1", "DQB1", "DRB1", "DRB.")) {
-  locus <- rlang::arg_match(locus)
-  # TODO: vectorize locus arg
+    loci = c("A", "B", "C", "DPB1", "DQA1", "DQB1", "DRB1", "DRB.")) {
+  loci <- rlang::arg_match(loci, multiple = TRUE)
   # TODO: document
 
   # get rid of any leading/trailing/double spaces
   df[col_typing] <- stringr::str_squish(df[col_typing])
 
-  pattern <- build_pattern(locus)
-  allele_names <- stringr::str_c(locus, c("_1", "_2"))
+  extract_df <- function(locus, df, col_typing) {
+    pattern <- build_pattern(locus)
+    allele_names <- stringr::str_c(locus, c("_1", "_2"))
 
-  tidyr::extract(df, tidyr::all_of(col_typing),
-    into = allele_names,
-    regex = pattern,
-    remove = FALSE
-  )
+    tidyr::extract(df, tidyr::all_of(col_typing),
+      into = allele_names,
+      regex = pattern,
+      remove = FALSE
+    )
+  }
+
+  # Split typing for each locus into two columns; combine resulting data frames
+  purrr::map(loci, \(x) extract_df(x, df, col_typing)) |>
+    purrr::reduce(dplyr::full_join)
 }
 
 extract_alleles_str <- function(
     string,
-    locus = c("A", "B", "C", "DPB1", "DQA1", "DQB1", "DRB1", "DRB.")) {
-  locus <- rlang::arg_match(locus)
-  # TODO: vectorize locus arg
+    loci = c("A", "B", "C", "DPB1", "DQA1", "DQB1", "DRB1", "DRB.")) {
+  loci <- rlang::arg_match(loci, multiple = TRUE)
   # TODO: document
 
   # get rid of any leading/trailing/double spaces
   string <- stringr::str_squish(string)
 
-  pattern <- build_pattern(locus)
-  allele_names <- stringr::str_c(locus, c("_1", "_2"))
+  extract_str <- function(locus, string) {
+    pattern <- build_pattern(locus)
+    allele_names <- stringr::str_c(locus, c("_1", "_2"))
 
-  # return named list (locus_allele) with matches
-  rlang::set_names(stringr::str_match(string, pattern)[, 2:3],
-                   allele_names)
+    # return named list (locus_allele) with matches
+    rlang::set_names(
+      stringr::str_match(string, pattern)[, 2:3],
+      allele_names
+    )
+  }
+
+  purrr::map(loci, \(x) extract_str(x, string)) |>
+    purrr::flatten_chr()
 }
