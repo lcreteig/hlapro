@@ -38,14 +38,17 @@ You can install the development version of hlapro from
 devtools::install_github("lcreteig/hlapro")
 ```
 
-## Example
-
-Right now, the only (very basic!) functionality included in hlapro is to
-get mismatched HLAs from donor and recipient typings:
+## Usage
 
 ``` r
 library(hlapro)
+```
 
+### Mismatches
+
+Get mismatched HLAs from donor and recipient typings
+
+``` r
 donor_typing <- "A1 A2 B5"
 recipient_typing <- "A1 A3 B5 B12"
 
@@ -53,21 +56,47 @@ get_mismatches(donor_typing, recipient_typing)
 #> [1] "A2"
 ```
 
+### Extracting alleles
+
+Extract HLA alleles from a typing string
+
+``` r
+typing <- "A1 A2 B7 B8 Cw3 DQ5 DQ8 DR4 DR11 DR52 DR53"
+extract_alleles_str(typing)
+#>    A_1    A_2    B_1    B_2    C_1    C_2 DPB1_1 DPB1_2 DQA1_1 DQA1_2 DQB1_1 
+#>    "1"    "2"    "7"    "8"    "3"     NA     NA     NA     NA     NA    "5" 
+#> DQB1_2 DRB1_1 DRB1_2 DRB._1 DRB._2 
+#>    "8"    "4"   "11"   "52"   "53"
+
+df<- tidyr::tibble(typing = "A1 A2 B7 B8 Cw3 DQ5 DQ8 DR4 DR11 DR52 DR53")
+extract_alleles_df(df, "typing", loci = c("A", "B", "C"))
+#> Joining with `by = join_by(typing)`
+#> Joining with `by = join_by(typing)`
+#> # A tibble: 1 × 7
+#>   typing                                     A_1   A_2   B_1   B_2   C_1   C_2  
+#>   <chr>                                      <chr> <chr> <chr> <chr> <chr> <chr>
+#> 1 A1 A2 B7 B8 Cw3 DQ5 DQ8 DR4 DR11 DR52 DR53 1     2     7     8     3     ""
+```
+
 ## Other packages
 
 There’s many other implementations with partly overlapping goals (some
-of which hlapro might depend on in the future):
+of which hlapro might depend on in the future).
 
-- [hlatools](https://github.com/gschofl/hlatools) (R) provides access to
-  the [IPD-IMGT/HLA database](https://www.ebi.ac.uk/ipd/imgt/hla/)
-- [hlaR](https://cran.r-project.org/web/packages/hlaR) (R) does cleaning
-  and imputation of HLA typings
-- [immunotation](http://bioconductor.org/packages/release/bioc/html/immunotation.html) (R)
-  formats HLA typings and can work with haplotype/allele frequencies
-- [py-ard](https://github.com/nmdp-bioinformatics/py-ard) (python)
-  reduces HLA typing resolution
-- [pyglstring](https://github.com/nmdp-bioinformatics/pyglstring) checks
-  whether GL Strings are well formatted
+- R:
+  - [hlatools](https://github.com/gschofl/hlatools) provides access to
+    the [IPD-IMGT/HLA database](https://www.ebi.ac.uk/ipd/imgt/hla/)
+  - [hlaR](https://cran.r-project.org/web/packages/hlaR) does cleaning
+    and imputation of HLA typings
+  - [immunotation](http://bioconductor.org/packages/release/bioc/html/immunotation.html)
+    formats HLA typings and can work with haplotype/allele frequencies
+- Python:
+  - [py-ard](https://github.com/nmdp-bioinformatics/py-ard) reduces HLA
+    typing resolution
+  - [pyglstring](https://github.com/nmdp-bioinformatics/pyglstring)
+    checks whether GL Strings are well formatted
+  - [ALLAN](https://github.com/lgragert/hla-who-to-unos) converts
+    between serological and molecular HLA notation
 
 ## Why `hlapro`?
 

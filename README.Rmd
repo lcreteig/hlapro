@@ -44,28 +44,49 @@ You can install the development version of hlapro from [GitHub](https://github.c
 devtools::install_github("lcreteig/hlapro")
 ```
 
-## Example
+## Usage
 
-Right now, the only (very basic!) functionality included in hlapro is to get mismatched HLAs from donor and recipient typings:
-
-```{r example}
+```{r}
 library(hlapro)
+```
 
+### Mismatches
+
+Get mismatched HLAs from donor and recipient typings
+
+```{r mismatch}
 donor_typing <- "A1 A2 B5"
 recipient_typing <- "A1 A3 B5 B12"
 
 get_mismatches(donor_typing, recipient_typing)
 ```
 
+### Extracting alleles
+
+Extract HLA alleles from a typing string
+
+```{r extract_alleles}
+typing <- "A1 A2 B7 B8 Cw3 DQ5 DQ8 DR4 DR11 DR52 DR53"
+extract_alleles_str(typing)
+
+df<- tidyr::tibble(typing = "A1 A2 B7 B8 Cw3 DQ5 DQ8 DR4 DR11 DR52 DR53")
+extract_alleles_df(df, "typing", loci = c("A", "B", "C"))
+```
+
+
 ## Other packages
 
-There's many other implementations with partly overlapping goals (some of which hlapro might depend on in the future):
+There's many other implementations with partly overlapping goals (some of which hlapro might depend on in the future).
 
--   [hlatools](https://github.com/gschofl/hlatools) (R) provides access to the [IPD-IMGT/HLA database](https://www.ebi.ac.uk/ipd/imgt/hla/)
--   [hlaR](https://cran.r-project.org/web/packages/hlaR) (R) does cleaning and imputation of HLA typings
--   [immunotation](http://bioconductor.org/packages/release/bioc/html/immunotation.html) (R) formats HLA typings and can work with haplotype/allele frequencies
--   [py-ard](https://github.com/nmdp-bioinformatics/py-ard) (python) reduces HLA typing resolution
--   [pyglstring](https://github.com/nmdp-bioinformatics/pyglstring) checks whether GL Strings are well formatted
+- R:
+  - [hlatools](https://github.com/gschofl/hlatools) provides access to the [IPD-IMGT/HLA database](https://www.ebi.ac.uk/ipd/imgt/hla/)
+  - [hlaR](https://cran.r-project.org/web/packages/hlaR) does cleaning and imputation of HLA typings
+  - [immunotation](http://bioconductor.org/packages/release/bioc/html/immunotation.html) formats HLA typings and can work with haplotype/allele frequencies
+
+- Python:
+  - [py-ard](https://github.com/nmdp-bioinformatics/py-ard) reduces HLA typing resolution
+  - [pyglstring](https://github.com/nmdp-bioinformatics/pyglstring) checks whether GL Strings are well formatted
+  - [ALLAN](https://github.com/lgragert/hla-who-to-unos) converts between serological and molecular HLA notation
 
 ## Why `hlapro`?
 
