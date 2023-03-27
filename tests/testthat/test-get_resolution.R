@@ -1,5 +1,8 @@
+#TODO: add tests for wild-caught typings
+
 test_that("serologicals are low", {
   expect_equal(get_resolution("A2"), "low")
+  expect_equal(get_resolution("A32(19)"), "low")
   expect_equal(get_resolution("B70"), "low")
   expect_equal(get_resolution("Cw2"), "low")
   expect_equal(get_resolution("DQA-01"), "low")
@@ -10,10 +13,10 @@ test_that("serologicals are low", {
 })
 
 test_that("MACs are intermediate", {
-  #v3
+  # v3
   expect_equal(get_resolution("A*01:AABJE"), "intermediate")
   expect_equal(get_resolution("DRB1*07:GC"), "intermediate")
-  #v2
+  # v2
   expect_equal(get_resolution("B*15CFRG"), "intermediate")
   expect_equal(get_resolution("A*01KG"), "intermediate")
   expect_equal(get_resolution("DPB1*04BDVU"), "intermediate")
@@ -42,4 +45,17 @@ test_that(">2 field codes is high", {
   # G/P groups
   expect_equal(get_resolution("A*01:01P"), "high")
   expect_equal(get_resolution("DQA1*02:01:01G"), "high")
+})
+
+test_that("vectors work", {
+  expect_equal(
+    get_resolution(c("A2", "A*01:AABJE", "B*42:08")),
+    c("low", "intermediate", "high")
+  )
+})
+
+test_that("mutate in dataframe works", {
+  df <- tidyr::tibble(alleles = c("A2", "A*01:AABJE", "B*42:08"))
+  df <- dplyr::mutate(df, allele_res = get_resolution(alleles))
+  expect_equal(df$allele_res, c("low", "intermediate", "high"))
 })
