@@ -1,5 +1,8 @@
 # hlapro (development version)
 
+* New `get_resolution()` to determine resolution of a(n) (list of) HLA allele(s)
+  as either low, intermediate, or high.
+
 * New `extract_alleles_str()`, `extract_alleles_df()` gets alleles for each 
   locus from HLA typing string, and separates them into named list elements 
   / new columns in a data frame.
