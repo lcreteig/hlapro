@@ -15,9 +15,10 @@
 #'    - `A*24:09` (minimum)
 #'    - `HLA-A*24:02:01:02L` (maximum)
 #'
-#' @param allele A string or character vector with an HLA allele.
+#' @param allele A string or character vector with (an) HLA allele(s).
 #'
-#' @return A string or character vector of the same length as `allele`, with `"low"`, `"intermediate"`, or `"high"` for each element.
+#' @return A string or character vector of the same length as `allele`,
+#'   with `"low"`, `"intermediate"`, or `"high"` for each element.
 #' @export
 #'
 #' @examples
@@ -25,7 +26,7 @@
 #' get_resolution("A*01:AABJE") # intermediate
 #' get_resolution("A*24:09") # high
 #'
-#' # also works with character vectors, or in a dataframe
+#' # also works with character vectors, or in a data frame
 #' allele_vec <- c("A2", "A*01:AABJE", "B*42:08")
 #' get_resolution(allele_vec)
 #'
