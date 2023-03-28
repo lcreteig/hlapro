@@ -1,5 +1,8 @@
 # hlapro (development version)
 
+* New `validate_alleles()` to check whether a(n) (list of) HLA allele(s) is
+  well-formed
+
 * New `get_resolution()` to determine resolution of a(n) (list of) HLA allele(s)
   as either low, intermediate, or high.
 

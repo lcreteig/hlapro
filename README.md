@@ -78,6 +78,15 @@ extract_alleles_df(df, "typing", loci = c("A", "B", "C"))
 #> 1 A1 A2 B7 B8 Cw3 DQ5 DQ8 DR4 DR11 DR52 DR53 1     2     7     8     3     ""
 ```
 
+### Validating alleles
+
+Check whether alleles are well-formed
+
+``` r
+validate_allele(c("A2", "A*01:AABJE", "A*24:02:01:02L", "not-an-HLA"))
+#> [1]  TRUE  TRUE  TRUE FALSE
+```
+
 ### Allele resolution
 
 Determine whether an allele is of low/intermediate/high resolution

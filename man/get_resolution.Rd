@@ -7,10 +7,11 @@
 get_resolution(allele)
 }
 \arguments{
-\item{allele}{A string or character vector with an HLA allele.}
+\item{allele}{A string or character vector with (an) HLA allele(s).}
 }
 \value{
-A string or character vector of the same length as \code{allele}, with \code{"low"}, \code{"intermediate"}, or \code{"high"} for each element.
+A string or character vector of the same length as \code{allele},
+with \code{"low"}, \code{"intermediate"}, or \code{"high"} for each element.
 }
 \description{
 \code{get_resolution()} takes in a string or character vector of HLA alleles, and
@@ -41,7 +42,7 @@ get_resolution("A2") # low
 get_resolution("A*01:AABJE") # intermediate
 get_resolution("A*24:09") # high
 
-# also works with character vectors, or in a dataframe
+# also works with character vectors, or in a data frame
 allele_vec <- c("A2", "A*01:AABJE", "B*42:08")
 get_resolution(allele_vec)
 
