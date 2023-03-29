@@ -70,7 +70,7 @@ typing <- "A1 A2 B7 B8 Cw3 DQ5 DQ8 DR4 DR11 DR52 DR53"
 extract_alleles_str(typing)
 
 df<- tidyr::tibble(typing = "A1 A2 B7 B8 Cw3 DQ5 DQ8 DR4 DR11 DR52 DR53")
-extract_alleles_df(df, "typing", loci = c("A", "B", "C"))
+extract_alleles_df(df, typing, loci = c("A", "B", "C"))
 ```
 
 ### Validating alleles

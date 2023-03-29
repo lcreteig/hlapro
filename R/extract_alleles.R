@@ -12,8 +12,8 @@
 #'
 #' @param string String, space-separated HLA typing.
 #' @param df A data frame.
-#' @param col_typing The name of the column in `df` that contains a
-#'   space-separated HLA typing `string` for each row.
+#' @param col_typing The column in `df` that contains a space-separated HLA
+#'   typing `string` for each row.
 #' @param loci A string or character vector with the loci you are interested in.
 #'   Only these alleles will be returned. Defaults to all. `DRB.` is used for
 #'   DRB3, DRB4, and DRB5.
@@ -27,12 +27,12 @@
 #' extract_alleles_str(typing)
 #'
 #' df <- tidyr::tibble(typing = typing)
-#' extract_alleles_df(df, "typing", loci = c("A", "B", "C"))
+#' extract_alleles_df(df, typing, loci = c("A", "B", "C"))
 #'
 #' # Can also handle newer nomenclature
 #' extract_alleles_str("DQB1*03:01 DQB1*05:01 DRB1*04:AMR",
-#'                     loci = c("DRB1", "DQB1"))
-
+#'   loci = c("DRB1", "DQB1")
+#' )
 extract_alleles_str <- function(
     string,
     loci = c("A", "B", "C", "DPB1", "DQA1", "DQB1", "DRB1", "DRB.")) {
@@ -67,13 +67,13 @@ extract_alleles_df <- function(
   # TODO: document
 
   # get rid of any leading/trailing/double spaces
-  df[col_typing] <- stringr::str_squish(df[col_typing])
+  df <- dplyr::mutate(df, dplyr::across({{ col_typing }}, stringr::str_squish))
 
   extract_df <- function(locus, df, col_typing) {
     pattern <- build_pattern(locus)
     allele_names <- stringr::str_c(locus, c("_1", "_2"))
 
-    tidyr::extract(df, tidyr::all_of(col_typing),
+    tidyr::extract(df, {{ col_typing }},
       into = allele_names,
       regex = pattern,
       remove = FALSE
@@ -81,7 +81,7 @@ extract_alleles_df <- function(
   }
 
   # Split typing for each locus into two columns; combine resulting data frames
-  purrr::map(loci, \(x) extract_df(x, df, col_typing)) |>
+  purrr::map(loci, \(x) extract_df(x, df, {{ col_typing }})) |>
     purrr::reduce(dplyr::full_join)
 }
 

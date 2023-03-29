@@ -25,8 +25,8 @@ DRB3, DRB4, and DRB5.}
 
 \item{df}{A data frame.}
 
-\item{col_typing}{The name of the column in \code{df} that contains a
-space-separated HLA typing \code{string} for each row.}
+\item{col_typing}{The column in \code{df} that contains a space-separated HLA
+typing \code{string} for each row.}
 }
 \value{
 Either a character vector or a data frame with the named alleles.
@@ -48,9 +48,10 @@ extract_alleles_str(typing, loci = "A")
 extract_alleles_str(typing)
 
 df <- tidyr::tibble(typing = typing)
-extract_alleles_df(df, "typing", loci = c("A", "B", "C"))
+extract_alleles_df(df, typing, loci = c("A", "B", "C"))
 
 # Can also handle newer nomenclature
 extract_alleles_str("DQB1*03:01 DQB1*05:01 DRB1*04:AMR",
-                    loci = c("DRB1", "DQB1"))
+  loci = c("DRB1", "DQB1")
+)
 }

@@ -69,7 +69,7 @@ extract_alleles_str(typing)
 #>    "8"    "4"   "11"   "52"   "53"
 
 df<- tidyr::tibble(typing = "A1 A2 B7 B8 Cw3 DQ5 DQ8 DR4 DR11 DR52 DR53")
-extract_alleles_df(df, "typing", loci = c("A", "B", "C"))
+extract_alleles_df(df, typing, loci = c("A", "B", "C"))
 #> Joining with `by = join_by(typing)`
 #> Joining with `by = join_by(typing)`
 #> # A tibble: 1 × 7
