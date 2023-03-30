@@ -40,12 +40,6 @@ test_that("prefixing is allowed", {
   expect_true(validate_allele("HLA-DRB1*10:03"))
 })
 
-test_that("ambiguities are allowed", {
-  expect_true(validate_allele("A*74:06/A*22:03N"))
-  expect_true(validate_allele("A*74:06/22:03"))
-  expect_true(validate_allele("C*01:02/C*01:03/C*01:04/C*01:05/C*01:06"))
-})
-
 test_that("protein-level typings are valid", {
   expect_true(validate_allele("A*74:06"))
   expect_true(validate_allele("B*81:01"))
@@ -73,6 +67,16 @@ test_that("P groups are valid", {
 test_that("G groups are valid", {
   expect_true(validate_allele("A*01:01:01G"))
   expect_true(validate_allele("DPB1*879:01:01G"))
+})
+
+test_that("ambiguities are allowed", {
+  expect_true(validate_allele("A*74:06/A*22:03N"))
+  expect_false(validate_allele("A*74:06/B*22:03N")) # must be same locus
+  expect_true(validate_allele("A*30:01/30:14/30:15"))
+  expect_true(validate_allele("A*30:01/30:14L/30:15")) # with suffix
+  expect_true(validate_allele("A*30:01/14/15L")) # shorthand
+  expect_false(validate_allele("A*01:01/A*01:02N:01")) # suffix in middle
+  expect_true(validate_allele("C*01:02/C*01:03/C*01:04/C*01:05/C*01:06"))
 })
 
 test_that("vectors work", {

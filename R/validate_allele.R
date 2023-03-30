@@ -69,15 +69,13 @@ validate_allele <- function(allele) {
     (?<suffix>         # START of optional suffix
     [NLSCAQ]           # an N,L,S,C,A, or Q
     )?                 # end of optional suffix
+
                        # ALL that follows are optional ambiguities (0 or more)
     (\/                # a forward slash
     (?:\1\*)?          # followed by optional locus (must be same as before)
-    \d{2,3}            # 2-3 digits
-    (?:                # START of protein-level information
-    :                  # a semicolon
-    \d{2,3}            # 2-3 digits
+    \d{2,3}            # 2-3 digits (first field)
+    (?::\d{2,3}){0,3}  # 0-3 more fields with 2-3 digits each, colon-separated
     [NLSCAQ]?          # optional suffix
-    )*                 # END of protein level (repeat 0 or more times)
     )*                 # END of ambiguities (repeat 0 or more times)
     $                  # END of HLA string
   )", comments = TRUE)
