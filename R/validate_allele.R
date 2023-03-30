@@ -18,7 +18,7 @@
 #' - XX codes, e.g. `"A*02:XX"`
 #' - prefixing an allele with `"HLA-"` is allowed
 #' - ambiguous alleles such as `"C*01:02/C*01:03/C*01:04/C*01:05/C*01:06"`
-#' - Multiple Allele Codes, e.g. `"DRB1*07:GC"` (v2) or `"DPB1*04BDVU"` (v3)
+#' - Multiple Allele Codes, e.g. `"DRB1*07:GC"` (v3) or `"DPB1*04BDVU"` (v2)
 #' - P groups, G groups, and expression-related suffixes (N/L/S/C/A/Q)
 #'
 #' @inheritParams get_resolution
@@ -52,18 +52,20 @@ validate_allele <- function(allele) {
     (?<allele>         # START of allele field
     \d{1,4}            # 1 (A1) to 4 (DP0201) digits
     )                  # END of allele field
+    (?=$|:|[A-Z])      # either end of string (low-res), or a colon/capital
                        # ALL that follows is optional
-    :?                 # optional semicolon
+
+    :?                 # optional colon
     (?<protein>        # START of optional protein field
     [A-Z]{2,5}$|       # a 2-5 letter MAC code, then end. OR
     \d{2,3}P?          # 2-3 digits, with optional P group
     )?                 # END of protein field
     (?<coding>         # START of optional 3rd field (coding)
-    :                  # semicolon
+    :                  # colon
     \d{2,3}G?          # 2-3 digits, with optional G group
     )?                 # end of 3rd field
     (?<noncoding>      # START of optional 4th field (non-coding)
-    :                  # semicolon
+    :                  # colon
     \d{2,3}            # 2-3 digits
     )?                 # END of optional 4th field
     (?<suffix>         # START of optional suffix

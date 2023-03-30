@@ -33,7 +33,7 @@ that are often typed in the context of transplantation research/matching)
 \item XX codes, e.g. \code{"A*02:XX"}
 \item prefixing an allele with \code{"HLA-"} is allowed
 \item ambiguous alleles such as \code{"C*01:02/C*01:03/C*01:04/C*01:05/C*01:06"}
-\item Multiple Allele Codes, e.g. \code{"DRB1*07:GC"} (v2) or \code{"DPB1*04BDVU"} (v3)
+\item Multiple Allele Codes, e.g. \code{"DRB1*07:GC"} (v3) or \code{"DPB1*04BDVU"} (v2)
 \item P groups, G groups, and expression-related suffixes (N/L/S/C/A/Q)
 }
 }
