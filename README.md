@@ -4,6 +4,10 @@
 # hlapro
 
 <!-- badges: start -->
+
+[![check-standard](https://github.com/lcreteig/hlapro/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/lcreteig/hlapro/actions/workflows/check-standard.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/lcreteig/hlapro/branch/main/graph/badge.svg)](https://app.codecov.io/gh/lcreteig/hlapro?branch=main)
 <!-- badges: end -->
 
 The goal of hlapro is to provide some tooling to work with [Human
@@ -68,7 +72,7 @@ extract_alleles_str(typing)
 #> DQB1_2 DRB1_1 DRB1_2 DRB._1 DRB._2 
 #>    "8"    "4"   "11"   "52"   "53"
 
-df<- tidyr::tibble(typing = "A1 A2 B7 B8 Cw3 DQ5 DQ8 DR4 DR11 DR52 DR53")
+df <- tidyr::tibble(typing = "A1 A2 B7 B8 Cw3 DQ5 DQ8 DR4 DR11 DR52 DR53")
 extract_alleles_df(df, typing, loci = c("A", "B", "C"))
 #> Joining with `by = join_by(typing)`
 #> Joining with `by = join_by(typing)`

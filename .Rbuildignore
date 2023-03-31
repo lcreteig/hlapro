@@ -1,5 +1,7 @@
 ^LICENSE\.md$
 ^README\.Rmd$
 ^\.Rproj\.user$
+^\.github$
 ^\.pre-commit-config\.yaml$
+^codecov\.yml$
 ^hlapro\.Rproj$
