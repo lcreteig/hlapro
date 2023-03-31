@@ -1,4 +1,5 @@
-^hlapro\.Rproj$
-^\.Rproj\.user$
 ^LICENSE\.md$
 ^README\.Rmd$
+^\.Rproj\.user$
+^\.pre-commit-config\.yaml$
+^hlapro\.Rproj$
