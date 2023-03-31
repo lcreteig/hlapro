@@ -11,12 +11,19 @@ test_that("serological/antigen notation is valid", {
   expect_true(validate_allele("B50"))
   expect_true(validate_allele("Cw3"))
   expect_true(validate_allele("DR8"))
+  expect_false(validate_allele("DRB11")) # if there's a B, needs "*" notation
+  expect_false(validate_allele("DRA1")) # needs "*" notation
   expect_true(validate_allele("DR10"))
   expect_true(validate_allele("DR52"))
   expect_true(validate_allele("DQ1"))
-  expect_true(validate_allele("DQA-01"))
+  expect_true(validate_allele("DQA-01")) # ETRL nomenclature
+  expect_false(validate_allele("DQA101")) # if "A1", needs "*" after
+  expect_false(validate_allele("DQB101")) # if "B1", needs "*" after
   expect_true(validate_allele("DP-01"))
+  expect_false(validate_allele("DJ-01")) # no valid locus
   expect_true(validate_allele("DP-0201"))
+  expect_false(validate_allele("DPA101")) # if "A1", needs "*" after
+  expect_false(validate_allele("DPB101")) # if "B1", needs "*" after
 })
 
 test_that("XX codes are valid", {
@@ -40,6 +47,7 @@ test_that("MACs are valid", {
 
 test_that("prefixing is allowed", {
   expect_true(validate_allele("HLA-A*01:01"))
+  expect_false(validate_allele("HLAA*01:01")) # no separator
   expect_true(validate_allele("HLA-DRB1*10:03"))
 })
 
@@ -48,7 +56,9 @@ test_that("protein-level typings are valid", {
   expect_false(validate_allele("A*10001:01")) # too many digits in protein
   expect_true(validate_allele("B*81:01"))
   expect_true(validate_allele("C*01:02"))
+  expect_true(validate_allele("DRA*01:01"))
   expect_true(validate_allele("DRB1*01:01"))
+  expect_false(validate_allele("DRB*01:01")) # DR not disambiguated
   expect_true(validate_allele("DRB1*12:02"))
   expect_true(validate_allele("DQB1*02:01"))
   expect_true(validate_allele("DQA1*01:05"))
