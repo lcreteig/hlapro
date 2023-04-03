@@ -7,13 +7,15 @@
 \usage{
 extract_alleles_str(
   string,
-  loci = c("A", "B", "C", "DPB1", "DQA1", "DQB1", "DRB1", "DRB.")
+  loci = c("A", "B", "C", "DPB1", "DQA1", "DQB1", "DRB1", "DRB."),
+  strip_locus = TRUE
 )
 
 extract_alleles_df(
   df,
   col_typing,
-  loci = c("A", "B", "C", "DPB1", "DQA1", "DQB1", "DRB1", "DRB.")
+  loci = c("A", "B", "C", "DPB1", "DQA1", "DQB1", "DRB1", "DRB."),
+  strip_locus = TRUE
 )
 }
 \arguments{
@@ -22,6 +24,13 @@ extract_alleles_df(
 \item{loci}{A string or character vector with the loci you are interested in.
 Only these alleles will be returned. Defaults to all. \code{DRB.} is used for
 DRB3, DRB4, and DRB5.}
+
+\item{strip_locus}{Include the locus in the output or remove it?
+\itemize{
+\item If \code{TRUE} (the default), the locus will be removed from the extracted
+alleles.
+\item If \code{FALSE}, will retain the locus as it was in the original typing.
+}}
 
 \item{df}{A data frame.}
 
