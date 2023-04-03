@@ -37,6 +37,44 @@ test_that("dataframes with multiple rows and missing typings work", {
   )
 })
 
+
+# Extracting loci ---------------------------------------------------------
+
+test_that("loci in serological notation are extracted correctly", {
+  typing <- "A1 B7 Cw3 DQA-01 DQ5 DR4 DP-0202 DR52"
+  expect_equal(
+    extract_alleles_str(typing, strip_locus = FALSE),
+    c(
+      A_1 = "A1", A_2 = NA,
+      B_1 = "B7", B_2 = NA,
+      C_1 = "Cw3", C_2 = NA,
+      DPB1_1 = "DP-0202", DPB1_2 = NA,
+      DQA1_1 = "DQA-01", DQA1_2 = NA,
+      DQB1_1 = "DQ5", DQB1_2 = NA,
+      DRB1_1 = "DR4", DRB1_2 = NA,
+      DRB._1 = "DR52", DRB._2 = NA
+    )
+  )
+})
+
+test_that("loci in allele notation are extracted correctly", {
+  typing <- "A*02:301N B*42:08 C*03:04:01:08 DQB1*03:241 DRB5*01:07 DRB1*07:CYMD
+  DPB1*15:FNWN DQA1*01:01:10"
+  expect_equal(
+    extract_alleles_str(typing, strip_locus = FALSE),
+    c(
+      A_1 = "A*02:301N", A_2 = NA,
+      B_1 = "B*42:08", B_2 = NA,
+      C_1 = "C*03:04:01:08", C_2 = NA,
+      DPB1_1 = "DPB1*15:FNWN", DPB1_2 = NA,
+      DQA1_1 = "DQA1*01:01:10", DQA1_2 = NA_character_,
+      DQB1_1 = "DQB1*03:241", DQB1_2 = NA,
+      DRB1_1 = "DRB1*07:CYMD", DRB1_2 = NA,
+      DRB._1 = "DRB5*01:07", DRB._2 = NA
+    )
+  )
+})
+
 # String issues -----------------------------------------------------------
 
 test_that("extraction is robust to double spaces", {

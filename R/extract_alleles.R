@@ -17,6 +17,10 @@
 #' @param loci A string or character vector with the loci you are interested in.
 #'   Only these alleles will be returned. Defaults to all. `DRB.` is used for
 #'   DRB3, DRB4, and DRB5.
+#' @param strip_locus Include the locus in the output or remove it?
+#'   - If `TRUE` (the default), the locus will be removed from the extracted
+#'     alleles.
+#'   - If `FALSE`, will retain the locus as it was in the original typing.
 #'
 #' @return Either a character vector or a data frame with the named alleles.
 #' @export
@@ -33,17 +37,20 @@
 #' extract_alleles_str("DQB1*03:01 DQB1*05:01 DRB1*04:AMR",
 #'   loci = c("DRB1", "DQB1")
 #' )
-extract_alleles_str <- function(
-    string,
-    loci = c("A", "B", "C", "DPB1", "DQA1", "DQB1", "DRB1", "DRB.")) {
+extract_alleles_str <- function(string,
+                                loci = c(
+                                  "A", "B", "C", "DPB1",
+                                  "DQA1", "DQB1", "DRB1", "DRB."
+                                ),
+                                strip_locus = TRUE) {
   loci <- rlang::arg_match(loci, multiple = TRUE)
-  # TODO: document
+  stopifnot(is.logical(strip_locus))
 
   # get rid of any leading/trailing/double spaces
   string <- stringr::str_squish(string)
 
   extract_str <- function(locus, string) {
-    pattern <- build_pattern(locus)
+    pattern <- build_pattern(locus, strip_locus)
     allele_names <- stringr::str_c(locus, c("_1", "_2"))
 
     # return named list (locus_allele) with matches
@@ -59,18 +66,20 @@ extract_alleles_str <- function(
 
 #' @rdname extract_alleles_str
 #' @export
-extract_alleles_df <- function(
-    df,
-    col_typing,
-    loci = c("A", "B", "C", "DPB1", "DQA1", "DQB1", "DRB1", "DRB.")) {
+extract_alleles_df <- function(df,
+                               col_typing,
+                               loci = c(
+                                 "A", "B", "C",
+                                 "DPB1", "DQA1", "DQB1", "DRB1", "DRB."
+                               ),
+                               strip_locus = TRUE) {
   loci <- rlang::arg_match(loci, multiple = TRUE)
-  # TODO: document
 
   # get rid of any leading/trailing/double spaces
   df <- dplyr::mutate(df, dplyr::across({{ col_typing }}, stringr::str_squish))
 
   extract_df <- function(locus, df, col_typing) {
-    pattern <- build_pattern(locus)
+    pattern <- build_pattern(locus, strip_locus)
     allele_names <- stringr::str_c(locus, c("_1", "_2"))
 
     tidyr::extract(df, {{ col_typing }},
@@ -85,19 +94,25 @@ extract_alleles_df <- function(
     purrr::reduce(dplyr::full_join)
 }
 
-build_pattern <- function(locus) {
+build_pattern <- function(locus, strip_locus) {
+  if (strip_locus) { # do not include the locus and * in the match
+    allele_pattern <- r"((?:{locus}[-\*]?(\S+)))"
+  } else { # match locus the locus and following non-spaces
+    allele_pattern <- r"(({locus}\S+))" # match locus and following non-spaces
+  }
+
   regexps <- list(
     # don't match if locus is preceded by : or other capital letter. This
     # prevents matching in NMDP Multiple Allele Codes (":AABJE") or other loci
     # ("B" in "DRB1") or other prefixes (e.g. "A" in "HLA-")
     neg = "(?<![:A-Z])",
-    allele = r"((?:{locus}\*?(\S+)))", # match locus and following non-spaces
+    allele = allele_pattern, # match locus and following non-spaces
     loci = list(
       A = "A",
-      B = "B(?![Ww])", # B cannot be followed by "W" (pubic)
-      C = "Cw?", # in serological notation, C is followed by "w"
-      DPB1 = "DPB1",
-      DQA1 = "DQA1", # DQA1 should always follow this format
+      B = "B(?![Ww])", # B cannot be followed by "W" (public)
+      C = "C[Ww]?", # in serological notation, C is followed by "w"
+      DPB1 = "DP(?:w|-|B1)", # either "DPw" "DP-" or "DPB1"
+      DQA1 = "DQA[-1]", # either "DQA-" or DQA1
       DQB1 = "DQ(?!A)(?:B1)?", # could be "DQB1" but also "DQ" with no A after
       DRB1 = "DR(?!A|B[2-9]|5[1-3])(?:B1)?", # either "DRB1"
       # or "DR" (excluding DRA, DR51-53)
