@@ -51,3 +51,7 @@ get_resolution <- function(allele) {
     .default = "low"
   )
 }
+
+get_n_fields <- function(allele) {
+  stringr::str_count(allele, ":") + 1
+}
