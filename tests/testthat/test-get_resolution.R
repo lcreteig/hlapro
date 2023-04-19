@@ -1,4 +1,4 @@
-#TODO: add tests for wild-caught typings
+# TODO: add tests for wild-caught typings
 
 test_that("serologicals are low", {
   expect_equal(get_resolution("A2"), "low")
@@ -31,6 +31,7 @@ test_that("Ambiguous alleles are intermediate", {
 
 test_that(">2 field codes is high", {
   expect_equal(get_resolution("B*42:08"), "high")
+  expect_equal(get_resolution("DPB1*296:01"), "high")
   expect_equal(get_resolution("A*02:101:01"), "high")
   expect_equal(get_resolution("A*01:101:01:02"), "high")
   expect_equal(get_resolution("A*01:101:01:02N"), "high")
