@@ -1,5 +1,5 @@
 etrl_convert <- function(allele) {
-  allele <- remove_group_suffix(remove_hla_prefix(allele))
+  allele <- remove_hla_prefix(allele)
 
   df_etrl <- load_etrl_tables()
   allele_f2 <- reduce_to_nth_field(allele, 2)
@@ -22,8 +22,8 @@ has_suffix <- function(allele) {
   stringr::str_detect(allele, "[NLSCAQ]$")
 }
 
-remove_group_suffix <- function(allele) {
-  stringr::str_remove(allele, "[PG]$")
+remove_suffixes_groups <- function(allele) {
+  stringr::str_remove(allele, "[NLSCAQPG]$")
 }
 
 remove_hla_prefix <- function(allele) {
@@ -39,6 +39,7 @@ is_ambiguous <- function(allele) {
 }
 
 reduce_to_nth_field <- function(allele, n) {
+  allele <- remove_suffixes_groups(allele)
   # logical index of all alleles to be reduced
   res_idx <- get_n_fields(allele) > n
 
