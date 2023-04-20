@@ -1,3 +1,9 @@
+etrl_lookup <- function(allele) {
+  df_etrl <- load_etrl_tables()
+  ids <- match(etrl_convert(allele), df_etrl$Allele)
+  df_etrl[ids, ]
+}
+
 etrl_convert <- function(allele) {
   allele <- remove_hla_prefix(allele)
 
