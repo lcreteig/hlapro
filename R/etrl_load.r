@@ -1,3 +1,5 @@
+# TODO: consider shipping this with package instead, so it can be (lazy) loaded
+
 load_etrl_tables <- function(print_version = FALSE,
                              return_path = FALSE,
                              delete = FALSE) {

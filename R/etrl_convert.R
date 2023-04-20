@@ -1,21 +1,13 @@
 etrl_convert <- function(allele) {
   allele <- remove_group_suffix(remove_hla_prefix(allele))
 
-  if (is_serology(allele)) {
-    return(allele)
-  }
-
-  if (has_suffix(allele)) {
-    return("")
-  }
-
-  allele_to_f2 <- reduce_to_nth_field(allele, 2)
   df_etrl <- load_etrl_tables()
-  if (allele_to_f2 %in% df_etrl$Allele) { # if in ETRL table
-    allele_to_f2
-  } else {
-    make_xx(allele)
-  }
+  allele_f2 <- reduce_to_nth_field(allele, 2)
+
+  # If allele in ETRL table, us as is, otherwise make into xx code
+  ifelse(allele_f2 %in% df_etrl$Allele, allele_f2, make_xx(allele_f2)) |>
+    replace(has_suffix(allele), "") |> # suffixes cannot be reduced
+    ifelse(is_serology(allele), allele, no = _) # return serology as is
 }
 
 make_xx <- function(allele) {
@@ -47,9 +39,17 @@ is_ambiguous <- function(allele) {
 }
 
 reduce_to_nth_field <- function(allele, n) {
-  if (get_n_fields(allele) <= n) {
+  # logical index of all alleles to be reduced
+  res_idx <- get_n_fields(allele) > n
+
+  if (!any(res_idx)) {
     return(allele)
   }
-  field_locs <- stringr::str_locate_all(allele, ":")[[1]]
-  stringr::str_sub(allele, 1, field_locs[n] - 1)
+
+  # Get list of field separator locations in each allele string
+  field_locs <- stringr::str_locate_all(allele[res_idx], ":")
+  ends <- purrr::map_int(field_locs, n) - 1 # end of nth field
+
+  # Keep only the part of the typing up until the nth ":"
+  replace(allele, res_idx, stringr::str_sub(allele[res_idx], 1, ends))
 }

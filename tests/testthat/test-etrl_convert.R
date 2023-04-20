@@ -1,5 +1,3 @@
-# TODO: vectorize and test?
-
 test_that("serology is not changed", {
   expect_equal(etrl_convert("A9"), "A9")
   expect_equal(etrl_convert("Cw3"), "Cw3")
@@ -52,4 +50,16 @@ test_that("groups work", {
 
 test_that("HLA-prefix is removed", {
   expect_equal(etrl_convert("HLA-A*01:01:01)"), "A*01:01")
+})
+
+test_that("conversion is vectorized", {
+  allele_in <- c(
+    "A1", "A*01", "A*01:01N", "A*01:01", "A*01:AABJE",
+    "A*01:01:01", "A*01:08"
+  )
+  allele_out <- c(
+    "A1", "A*01:XX", "", "A*01:01", "A*01:XX",
+    "A*01:01", "A*01:XX"
+  )
+  expect_equal(etrl_convert(allele_in), allele_out)
 })
