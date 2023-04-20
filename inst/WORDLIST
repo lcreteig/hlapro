@@ -1,6 +1,7 @@
 ard
 aut
 BugReports
+Bw
 CMD
 Codecov
 Config
@@ -17,6 +18,9 @@ DRA
 DRB
 DSA
 DSAs
+epitope
+ETRL
+EuroTransplant
 fnd
 github
 GL
@@ -30,6 +34,7 @@ https
 IMGT
 immunotation
 IPD
+LazyData
 lcreteig
 leonreteig
 Luminex
@@ -39,6 +44,7 @@ PROCARE
 purrr
 py
 pyglstring
+RDX
 Reteig
 rlang
 Roxygen
@@ -52,3 +58,4 @@ Typings
 typings
 UMC
 Upscaling
+usethis

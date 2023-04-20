@@ -1,47 +1,3 @@
-# TODO: consider shipping this with package instead, so it can be (lazy) loaded
-
-load_etrl_tables <- function(print_version = FALSE,
-                             return_path = FALSE,
-                             delete = FALSE) {
-  folder_path <- tools::R_user_dir("hlapro", "cache")
-  file_name <- "etrl.rds"
-  file_path <- file.path(folder_path, file_name)
-
-  if (return_path) {
-    return(folder_path)
-  }
-
-  if (delete) {
-    unlink(file_path)
-    return(invisible())
-  }
-
-  if (!dir.exists(folder_path)) {
-    dir.create(folder_path)
-  }
-
-  if (file.exists(file_path)) {
-    df_etrl <- readRDS(file_path)
-    if (print_version) {
-      message(
-        stringr::str_glue(
-          "Loaded v{attr(df_etrl, 'version')} of ETRL tables ",
-          "(released {attr(df_etrl, 'date')}), ",
-          "downloaded from {attr(df_etrl, 'url')} "
-        )
-      )
-    }
-
-    return(invisible(df_etrl))
-  }
-
-  if (dl_permission() == 2) {
-    return(invisible())
-  }
-
-  invisible(download_etrl(file_path))
-}
-
 fetch_etrl_version <- function() {
   etrl_url <- "https://etrl.eurotransplant.org/resources/new-hla-tables/"
   tbls_page <- rvest::read_html(etrl_url)
@@ -59,7 +15,7 @@ fetch_etrl_version <- function() {
   ))
 }
 
-download_etrl <- function(file_path) {
+download_etrl <- function() {
   base_url <- "https://etrl.eurotransplant.org/resources/"
   tbl_suffixes <- c(
     "a", "b", "c",
@@ -84,7 +40,6 @@ download_etrl <- function(file_path) {
   attr(df_etrl, "date") <- etrl_info[["date"]]
   attr(df_etrl, "url") <- etrl_info[["url"]]
 
-  saveRDS(df_etrl, file_path)
   df_etrl
 }
 
@@ -96,4 +51,15 @@ dl_permission <- function() {
   )
 
   utils::menu(choices = c("Yes", "No"), title = q_title)
+}
+
+
+if (dl_permission() == 1) {
+  rlang::check_installed("rvest", reason = "to scrape the ETRL HLA tables")
+  etrl_hla <- download_etrl()
+  rlang::check_installed("usethis", reason = "to save the dat")
+  usethis::use_data(etrl_hla, overwrite = TRUE)
+  usethis::use_data(etrl_hla, internal = TRUE)
+} else {
+  stop("Download aborted")
 }

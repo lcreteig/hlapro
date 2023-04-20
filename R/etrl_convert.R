@@ -1,17 +1,15 @@
 etrl_lookup <- function(allele) {
-  df_etrl <- load_etrl_tables()
-  ids <- match(etrl_convert(allele), df_etrl$Allele)
-  df_etrl[ids, ]
+  ids <- match(etrl_convert(allele), etrl_hla$Allele)
+  etrl_hla[ids, ]
 }
 
 etrl_convert <- function(allele) {
   allele <- remove_hla_prefix(allele)
 
-  df_etrl <- load_etrl_tables()
   allele_f2 <- reduce_to_nth_field(allele, 2)
 
   # If allele in ETRL table, us as is, otherwise make into xx code
-  ifelse(allele_f2 %in% df_etrl$Allele, allele_f2, make_xx(allele_f2)) |>
+  ifelse(allele_f2 %in% etrl_hla$Allele, allele_f2, make_xx(allele_f2)) |>
     replace(has_suffix(allele), "") |> # suffixes cannot be reduced
     ifelse(is_serology(allele), allele, no = _) # return serology as is
 }
