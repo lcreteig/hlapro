@@ -1,4 +1,4 @@
-# TODO: add tests for wild-caught typings
+# get_resolution() --------------------------------------------------------
 
 test_that("serologicals are low", {
   expect_equal(get_resolution("A2"), "low")
@@ -59,4 +59,13 @@ test_that("mutate in dataframe works", {
   df <- tidyr::tibble(alleles = c("A2", "A*01:AABJE", "B*42:08"))
   df <- dplyr::mutate(df, allele_res = get_resolution(alleles))
   expect_equal(df$allele_res, c("low", "intermediate", "high"))
+})
+
+# get_n_fields() ----------------------------------------------------------
+
+test_that("fields are counted accurately", {
+  expect_equal(get_n_fields("A1"), 1)
+  expect_equal(get_n_fields("A*01:01"), 2)
+  expect_equal(get_n_fields("A*01:01:01"), 3)
+  expect_equal(get_n_fields("A*01:01:01:01"), 4)
 })

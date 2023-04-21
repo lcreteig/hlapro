@@ -34,14 +34,6 @@ remove_hla_prefix <- function(allele) {
   stringr::str_remove(allele, "^HLA-")
 }
 
-is_mac <- function(allele) {
-  stringr::str_detect(allele, r"(\*\d+:(?!XX)[A-Z])")
-}
-
-is_ambiguous <- function(allele) {
-  stringr::str_detect(allele, r"(\*\d+:\d+\/)")
-}
-
 reduce_to_nth_field <- function(allele, n) {
   allele <- remove_suffixes_groups(allele)
   # logical index of all alleles to be reduced

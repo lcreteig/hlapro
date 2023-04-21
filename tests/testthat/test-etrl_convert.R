@@ -1,3 +1,42 @@
+# reduce_to_nth_field -----------------------------------------------------
+
+# TODO: handle old nomenclature like A*6603
+
+test_that("serology is returned as is", {
+  expect_equal(reduce_to_nth_field("A1", 1), "A1")
+})
+
+test_that("allele is returned as is if > n fields", {
+  expect_equal(reduce_to_nth_field("A*01", 2), "A*01")
+  expect_equal(reduce_to_nth_field("A*01", 3), "A*01")
+  expect_equal(reduce_to_nth_field("A*01", 4), "A*01")
+})
+
+test_that("1st field reduction works", {
+  expect_equal(reduce_to_nth_field("A*01:01:01", 1), "A*01")
+  expect_equal(reduce_to_nth_field("A*01:01:01:02", 1), "A*01")
+  expect_equal(reduce_to_nth_field("A*01:01:01G", 1), "A*01")
+  expect_equal(reduce_to_nth_field("A*01:01P", 1), "A*01")
+})
+
+test_that("2nd field reduction works", {
+  expect_equal(reduce_to_nth_field("A*01:01:01", 2), "A*01:01")
+  expect_equal(reduce_to_nth_field("A*01:01:01:02", 2), "A*01:01")
+  expect_equal(reduce_to_nth_field("A*01:01:01G", 2), "A*01:01")
+  expect_equal(reduce_to_nth_field("A*01:01P", 2), "A*01:01")
+})
+
+test_that("3rd field reduction works", {
+  expect_equal(reduce_to_nth_field("A*01:01:01", 3), "A*01:01:01")
+  expect_equal(reduce_to_nth_field("A*01:01:01:02", 3), "A*01:01:01")
+  expect_equal(reduce_to_nth_field("A*01:01:01G", 3), "A*01:01:01")
+})
+
+test_that("reduction is vectorized", {
+  allele_in <- c("A1", "A*01", "A*01:01:01", "A*01:01:01:02")
+  allele_out <- c("A1", "A*01", "A*01", "A*01")
+  expect_equal(reduce_to_nth_field(allele_in, 1), allele_out)
+})
 
 # etrl_convert() ----------------------------------------------------------
 
@@ -54,43 +93,18 @@ test_that("conversion is vectorized", {
   expect_equal(etrl_convert(allele_in), allele_out)
 })
 
+# etrl_lookup() -----------------------------------------------------------
 
-# reduce_to_nth_field -----------------------------------------------------
-
-# TODO: handle old nomenclature like A*6603
-
-test_that("serology is returned as is", {
-  expect_equal(reduce_to_nth_field("A1", 1), "A1")
+test_that("dataframe is returned", {
+  etrl_out <- tidyr::tibble(
+    Allele = NA_character_,
+    `ET MatchDeterminantSplit` = NA_character_,
+    `ET MatchDeterminantBroad` = NA_character_,
+    `Public` = NA_character_
+  )
+  expect_equal(etrl_lookup(""), etrl_out, ignore_attr = TRUE)
 })
 
-test_that("allele is returned as is if > n fields", {
-  expect_equal(reduce_to_nth_field("A*01", 2), "A*01")
-  expect_equal(reduce_to_nth_field("A*01", 3), "A*01")
-  expect_equal(reduce_to_nth_field("A*01", 4), "A*01")
-})
-
-test_that("1st field reduction works", {
-  expect_equal(reduce_to_nth_field("A*01:01:01", 1), "A*01")
-  expect_equal(reduce_to_nth_field("A*01:01:01:02", 1), "A*01")
-  expect_equal(reduce_to_nth_field("A*01:01:01G", 1), "A*01")
-  expect_equal(reduce_to_nth_field("A*01:01P", 1), "A*01")
-})
-
-test_that("2nd field reduction works", {
-  expect_equal(reduce_to_nth_field("A*01:01:01", 2), "A*01:01")
-  expect_equal(reduce_to_nth_field("A*01:01:01:02", 2), "A*01:01")
-  expect_equal(reduce_to_nth_field("A*01:01:01G", 2), "A*01:01")
-  expect_equal(reduce_to_nth_field("A*01:01P", 2), "A*01:01")
-})
-
-test_that("3rd field reduction works", {
-  expect_equal(reduce_to_nth_field("A*01:01:01", 3), "A*01:01:01")
-  expect_equal(reduce_to_nth_field("A*01:01:01:02", 3), "A*01:01:01")
-  expect_equal(reduce_to_nth_field("A*01:01:01G", 3), "A*01:01:01")
-})
-
-test_that("reduction is vectorized", {
-  allele_in <- c("A1", "A*01", "A*01:01:01", "A*01:01:01:02")
-  allele_out <- c("A1", "A*01", "A*01", "A*01")
-  expect_equal(reduce_to_nth_field(allele_in, 1), allele_out)
+test_that("output dimensions correct for vector input", {
+  expect_equal(dim(etrl_lookup(c("A1", "A*01:XX", "B00", "A*01", ""))), c(5, 4))
 })
