@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
 
 [![check-standard](https://github.com/lcreteig/hlapro/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/lcreteig/hlapro/actions/workflows/check-standard.yaml)
 [![Codecov test coverage](https://codecov.io/gh/lcreteig/hlapro/branch/main/graph/badge.svg)](https://app.codecov.io/gh/lcreteig/hlapro?branch=main)
+[![CRAN status](https://www.r-pkg.org/badges/version/hlapro)](https://CRAN.R-project.org/package=hlapro)
 <!-- badges: end -->
 
 The goal of hlapro is to provide some tooling to work with [Human Leukocyte Antigen (HLA)](https://en.wikipedia.org/wiki/Human_leukocyte_antigen) data, in the context of transplantation research:

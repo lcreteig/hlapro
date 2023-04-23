@@ -1,0 +1,2 @@
+linters: with_defaults(object_usage_linter = NULL) # see vignette("lintr")
+encoding: "UTF-8"

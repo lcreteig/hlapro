@@ -52,6 +52,21 @@ get_resolution <- function(allele) {
   )
 }
 
+#' Count how many fields an allele has
+#'
+#' Currently an allele can have 1-4 fields (see the [HLA nomenclature website]
+#' (https://hla.alleles.org/nomenclature/naming.html)). These must be delimited
+#' with a colon.
+#'
+#' @inheritParams get_resolution
+#'
+#' @return An integer with the amount of fields.
+#' @noRd
+#'
+#' @examples
+#' allele_vec <- c("A2", "A*01:AABJE", "B*42:08", "C*01:02:01:26")
+#' get_n_fields()
+#'
 get_n_fields <- function(allele) {
   stringr::str_count(allele, ":") + 1
 }
