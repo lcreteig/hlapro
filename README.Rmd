@@ -92,6 +92,14 @@ Determine whether an allele is of low/intermediate/high resolution
 get_resolution(c("A2", "A*01:AABJE", "B*42:08"))
 ```
 
+### Downscaling to serological equivalents
+
+Get the serological equivalent of an allele as defined by the [ETRL HLA](https://etrl.eurotransplant.org/resources/hla-tables/) conversion tables
+
+```{r downscaling}
+etrl_lookup(c("B*15:79N", "B*15:YETY", "B*15:01:16", "B*15:02", "B*15:85"))
+```
+
 ## Other packages
 
 There's many other implementations with partly overlapping goals (some of which hlapro might depend on in the future).

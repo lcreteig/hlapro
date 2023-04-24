@@ -8,6 +8,8 @@
 [![check-standard](https://github.com/lcreteig/hlapro/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/lcreteig/hlapro/actions/workflows/check-standard.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/lcreteig/hlapro/branch/main/graph/badge.svg)](https://app.codecov.io/gh/lcreteig/hlapro?branch=main)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/hlapro)](https://CRAN.R-project.org/package=hlapro)
 <!-- badges: end -->
 
 The goal of hlapro is to provide some tooling to work with [Human
@@ -98,6 +100,24 @@ Determine whether an allele is of low/intermediate/high resolution
 ``` r
 get_resolution(c("A2", "A*01:AABJE", "B*42:08"))
 #> [1] "low"          "intermediate" "high"
+```
+
+### Downscaling to serological equivalents
+
+Get the serological equivalent of an allele as defined by the [ETRL
+HLA](https://etrl.eurotransplant.org/resources/hla-tables/) conversion
+tables
+
+``` r
+etrl_lookup(c("B*15:79N", "B*15:YETY", "B*15:01:16", "B*15:02", "B*15:85"))
+#> # A tibble: 5 × 4
+#>   Allele  `ET MatchDeterminantSplit` `ET MatchDeterminantBroad` Public
+#>   <chr>   <chr>                      <chr>                      <chr> 
+#> 1 <NA>    <NA>                       <NA>                       <NA>  
+#> 2 B*15:XX <NA>                       B15                        <NA>  
+#> 3 B*15:01 B62                        B15                        Bw6   
+#> 4 B*15:02 B75                        B15                        Bw6   
+#> 5 B*15:XX <NA>                       B15                        <NA>
 ```
 
 ## Other packages

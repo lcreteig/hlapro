@@ -1,5 +1,9 @@
 # hlapro (development version)
 
+* New `etrl_lookup()` to get serological equivalents of an allele from the 
+  [ETRL HLA tables](https://etrl.eurotransplant.org). These tables are also
+  shipped with the package as the `etrl_hla` data frame.
+
 * New `validate_alleles()` to check whether a(n) (list of) HLA allele(s) is
   well-formed
 
