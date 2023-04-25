@@ -99,6 +99,7 @@ test_that("ambiguities are allowed", {
   expect_true(validate_allele("A*30:01/14/15L")) # shorthand
   expect_false(validate_allele("A*01:01/A*01:02N:01")) # suffix in middle
   expect_true(validate_allele("C*01:02/C*01:03/C*01:04/C*01:05/C*01:06"))
+  expect_true(validate_allele("DRB1*11/13"))
 })
 
 test_that("vectors work", {

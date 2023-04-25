@@ -55,7 +55,7 @@ validate_allele <- function(allele) {
     (?<allele>           # START of allele field
     \d{1,4}              # 1 (A1) to 4 (DP0201) digits
     )                    # END of allele field
-    (?=$|:|[A-Z])        # either end of string (low-res), or a colon/capital
+    (?=$|[:A-Z\/])       # either end of string (low-res), or a ":"/capital/"/"
                          # ALL that follows is optional
 
     :?                   # optional colon
