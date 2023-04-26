@@ -53,6 +53,23 @@ dl_permission <- function() {
   utils::menu(choices = c("Yes", "No"), title = q_title)
 }
 
+make_public_lookup <- function(etrl_hla) {
+  etrl_hla |>
+    pivot_longer(c(`ET MatchDeterminantSplit`, `ET MatchDeterminantBroad`),
+      names_to = NULL,
+      values_to = "broad_split"
+    ) |>
+    distinct(broad_split, Public) |>
+    filter(!is.na(Public), !is.na(broad_split)) |>
+    deframe()
+}
+
+make_broad_split_lookup <- function(etrl_hla) {
+  etrl_hla |>
+    filter(!is.na(`ET MatchDeterminantSplit`)) |>
+    distinct(`ET MatchDeterminantSplit`, `ET MatchDeterminantBroad`) |>
+    deframe()
+}
 
 if (dl_permission() == 1) {
   rlang::check_installed("rvest", reason = "to scrape the ETRL HLA tables")
@@ -79,9 +96,14 @@ if (dl_permission() == 1) {
         )
     )
 
+  etrl_split_to_broad <- make_broad_split_lookup(etrl_hla)
+  etrl_public <- make_public_lookup(etrl_hla)
+
   rlang::check_installed("usethis", reason = "to save the data")
   usethis::use_data(etrl_hla, overwrite = TRUE)
-  usethis::use_data(etrl_hla, overwrite = TRUE, internal = TRUE)
+  usethis::use_data(etrl_hla, etrl_split_to_broad, etrl_public,
+    overwrite = TRUE, internal = TRUE
+  )
 } else {
   stop("Download aborted")
 }

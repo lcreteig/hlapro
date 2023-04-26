@@ -106,7 +106,6 @@ test_that("NAs are handled", {
   expect_equal(etrl_convert(c("A*01", NA)), c("A*01:XX", NA))
 })
 
-
 # etrl_lookup() -----------------------------------------------------------
 
 test_that("dataframe is returned", {
@@ -122,4 +121,56 @@ test_that("dataframe is returned", {
 
 test_that("output dimensions correct for vector input", {
   expect_equal(dim(etrl_lookup(c("A1", "A*01:XX", "B00", "A*01", ""))), c(5, 4))
+})
+
+
+# get_broad() -------------------------------------------------------------
+
+test_that("splits return broad", {
+  expect_equal(get_broad("A24"), "A9")
+  expect_equal(get_broad("A25"), "A10")
+})
+
+test_that("broads return NA", {
+  expect_equal(get_broad("A1"), NA_character_)
+  expect_equal(get_broad("A2"), NA_character_)
+})
+
+test_that("other inputs return NA", {
+  expect_equal(get_broad("A*01:01"), NA_character_)
+})
+
+test_that("broad lookup is vectorized", {
+  expect_equal(
+    get_broad(c("A24", "A25", "A*01:01", NA)),
+    c("A9", "A10", NA, NA)
+  )
+})
+
+# get_public --------------------------------------------------------------
+
+test_that("splits return public", {
+  expect_equal(get_public("B64"), "Bw6")
+  expect_equal(get_public("B77"), "Bw4")
+  expect_equal(get_public("A23"), NA_character_)
+  expect_equal(get_public("A24"), NA_character_)
+})
+
+test_that("broads return public", {
+  expect_equal(get_public("B7"), "Bw6")
+  expect_equal(get_public("B13"), "Bw4")
+  expect_equal(get_public("A1"), NA_character_)
+  expect_equal(get_public("A2"), NA_character_)
+})
+
+test_that("other inputs return NA", {
+  expect_equal(get_public("A*01:01"), NA_character_)
+  expect_equal(get_public("B*14:XX"), NA_character_)
+})
+
+test_that("public lookup is vectorized", {
+  expect_equal(
+    get_public(c("B64", "B13", "A*01:01", NA)),
+    c("Bw6", "Bw4", NA, NA)
+  )
 })

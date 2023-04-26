@@ -32,7 +32,7 @@ the goal is to support the following functionality:
 - **HLA antibody assays**:
   - Determining which beads in the assay are positive, based on
     automated implementations of different methods
-  - Assessing the present of donor-specific antibodies (DSA)
+  - Assessing the presence of donor-specific antibodies (DSA)
 
 ## Installation
 
@@ -118,6 +118,21 @@ etrl_lookup(c("B*15:79N", "B*15:YETY", "B*15:01:16", "B*15:02", "B*15:85"))
 #> 3 B*15:01 B62                        B15                        Bw6   
 #> 4 B*15:02 B75                        B15                        Bw6   
 #> 5 B*15:XX <NA>                       B15                        <NA>
+```
+
+For alleles in serological notation, conversion to broads and public
+epitopes is also supported
+
+``` r
+splits <- c("A24", "A25")
+get_broad(splits)
+#> [1] "A9"  "A10"
+```
+
+``` r
+b_s <- c("B14", "B63")
+get_public(b_s)
+#> [1] "Bw6" "Bw4"
 ```
 
 ## Other packages

@@ -36,7 +36,7 @@ The package is currently still in (heavy) development, but ultimately the goal i
     -   Upscaling (imputing) typing resolution, based on haplotype frequency tables
 -   **HLA antibody assays**:
     -   Determining which beads in the assay are positive, based on automated implementations of different methods
-    -   Assessing the present of donor-specific antibodies (DSA)
+    -   Assessing the presence of donor-specific antibodies (DSA)
 
 ## Installation
 
@@ -98,6 +98,18 @@ Get the serological equivalent of an allele as defined by the [ETRL HLA](https:/
 
 ```{r downscaling}
 etrl_lookup(c("B*15:79N", "B*15:YETY", "B*15:01:16", "B*15:02", "B*15:85"))
+```
+
+For alleles in serological notation, conversion to broads and public epitopes is also supported
+
+```{r broad}
+splits <- c("A24", "A25")
+get_broad(splits)
+```
+
+```{r public}
+b_s <- c("B14", "B63")
+get_public(b_s)
 ```
 
 ## Other packages
