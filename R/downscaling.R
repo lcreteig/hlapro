@@ -97,9 +97,9 @@ etrl_convert <- function(allele) {
 reduce_to_nth_field <- function(allele, n) {
   allele <- remove_suffixes_groups(allele)
   # logical index of all alleles to be reduced
-  res_idx <- get_n_fields(allele) > n
+  res_idx <- get_n_fields(allele) > n & !is.na(allele)
 
-  if (!any(res_idx)) {
+  if (!any(res_idx, na.rm = TRUE)) {
     return(allele)
   }
 

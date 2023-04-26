@@ -38,6 +38,15 @@ test_that("reduction is vectorized", {
   expect_equal(reduce_to_nth_field(allele_in, 1), allele_out)
 })
 
+test_that("NAs are handled", {
+  expect_equal(reduce_to_nth_field(NA, 1), NA_character_)
+  expect_equal(
+    reduce_to_nth_field(c("A*01:01", NA), 1),
+    c("A*01", NA_character_)
+  )
+})
+
+
 # etrl_convert() ----------------------------------------------------------
 
 test_that("serology is not changed", {
@@ -76,7 +85,6 @@ test_that("null/alternative expression is not reduced", {
   expect_equal(etrl_convert("C*01:121Q"), "")
 })
 
-
 test_that("HLA-prefix is removed", {
   expect_equal(etrl_convert("HLA-A*01:01:01)"), "A*01:01")
 })
@@ -93,6 +101,12 @@ test_that("conversion is vectorized", {
   expect_equal(etrl_convert(allele_in), allele_out)
 })
 
+test_that("NAs are handled", {
+  expect_equal(etrl_convert(NA), NA)
+  expect_equal(etrl_convert(c("A*01", NA)), c("A*01:XX", NA))
+})
+
+
 # etrl_lookup() -----------------------------------------------------------
 
 test_that("dataframe is returned", {
@@ -103,6 +117,7 @@ test_that("dataframe is returned", {
     `Public` = NA_character_
   )
   expect_equal(etrl_lookup(""), etrl_out, ignore_attr = TRUE)
+  expect_equal(etrl_lookup(NA), etrl_out, ignore_attr = TRUE)
 })
 
 test_that("output dimensions correct for vector input", {
