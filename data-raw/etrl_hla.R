@@ -57,9 +57,31 @@ dl_permission <- function() {
 if (dl_permission() == 1) {
   rlang::check_installed("rvest", reason = "to scrape the ETRL HLA tables")
   etrl_hla <- download_etrl()
-  rlang::check_installed("usethis", reason = "to save the dat")
+
+  # Fix some errors in the table
+  etrl_hla <- etrl_hla |>
+    dplyr::mutate(
+      Allele =
+        dplyr::case_match(Allele,
+          "A*24:xx" ~ "A*24:XX",
+          "A32:XX" ~ "A*32:XX",
+          "A34:XX" ~ "A*34:XX",
+          "A36:XX" ~ "A*36:XX",
+          "A43:XX" ~ "A*43:XX",
+          "A66:XX" ~ "A*66:XX",
+          "B37:XX" ~ "B*37:XX",
+          "B51:XX" ~ "B*51:XX",
+          "DRTB1*03:XX" ~ "DRB1*03:XX",
+          "DQB1:04:XX" ~ "DQB1*04:XX",
+          "DQB1:05:XX" ~ "DQB1*05:XX",
+          "DQB1:06:XX" ~ "DQB1*06:XX",
+          .default = Allele
+        )
+    )
+
+  rlang::check_installed("usethis", reason = "to save the data")
   usethis::use_data(etrl_hla, overwrite = TRUE)
-  usethis::use_data(etrl_hla, internal = TRUE)
+  usethis::use_data(etrl_hla, overwrite = TRUE, internal = TRUE)
 } else {
   stop("Download aborted")
 }

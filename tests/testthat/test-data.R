@@ -1,9 +1,9 @@
 test_that("etrl_version matches site", {
-  expect_equal(attr(etrl_hla, "version"), "2.0")
+  expect_equal(attr(etrl_hla, "version"), "2.1")
 })
 
 test_that("etrl release date matches site", {
-  expect_equal(attr(etrl_hla, "date"), "24-01-2023")
+  expect_equal(attr(etrl_hla, "date"), "24-04-2023")
 })
 
 test_that("table has 4 columns", {
