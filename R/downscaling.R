@@ -51,24 +51,6 @@ etrl_lookup <- function(allele) {
   etrl_hla[ids, ]
 }
 
-etrl_convert <- function(allele) {
-  allele <- remove_hla_prefix(allele)
-
-  allele_f2 <- reduce_to_nth_field(allele, 2)
-
-  # If allele in ETRL table, use as is, otherwise make into xx code
-  ifelse(allele_f2 %in% etrl_hla$Allele, allele_f2, make_xx(allele_f2)) |>
-    replace(has_suffix(allele), "") |> # suffixes cannot be reduced
-    ifelse(is_serology(allele), allele, no = _) # return serology as is
-}
-
-
-expand_serology <- function(allele) {
-  split_mapping <- dplyr::distinct(etrl_hla, dplyr::pick(-Allele))
-
-  rows <- map(allele, \(x) which(split_mapping == x, arr.ind = TRUE)[1])
-}
-
 #' Retrieve broad-level equivalent of a split-level HLA-allele
 #'
 #' `get_broad()` takes in a string or character vector of HLA alleles. If they
@@ -128,6 +110,7 @@ get_broad <- function(allele) {
 get_public <- function(allele) {
   unname(etrl_public[allele])
 }
+
 #' Truncate an HLA-allele to a lower field
 #'
 #' `reduce_to_nth_field()` takes in a string or character vector of HLA alleles,
@@ -209,6 +192,18 @@ strip_broad <- function(allele, check_result = FALSE) {
     allele_stripped
   }
 }
+
+etrl_convert <- function(allele) {
+  allele <- remove_hla_prefix(allele)
+
+  allele_f2 <- reduce_to_nth_field(allele, 2)
+
+  # If allele in ETRL table, use as is, otherwise make into xx code
+  ifelse(allele_f2 %in% etrl_hla$Allele, allele_f2, make_xx(allele_f2)) |>
+    replace(has_suffix(allele), "") |> # suffixes cannot be reduced
+    ifelse(is_serology(allele), allele, no = _) # return serology as is
+}
+
 make_xx <- function(allele) {
   stringr::str_c(reduce_to_nth_field(allele, 1), ":XX")
 }
