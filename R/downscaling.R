@@ -62,16 +62,6 @@ etrl_convert <- function(allele) {
     ifelse(is_serology(allele), allele, no = _) # return serology as is
 }
 
-strip_broad <- function(allele, check_result = FALSE) {
-  allele_stripped <- stringr::str_remove(allele, r"(\(.*\))")
-
-  if (check_result) {
-    # return input as is if the result is not an existing split
-    ifelse(is_split, allele_stripped, allele)
-  } else {
-    allele_stripped
-  }
-}
 
 expand_serology <- function(allele) {
   split_mapping <- dplyr::distinct(etrl_hla, dplyr::pick(-Allele))
@@ -187,6 +177,38 @@ reduce_to_nth_field <- function(allele, n) {
   replace(allele, res_idx, stringr::str_sub(allele[res_idx], 1, ends))
 }
 
+#' Strip broad in `split`(`broad`) notation
+#'
+#' @description
+#' Removes parentheses and their contents, in e.g. `A24(A9)`. Because this
+#' notation is not accepted by [validate_allele()], and broads can always be
+#' added back with [get_broad()].
+#'
+#' TODO: should at some point be subsumed in a general `hla_clean()` type
+#' function
+#'
+#' @inheritParams get_resolution
+#' @param check_result If TRUE, returns input as is if the result of removing
+#' the parentheses does not result in an existing split in [etrl_hla]. Sometimes
+#' splits and broads are reversed (e.g. `A9(A24)`), in which case we don't want
+#' to proceed.
+#'
+#' @return a vector of same length as allele
+#' @keywords internal
+#' @export
+#'
+#' @examples
+#' strip_broad("A24(A9)")
+strip_broad <- function(allele, check_result = FALSE) {
+  allele_stripped <- stringr::str_remove(allele, r"(\(.*\))")
+
+  if (check_result) {
+    # return input as is if the result is not an existing split
+    ifelse(is_split(allele), allele_stripped, allele)
+  } else {
+    allele_stripped
+  }
+}
 make_xx <- function(allele) {
   stringr::str_c(reduce_to_nth_field(allele, 1), ":XX")
 }
@@ -205,4 +227,8 @@ remove_suffixes_groups <- function(allele) {
 
 remove_hla_prefix <- function(allele) {
   stringr::str_remove(allele, "^HLA-")
+}
+
+is_split <- function(allele) {
+  allele %in% names(etrl_split_to_broad)
 }
