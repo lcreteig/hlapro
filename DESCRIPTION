@@ -13,7 +13,7 @@ Description: Provides tools for Human Leukocyte Antigen (HLA) data:
     positivity and assessing donor-specific antibodies (DSAs).
 License: MIT + file LICENSE
 Depends:
-    R (>= 4.1.0)
+    R (>= 4.2.0)
 Imports: 
     dplyr,
     purrr,
