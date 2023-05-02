@@ -39,7 +39,7 @@ test_that("reduction is vectorized", {
 })
 
 test_that("NAs are handled", {
-  expect_equal(reduce_to_nth_field(NA, 1), NA_character_)
+  expect_equal(reduce_to_nth_field(NA, 1), NA)
   expect_equal(
     reduce_to_nth_field(c("A*01:01", NA), 1),
     c("A*01", NA_character_)
@@ -71,6 +71,7 @@ test_that("2nd field alleles not in ETRL become XX", {
 # converted unambiguously
 test_that("MACs are XX codes", {
   expect_equal(etrl_convert("A*01:AABJE"), "A*01:XX")
+  expect_equal(etrl_convert("DRB1*03:DWJAA"), "DRB1*03:XX")
 })
 
 # TODO: consider throwing warning if cannot be converted unambiguously

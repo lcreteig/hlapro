@@ -144,7 +144,11 @@ get_public <- function(allele) {
 #' allele_vec <- c("A*01:AABJE", "B*42:08", "C*01:02:01:26")
 #' reduce_to_nth_field(allele_vec, 1)
 reduce_to_nth_field <- function(allele, n) {
-  allele <- remove_suffixes_groups(allele)
+  # remove any null/alternative expression or group suffixes
+  allele <- ifelse(has_suffix(allele) | is_group(allele),
+    remove_suffixes_groups(allele),
+    allele
+  )
   # logical index of all alleles to be reduced
   res_idx <- get_n_fields(allele) > n & !is.na(allele)
 
@@ -213,7 +217,11 @@ is_serology <- function(allele) {
 }
 
 has_suffix <- function(allele) {
-  stringr::str_detect(allele, "[NLSCAQ]$")
+  stringr::str_detect(allele, r"(\d[NLSCAQ]$)")
+}
+
+is_group <- function(allele) {
+  stringr::str_detect(allele, r"(\d[PG]$)")
 }
 
 remove_suffixes_groups <- function(allele) {
