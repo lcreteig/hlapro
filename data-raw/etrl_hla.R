@@ -55,20 +55,24 @@ dl_permission <- function() {
 
 make_public_lookup <- function(etrl_hla) {
   etrl_hla |>
-    pivot_longer(c(`ET MatchDeterminantSplit`, `ET MatchDeterminantBroad`),
+    tidyr::pivot_longer(
+      c(
+        `ET MatchDeterminantSplit`,
+        `ET MatchDeterminantBroad`
+      ),
       names_to = NULL,
       values_to = "broad_split"
     ) |>
-    distinct(broad_split, Public) |>
-    filter(!is.na(Public), !is.na(broad_split)) |>
-    deframe()
+    dplyr::distinct(broad_split, Public) |>
+    dplyr::filter(!is.na(Public), !is.na(broad_split)) |>
+    tibble::deframe()
 }
 
 make_broad_split_lookup <- function(etrl_hla) {
   etrl_hla |>
-    filter(!is.na(`ET MatchDeterminantSplit`)) |>
-    distinct(`ET MatchDeterminantSplit`, `ET MatchDeterminantBroad`) |>
-    deframe()
+    dplyr::filter(!is.na(`ET MatchDeterminantSplit`)) |>
+    dplyr::distinct(`ET MatchDeterminantSplit`, `ET MatchDeterminantBroad`) |>
+    tibble::deframe()
 }
 
 if (dl_permission() == 1) {
@@ -89,6 +93,8 @@ if (dl_permission() == 1) {
           "B37:XX" ~ "B*37:XX",
           "B51:XX" ~ "B*51:XX",
           "DRTB1*03:XX" ~ "DRB1*03:XX",
+          "DQB1:03:09" ~  "DQB1*03:09",
+          "DQB1:02:10" ~ "DQB1*02:10",
           "DQB1:04:XX" ~ "DQB1*04:XX",
           "DQB1:05:XX" ~ "DQB1*05:XX",
           "DQB1:06:XX" ~ "DQB1*06:XX",

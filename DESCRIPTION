@@ -28,6 +28,7 @@ Suggests:
     rvest,
     spelling,
     testthat (>= 3.0.0),
+    tibble,
     usethis
 Language: en-US
 Config/testthat/edition: 3

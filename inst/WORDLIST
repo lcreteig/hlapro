@@ -55,6 +55,7 @@ rvest
 serological
 stringr
 testthat
+tibble
 tidyr
 Typings
 typings
