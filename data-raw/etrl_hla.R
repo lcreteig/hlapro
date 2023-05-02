@@ -93,7 +93,7 @@ if (dl_permission() == 1) {
           "B37:XX" ~ "B*37:XX",
           "B51:XX" ~ "B*51:XX",
           "DRTB1*03:XX" ~ "DRB1*03:XX",
-          "DQB1:03:09" ~  "DQB1*03:09",
+          "DQB1:03:09" ~ "DQB1*03:09",
           "DQB1:02:10" ~ "DQB1*02:10",
           "DQB1:04:XX" ~ "DQB1*04:XX",
           "DQB1:05:XX" ~ "DQB1*05:XX",
