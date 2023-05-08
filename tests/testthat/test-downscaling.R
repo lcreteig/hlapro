@@ -153,8 +153,9 @@ test_that("broad lookup is vectorized", {
 test_that("splits return public", {
   expect_equal(get_public("B64"), "Bw6")
   expect_equal(get_public("B77"), "Bw4")
-  expect_equal(get_public("A23"), NA_character_)
-  expect_equal(get_public("A24"), NA_character_)
+  # exceptions!
+  expect_equal(get_public("B62"), NA_character_)
+  expect_equal(get_public("B71"), NA_character_)
 })
 
 test_that("broads return public", {
@@ -162,6 +163,10 @@ test_that("broads return public", {
   expect_equal(get_public("B13"), "Bw4")
   expect_equal(get_public("A1"), NA_character_)
   expect_equal(get_public("A2"), NA_character_)
+  # exceptions!
+  expect_equal(get_public("B15"), NA_character_)
+  expect_equal(get_public("B27"), NA_character_)
+  expect_equal(get_public("B47"), NA_character_)
 })
 
 test_that("other inputs return NA", {

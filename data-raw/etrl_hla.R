@@ -63,8 +63,11 @@ make_public_lookup <- function(etrl_hla) {
       names_to = NULL,
       values_to = "broad_split"
     ) |>
+    # Filter out the broads/splits that map to more than one public epitope
     dplyr::distinct(broad_split, Public) |>
-    dplyr::filter(!is.na(Public), !is.na(broad_split)) |>
+    dplyr::add_count(broad_split) |>
+    dplyr::filter(n == 1 & !(is.na(broad_split) | is.na(Public))) |>
+    dplyr::select(-n) |>
     tibble::deframe()
 }
 
