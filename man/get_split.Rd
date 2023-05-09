@@ -30,6 +30,9 @@ All entered alleles will first be reduced to the two-field level (see
 \code{\link[=reduce_to_nth_field]{reduce_to_nth_field()}}). If this reduced allele occurs in the lookup table,
 the corresponding rows are returned. If not, it will be converted into an XX
 code, and that row will be returned.
+
+If the allele is already at the serological broad- or split-level, the lookup
+will be performed using those respective columns in \link{etrl_hla}.
 }
 
 \subsection{Exceptions}{
@@ -52,9 +55,10 @@ get_split(c("A24", "B*14:01", "B*14:03"))
 }
 \seealso{
 \itemize{
-\item \link{get_public}: for looking up the public epitope of an allele
 \item \link{get_broad}: for looking up the serological broad-level equivalent of an
 allele
+\item \link{get_serology}: for looking up the split, or broad if none exists
+\item \link{get_public}: for looking up the public epitope of an allele
 \item \link{etrl_hla}: the lookup table that's used in this function
 }
 }

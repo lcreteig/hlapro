@@ -19,6 +19,29 @@ corresponding public epitope (\code{Bw4} or \code{Bw6}) is looked up in \link{et
 returned. If the input allele does not have the public epitope, \code{NA}
 is returned instead.
 }
+\details{
+This function uses the EuroTransplant Reference Laboratory HLA (\link{etrl_hla})
+tables to do the lookup. These tables define several alleles for each protein
+(e.g. \code{HLA-A*01:01}, \code{HLA-A*01:02}), and their serological equivalents. All
+others are grouped into an XX code (\code{HLA-A*01:XX}), which is also mapped to
+a serological equivalent.
+\subsection{Workings}{
+
+All entered alleles will first be reduced to the two-field level (see
+\code{\link[=reduce_to_nth_field]{reduce_to_nth_field()}}). If this reduced allele occurs in the lookup table,
+the corresponding rows are returned. If not, it will be converted into an XX
+code, and that row will be returned.
+
+If the allele is already at the serological broad- or split-level, the lookup
+will be performed using those respective columns in \link{etrl_hla}.
+}
+
+\subsection{Exceptions}{
+
+If the allele has a suffix (e.g. \verb{HLA-C*01:37N}), it has no serological
+equivalent, and hence will also return nothing.
+}
+}
 \examples{
 get_public("B14") # has the epitope ("Bw6")
 get_public("B*15:12") # has "Bw6"
@@ -35,6 +58,7 @@ get_public(c("B14", "B63", "A1"))
 \item \link{get_broad}: for looking up the broad-level equivalent of a split allele
 \item \link{get_split}: for looking up the serological split-level equivalent of an
 allele
+\item \link{get_serology}: for looking up the split, or broad if none exists
 \item \link{etrl_hla}: the lookup table that's used in this function
 }
 }

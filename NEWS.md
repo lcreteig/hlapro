@@ -1,12 +1,13 @@
 # hlapro (development version)
 
-* New `get_public()` to lookup the public epitope of an allele in serological 
-  notation, and `get_broad()` to lookup the corresponding broad-level allele 
-  of a serological split.
-
-* New `etrl_lookup()` to get serological equivalents of an allele from the 
+* New functions to get serological equivalents of an allele from the 
   [ETRL HLA tables](https://etrl.eurotransplant.org). These tables are also
-  shipped with the package as the `etrl_hla` data frame.
+  shipped with the package as the `etrl_hla` data frame:
+  
+  - `get_serology()` for the split or else the broad-level serology
+  - `get_broad()` for the broad-level serology
+  - `get_split()` for the split-level serology
+  - `get_public()` for the Bw4 or Bw6 epitope
 
 * New `validate_alleles()` to check whether a(n) (list of) HLA allele(s) is
   well-formed
