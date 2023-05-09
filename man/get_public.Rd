@@ -14,18 +14,18 @@ A string or character vector of the same length as \code{allele},
 with the public epitope if it has one, or \code{NA} if none exists.
 }
 \description{
-\code{get_public()} takes in a string or character vector of HLA alleles. If they
-are in serological notation (broad or split), the corresponding public
-epitope (\code{Bw4} or \code{Bw6}) is looked up in \link{etrl_hla} and returned. If the
-input is not serology, or the allele does not have the public epitope, \code{NA}
+\code{get_public()} takes in a string or character vector of HLA alleles. The
+corresponding public epitope (\code{Bw4} or \code{Bw6}) is looked up in \link{etrl_hla} and
+returned. If the input allele does not have the public epitope, \code{NA}
 is returned instead.
 }
 \examples{
 get_public("B14") # has the epitope ("Bw6")
-get_public("A1") # does not, returns `NA`
-get_public("B*14") # is not in serological notation, returns `NA`.
-# use `etrl_lookup()` for these cases instead
+get_public("B*15:12") # has "Bw6"
+get_public("B*15:13") # but this alleles has "Bw4"
+get_public("B*15:XX") # hence this is ambiguous (returns `NA`)
 
+get_public("A1") # does not have the epitope; returns `NA`
 # Vectors also work:
 get_public(c("B14", "B63", "A1"))
 }
@@ -33,6 +33,5 @@ get_public(c("B14", "B63", "A1"))
 \itemize{
 \item \link{get_broad}: for looking up the broad-level equivalent of a split allele
 \item \link{etrl_hla}: the lookup table that's used in this function
-\item \link{etrl_lookup}: for getting serological equivalents of other alleles
 }
 }

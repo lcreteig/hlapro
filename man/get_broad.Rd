@@ -11,20 +11,21 @@ get_broad(allele)
 }
 \value{
 A string or character vector of the same length as \code{allele},
-with the corresponding broad if it exists (i.e., if \code{allele} was a
-serological split), or \code{NA} if none exists.
+with the corresponding broad if it exists, or \code{NA} if none exists.
 }
 \description{
-\code{get_broad()} takes in a string or character vector of HLA alleles. If they
-are at the serological split-level, the corresponding broad-level allele is
-looked up in \link{etrl_hla} and returned. If the input is not serology, or not a
-split, \code{NA} is returned instead.
+\code{get_broad()} takes in a string or character vector of HLA alleles. The
+corresponding broad-level allele is looked up in \link{etrl_hla} and returned.
+If no such allele exists, \code{NA} is returned instead.
 }
 \examples{
 get_broad("A24") # returns corresponding broad ("A9")
-get_broad("A1") # is already a broad, returns `NA`
-get_broad("A*24") # is not in serological notation, returns `NA`.
-# use `etrl_lookup()` for these cases instead
+get_broad("A9") # is already a broad, returns itself ("A9")
+
+# these alleles in modern nomenclature also all return "A9"
+get_broad("A*24")
+get_broad("A*24:XX")
+get_broad("A*24:02:01:102")
 
 # Vectors also work:
 get_broad(c("A24", "A23", "A1"))
