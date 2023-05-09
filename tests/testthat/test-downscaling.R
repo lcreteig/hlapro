@@ -124,27 +124,40 @@ test_that("output dimensions correct for vector input", {
   expect_equal(dim(etrl_lookup(c("A1", "A*01:XX", "B00", "A*01", ""))), c(5, 4))
 })
 
-
 # get_broad() -------------------------------------------------------------
 
-test_that("splits return broad", {
+test_that("splits return broads", {
   expect_equal(get_broad("A24"), "A9")
   expect_equal(get_broad("A25"), "A10")
 })
 
-test_that("broads return NA", {
-  expect_equal(get_broad("A1"), NA_character_)
-  expect_equal(get_broad("A2"), NA_character_)
+test_that("broads return broads", {
+  expect_equal(get_broad("A1"), "A1")
+  expect_equal(get_broad("A2"), "A2")
 })
 
-test_that("other inputs return NA", {
-  expect_equal(get_broad("A*01:01"), NA_character_)
+test_that("modern nomenclature returns broads", {
+  expect_equal(get_broad("A*01"), "A1")
+  expect_equal(get_broad("A*01:XX"), "A1")
+  expect_equal(get_broad("A*01:01:01"), "A1")
+  expect_equal(get_broad("A*24"), "A9")
+  expect_equal(get_broad("A*24:XX"), "A9")
+  expect_equal(get_broad("A*24:02:01:102"), "A9")
+})
+
+test_that("non-existing inputs return NA", {
+  expect_equal(get_broad("A20"), NA_character_)
+  expect_equal(get_broad("A*20"), NA_character_)
+})
+
+test_that("NA returns NA", {
+  expect_equal(get_broad(NA), NA)
 })
 
 test_that("broad lookup is vectorized", {
   expect_equal(
     get_broad(c("A24", "A25", "A*01:01", NA)),
-    c("A9", "A10", NA, NA)
+    c("A9", "A10", "A1", NA)
   )
 })
 
@@ -169,14 +182,28 @@ test_that("broads return public", {
   expect_equal(get_public("B47"), NA_character_)
 })
 
-test_that("other inputs return NA", {
-  expect_equal(get_public("A*01:01"), NA_character_)
-  expect_equal(get_public("B*14:XX"), NA_character_)
+test_that("allele nomenclature works", {
+  expect_equal(get_public("B*07:02"), "Bw6")
+  expect_equal(get_public("B*13:01"), "Bw4")
+  expect_equal(get_public("B*14:XX"), "Bw6")
+  expect_equal(get_public("B*15:XX"), NA_character_)
+  expect_equal(get_public("B*40:02:01:01"), "Bw6")
+})
+
+test_that("other loci return NA", {
+  expect_equal(get_public("A23"), NA_character_)
+  expect_equal(get_public("A24"), NA_character_)
+  expect_equal(get_public("A*24:XX"), NA_character_)
+  expect_equal(get_public("C*07:626"), NA_character_)
+})
+
+test_that("NA returns NA", {
+  expect_equal(get_public(NA), NA)
 })
 
 test_that("public lookup is vectorized", {
   expect_equal(
-    get_public(c("B64", "B13", "A*01:01", NA)),
-    c("Bw6", "Bw4", NA, NA)
+    get_public(c("B64", "B13", "A*01:01", "B*07:09", NA)),
+    c("Bw6", "Bw4", NA, "Bw6", NA)
   )
 })

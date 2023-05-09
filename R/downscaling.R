@@ -53,16 +53,14 @@ etrl_lookup <- function(allele) {
 
 #' Retrieve broad-level equivalent of a split-level HLA-allele
 #'
-#' `get_broad()` takes in a string or character vector of HLA alleles. If they
-#' are at the serological split-level, the corresponding broad-level allele is
-#' looked up in [etrl_hla] and returned. If the input is not serology, or not a
-#' split, `NA` is returned instead.
+#' `get_broad()` takes in a string or character vector of HLA alleles. The
+#' corresponding broad-level allele is looked up in [etrl_hla] and returned.
+#' If no such allele exists, `NA` is returned instead.
 #'
 #' @inheritParams get_resolution
 #'
 #' @return A string or character vector of the same length as `allele`,
-#'   with the corresponding broad if it exists (i.e., if `allele` was a
-#'   serological split), or `NA` if none exists.
+#'   with the corresponding broad if it exists, or `NA` if none exists.
 #' @export
 #' @seealso
 #'  - [get_public]: for looking up the public epitope of an allele
@@ -71,24 +69,40 @@ etrl_lookup <- function(allele) {
 #'
 #' @examples
 #' get_broad("A24") # returns corresponding broad ("A9")
-#' get_broad("A1") # is already a broad, returns `NA`
-#' get_broad("A*24") # is not in serological notation, returns `NA`.
-#' # use `etrl_lookup()` for these cases instead
+#' get_broad("A9") # is already a broad, returns itself ("A9")
+#'
+#' # these alleles in modern nomenclature also all return "A9"
+#' get_broad("A*24")
+#' get_broad("A*24:XX")
+#' get_broad("A*24:02:01:102")
 #'
 #' # Vectors also work:
 #' get_broad(c("A24", "A23", "A1"))
 get_broad <- function(allele) {
-  unname(etrl_split_to_broad[allele])
+  # if it's a broad return as is, else assume it's a split and lookup the broad
+  ifelse(is_broad(allele), allele, unname(etrl_split_to_broad[allele])) |>
+    # if it's not serology, try to lookup a two-field allele
+    ifelse(is_serology(allele),
+      yes = _,
+      etrl_lookup(allele)$`ET MatchDeterminantBroad`
+    )
+}
+
+get_split <- function(variables) {
+
+}
+
+get_serology <- function(variables) { # new etrl_lookup()
 }
 
 #' Retrieve public epitope of serological HLA-allele
 #'
-#' `get_public()` takes in a string or character vector of HLA alleles. If they
-#' are in serological notation (broad or split), the corresponding public
-#' epitope (`Bw4` or `Bw6`) is looked up in [etrl_hla] and returned. If the
-#' input is not serology, or the allele does not have the public epitope, `NA`
+#' `get_public()` takes in a string or character vector of HLA alleles. The
+#' corresponding public epitope (`Bw4` or `Bw6`) is looked up in [etrl_hla] and
+#' returned. If the input allele does not have the public epitope, `NA`
 #' is returned instead.
 #'
+#' @inherit get_serology details sections
 #' @inheritParams get_resolution
 #'
 #' @return A string or character vector of the same length as `allele`,
@@ -97,18 +111,21 @@ get_broad <- function(allele) {
 #' @seealso
 #'  - [get_broad]: for looking up the broad-level equivalent of a split allele
 #'  - [etrl_hla]: the lookup table that's used in this function
-#'  - [etrl_lookup]: for getting serological equivalents of other alleles
 #'
 #' @examples
 #' get_public("B14") # has the epitope ("Bw6")
-#' get_public("A1") # does not, returns `NA`
-#' get_public("B*14") # is not in serological notation, returns `NA`.
-#' # use `etrl_lookup()` for these cases instead
+#' get_public("B*15:12") # has "Bw6"
+#' get_public("B*15:13") # but this alleles has "Bw4"
+#' get_public("B*15:XX") # hence this is ambiguous (returns `NA`)
 #'
+#' get_public("A1") # does not have the epitope; returns `NA`
 #' # Vectors also work:
 #' get_public(c("B14", "B63", "A1"))
 get_public <- function(allele) {
-  unname(etrl_public[allele])
+  ifelse(is_serology(allele),
+    unname(etrl_public[allele]),
+    etrl_lookup(allele)$Public
+  )
 }
 
 #' Truncate an HLA-allele to a lower field
@@ -234,4 +251,12 @@ remove_hla_prefix <- function(allele) {
 
 is_split <- function(allele) {
   allele %in% names(etrl_split_to_broad)
+}
+
+is_broad <- function(allele) {
+  allele %in% unique(etrl_hla$`ET MatchDeterminantBroad`)
+}
+
+is_public <- function(allele) {
+  allele %in% c("Bw4", "Bw6")
 }

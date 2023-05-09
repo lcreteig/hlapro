@@ -104,7 +104,7 @@ get_resolution(c("A2", "A*01:AABJE", "B*42:08"))
 
 ### Downscaling to serological equivalents
 
-Get the serological equivalent of an allele as defined by the [ETRL
+Get the serological equivalents of an allele as defined by the [ETRL
 HLA](https://etrl.eurotransplant.org/resources/hla-tables/) conversion
 tables
 
@@ -120,13 +120,13 @@ etrl_lookup(c("B*15:79N", "B*15:YETY", "B*15:01:16", "B*15:02", "B*15:85"))
 #> 5 B*15:XX <NA>                       B15                        <NA>
 ```
 
-For alleles in serological notation, conversion to broads and public
-epitopes is also supported
+Also supports lookup of specific serological equivalents at the broad
+level, or converting a serological split to a broad
 
 ``` r
-splits <- c("A24", "A25")
+splits <- c("A24", "A*25:76:02")
 get_broad(splits)
-#> [1] "A9"  "A10"
+#> [1] "A9" NA
 ```
 
 ``` r
