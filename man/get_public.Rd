@@ -26,12 +26,15 @@ get_public("B*15:13") # but this alleles has "Bw4"
 get_public("B*15:XX") # hence this is ambiguous (returns `NA`)
 
 get_public("A1") # does not have the epitope; returns `NA`
+
 # Vectors also work:
 get_public(c("B14", "B63", "A1"))
 }
 \seealso{
 \itemize{
 \item \link{get_broad}: for looking up the broad-level equivalent of a split allele
+\item \link{get_split}: for looking up the serological split-level equivalent of an
+allele
 \item \link{etrl_hla}: the lookup table that's used in this function
 }
 }

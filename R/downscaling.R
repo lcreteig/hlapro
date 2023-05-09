@@ -64,8 +64,9 @@ etrl_lookup <- function(allele) {
 #' @export
 #' @seealso
 #'  - [get_public]: for looking up the public epitope of an allele
+#'  - [get_split]: for looking up the serological split-level equivalent of an
+#'    allele
 #'  - [etrl_hla]: the lookup table that's used in this function
-#'  - [etrl_lookup]: for getting serological equivalents of other alleles
 #'
 #' @examples
 #' get_broad("A24") # returns corresponding broad ("A9")
@@ -88,8 +89,39 @@ get_broad <- function(allele) {
     )
 }
 
-get_split <- function(variables) {
-
+#' Retrieve split-level serological equivalent of an HLA-allele
+#'
+#' `get_split()` takes in a string or character vector of HLA alleles. The
+#' corresponding split-level allele is looked up in [etrl_hla] and returned.
+#' If no such allele exists, `NA` is returned instead.
+#'
+#' @inheritParams get_resolution
+#'
+#' @return A string or character vector of the same length as `allele`,
+#'   with the corresponding split if it exists, or `NA` if none exists.
+#' @export
+#' @seealso
+#'  - [get_public]: for looking up the public epitope of an allele
+#'  - [get_broad]: for looking up the serological broad-level equivalent of an
+#'    allele
+#'  - [etrl_hla]: the lookup table that's used in this function
+#'
+#' @examples
+#'
+#' get_split("A24") # is already a split, so returns itself ("A24")
+#' get_split("A9") # is a broad, so returns `NA`
+#'
+#' get_split("B*14:01") # returns corresponding split ("B64")
+#' get_split("B*14:02") # returns corresponding split ("B65")
+#' get_split("B*14:03") # no split is defined for this allele; returns `NA`
+#'
+#' # Vectors also work:
+#' get_split(c("A24", "B*14:01", "B*14:03"))
+get_split <- function(allele) {
+  ifelse(is_split(allele),
+    allele,
+    etrl_lookup(allele)$`ET MatchDeterminantSplit`
+  )
 }
 
 get_serology <- function(variables) { # new etrl_lookup()
@@ -110,6 +142,8 @@ get_serology <- function(variables) { # new etrl_lookup()
 #' @export
 #' @seealso
 #'  - [get_broad]: for looking up the broad-level equivalent of a split allele
+#'  - [get_split]: for looking up the serological split-level equivalent of an
+#'    allele
 #'  - [etrl_hla]: the lookup table that's used in this function
 #'
 #' @examples
@@ -119,6 +153,7 @@ get_serology <- function(variables) { # new etrl_lookup()
 #' get_public("B*15:XX") # hence this is ambiguous (returns `NA`)
 #'
 #' get_public("A1") # does not have the epitope; returns `NA`
+#'
 #' # Vectors also work:
 #' get_public(c("B14", "B63", "A1"))
 get_public <- function(allele) {
