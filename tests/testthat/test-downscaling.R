@@ -161,6 +161,43 @@ test_that("broad lookup is vectorized", {
   )
 })
 
+# get_split() -------------------------------------------------------------
+
+test_that("splits return splits", {
+  expect_equal(get_split("A24"), "A24")
+  expect_equal(get_split("A*24"), "A24")
+  expect_equal(get_split("A*24:02:01:102"), "A24")
+  expect_equal(get_split("A25"), "A25")
+})
+
+test_that("broads return NA", {
+  expect_equal(get_split("A1"), NA_character_)
+  expect_equal(get_split("A9"), NA_character_)
+})
+
+test_that("allele nomenclature returns splits", {
+  expect_equal(get_split("B*14:01"), "B64")
+  expect_equal(get_split("B*14:02"), "B65")
+  expect_equal(get_split("B*14:03"), NA_character_)
+  expect_equal(get_split("B*14"), NA_character_)
+})
+
+test_that("non-existing inputs return NA", {
+  expect_equal(get_split("A20"), NA_character_)
+  expect_equal(get_split("A*20"), NA_character_)
+})
+
+test_that("NA returns NA", {
+  expect_equal(get_split(NA), NA_character_)
+})
+
+test_that("split lookup is vectorized", {
+  expect_equal(
+    get_split(c("A24", "B*14:01", NA)),
+    c("A24", "B64", NA)
+  )
+})
+
 # get_public --------------------------------------------------------------
 
 test_that("splits return public", {

@@ -33,7 +33,8 @@ get_broad(c("A24", "A23", "A1"))
 \seealso{
 \itemize{
 \item \link{get_public}: for looking up the public epitope of an allele
+\item \link{get_split}: for looking up the serological split-level equivalent of an
+allele
 \item \link{etrl_hla}: the lookup table that's used in this function
-\item \link{etrl_lookup}: for getting serological equivalents of other alleles
 }
 }
