@@ -109,30 +109,30 @@ HLA](https://etrl.eurotransplant.org/resources/hla-tables/) conversion
 tables
 
 ``` r
-etrl_lookup(c("B*15:79N", "B*15:YETY", "B*15:01:16", "B*15:02", "B*15:85"))
-#> # A tibble: 5 × 4
-#>   Allele  `ET MatchDeterminantSplit` `ET MatchDeterminantBroad` Public
-#>   <chr>   <chr>                      <chr>                      <chr> 
-#> 1 <NA>    <NA>                       <NA>                       <NA>  
-#> 2 B*15:XX <NA>                       B15                        <NA>  
-#> 3 B*15:01 B62                        B15                        Bw6   
-#> 4 B*15:02 B75                        B15                        Bw6   
-#> 5 B*15:XX <NA>                       B15                        <NA>
+get_serology(c("B*15:79N", "B*15:YETY", "B*15:01:16", "B*15:02", "B*15:85"))
+#> [1] NA    "B15" "B62" "B75" "B15"
 ```
 
-Also supports lookup of specific serological equivalents at the broad
-level, or converting a serological split to a broad
+Also supports lookup of broads or splits specifically:
+
+``` r
+alleles <- c("A*01:01", "A*25:76:02")
+get_split(alleles)
+#> [1] NA    "A25"
+```
 
 ``` r
 splits <- c("A24", "A*25:76:02")
 get_broad(splits)
-#> [1] "A9" NA
+#> [1] "A9"  "A10"
 ```
 
+And whether an allele has the Bw4 or Bw6 epitope:
+
 ``` r
-b_s <- c("B14", "B63")
+b_s <- c("B14", "B63", "B*40:05", "A*01:01")
 get_public(b_s)
-#> [1] "Bw6" "Bw4"
+#> [1] "Bw6" "Bw4" "Bw6" NA
 ```
 
 ## Other packages

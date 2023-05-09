@@ -107,6 +107,7 @@ test_that("NAs are handled", {
   expect_equal(etrl_convert(c("A*01", NA)), c("A*01:XX", NA))
 })
 
+
 # etrl_lookup() -----------------------------------------------------------
 
 test_that("dataframe is returned", {
@@ -123,6 +124,49 @@ test_that("dataframe is returned", {
 test_that("output dimensions correct for vector input", {
   expect_equal(dim(etrl_lookup(c("A1", "A*01:XX", "B00", "A*01", ""))), c(5, 4))
 })
+
+# get_serology() ----------------------------------------------------------
+
+test_that("broads are returned as is", {
+  expect_equal(get_serology("A1"), "A1")
+  expect_equal(get_serology("B15"), "B15")
+})
+
+test_that("splits are returned as is", {
+  expect_equal(get_serology("A24"), "A24")
+  expect_equal(get_serology("B63"), "B63")
+})
+
+test_that("modern nomenclature with splits return splits", {
+  expect_equal(get_serology("A*23:01"), "A23")
+  expect_equal(get_serology("A*23:XX"), "A23")
+  expect_equal(get_serology("A*23:01:01:11"), "A23")
+  expect_equal(get_serology("B*14:01"), "B64")
+})
+
+test_that("modern nomenclature with only broad returns broad", {
+  expect_equal(get_serology("B*07:02"), "B7")
+  expect_equal(get_serology("B*14:XX"), "B14")
+  expect_equal(get_serology("C*03:16"), "Cw16")
+  expect_equal(get_serology("A*01:01:01:50"), "A1")
+})
+
+test_that("non-existing inputs return NA", {
+  expect_equal(get_serology("A20"), NA_character_)
+  expect_equal(get_serology("A*20"), NA_character_)
+})
+
+test_that("NA returns NA", {
+  expect_equal(get_serology(NA), NA)
+})
+
+test_that("serology lookup is vectorized", {
+  expect_equal(
+    get_serology(c("A24", "B*14:01", NA)),
+    c("A24", "B64", NA)
+  )
+})
+
 
 # get_broad() -------------------------------------------------------------
 

@@ -1,7 +1,11 @@
-#' Get serological equivalents of an HLA-allele
+#' Retrieve serological equivalents of an HLA-allele
 #'
-#' `etrl_lookup()` takes in a string or character vector of HLA alleles, and
-#' returns their serological equivalents as defined in the ETRL HLA tables.
+#' `get_serology()` takes in a string or character vector of HLA alleles. The
+#' corresponding split-level (if it exists) or broad-level (if no split exists)
+#' allele is looked up in [etrl_hla] and returned. If no such alleles exist,
+#' `NA` is returned instead.
+#'
+#' @details
 #'
 #' This function uses the EuroTransplant Reference Laboratory HLA ([etrl_hla])
 #' tables to do the lookup. These tables define several alleles for each protein
@@ -9,63 +13,67 @@
 #' others are grouped into an XX code (`HLA-A*01:XX`), which is also mapped to
 #' a serological equivalent.
 #'
-#' @section Workings:
+#' ## Workings
 #'
 #' All entered alleles will first be reduced to the two-field level (see
 #' [reduce_to_nth_field()]). If this reduced allele occurs in the lookup table,
 #' the corresponding rows are returned. If not, it will be converted into an XX
 #' code, and that row will be returned.
 #'
-#' @section Exceptions:
+#' If the allele is already at the serological broad- or split-level, the lookup
+#' will be performed using those respective columns in [etrl_hla].
 #'
-#' If the allele is already in serological notation (e.g. `A1`), the lookup
-#' fails and empty rows are returned (though e.g. `A1` is of course present
-#' in the other columns of the lookup table)
+#' ## Exceptions
 #'
 #' If the allele has a suffix (e.g. `HLA-C*01:37N`), it has no serological
-#' equivalent, and hence will also return empty rows.
+#' equivalent, and hence will also return nothing.
 #'
 #' @inheritParams get_resolution
 #'
-#' @return A data frame with as many rows as there were elements in the input,
-#'  and four columns:
-#'  1. The allele that was looked up (or `NA` if it didn't exist)
-#'  2. Its equivalent at the serological *split* level (or `NA` if it doesn't
-#'    have one)
-#'  3. Its equivalent at the serological *broad* level (or `NA` if it doesn't
-#'    have one)
-#'  4. Whether the allele has the public epitope (Bw4 or Bw6) (or `NA` if it
-#'    doesn't)
-#' @seealso [etrl_hla]: the lookup table that's used by and returned in this
-#'  function
+#' @return A string or character vector of the same length as `allele`,
+#'   with the corresponding serology if it exists, or `NA` if none exists.
 #' @export
+#' @seealso
+#'  - [get_broad]: for looking up the broad-level equivalent of a split allele
+#'  - [get_split]: for looking up the serological split-level equivalent of an
+#'    allele
+#'  - [get_public]: for looking up the public epitope of an allele
+#'  - [etrl_hla]: the lookup table that's used in this function
 #'
 #' @examples
-#' allele_vec <- c(
-#'   "B15", "B*15:79N", "B*15:YETY",
-#'   "B*15:01:16", "B*15:02", "B*15:85"
-#' )
-#' etrl_lookup(allele_vec)
-etrl_lookup <- function(allele) {
-  ids <- match(etrl_convert(allele), etrl_hla$Allele)
-  etrl_hla[ids, ]
+#' get_serology("A24") # is a serological split; returns itself ("A24")
+#' get_serology("A9") # is a serological broad; returns itself ("A9")
+#'
+#' get_serology("A*01:01:01:50") # has a broad-level equivalent only ("A1")
+#' get_serology("A*23:01:01:11") # has a split equivalent ("A23")
+#' # as well as a broad ("A9"); only the former is returned
+#'
+#' # Vectors also work:
+#' get_serology(c("A24", "A*01:XX", "B*15:15"))
+get_serology <- function(allele) {
+  # if not already a broad/split, convert to broad
+  ifelse(is_broad(allele) | is_split(allele), allele, get_broad(allele)) |>
+    # if it has a split, get that, otherwise leave unchanged
+    ifelse(!is.na(get_split(allele)), get_split(allele), no = _)
 }
 
-#' Retrieve broad-level equivalent of a split-level HLA-allele
+#' Retrieve broad-level serological equivalent of an HLA-allele
 #'
 #' `get_broad()` takes in a string or character vector of HLA alleles. The
 #' corresponding broad-level allele is looked up in [etrl_hla] and returned.
 #' If no such allele exists, `NA` is returned instead.
 #'
+#' @inherit get_serology details
 #' @inheritParams get_resolution
 #'
 #' @return A string or character vector of the same length as `allele`,
 #'   with the corresponding broad if it exists, or `NA` if none exists.
 #' @export
 #' @seealso
-#'  - [get_public]: for looking up the public epitope of an allele
 #'  - [get_split]: for looking up the serological split-level equivalent of an
 #'    allele
+#'  - [get_serology]: for looking up the split, or broad if none exists
+#'  - [get_public]: for looking up the public epitope of an allele
 #'  - [etrl_hla]: the lookup table that's used in this function
 #'
 #' @examples
@@ -95,15 +103,17 @@ get_broad <- function(allele) {
 #' corresponding split-level allele is looked up in [etrl_hla] and returned.
 #' If no such allele exists, `NA` is returned instead.
 #'
+#' @inherit get_serology details sections
 #' @inheritParams get_resolution
 #'
 #' @return A string or character vector of the same length as `allele`,
 #'   with the corresponding split if it exists, or `NA` if none exists.
 #' @export
 #' @seealso
-#'  - [get_public]: for looking up the public epitope of an allele
 #'  - [get_broad]: for looking up the serological broad-level equivalent of an
 #'    allele
+#'  - [get_serology]: for looking up the split, or broad if none exists
+#'  - [get_public]: for looking up the public epitope of an allele
 #'  - [etrl_hla]: the lookup table that's used in this function
 #'
 #' @examples
@@ -124,9 +134,6 @@ get_split <- function(allele) {
   )
 }
 
-get_serology <- function(variables) { # new etrl_lookup()
-}
-
 #' Retrieve public epitope of serological HLA-allele
 #'
 #' `get_public()` takes in a string or character vector of HLA alleles. The
@@ -144,6 +151,7 @@ get_serology <- function(variables) { # new etrl_lookup()
 #'  - [get_broad]: for looking up the broad-level equivalent of a split allele
 #'  - [get_split]: for looking up the serological split-level equivalent of an
 #'    allele
+#'  - [get_serology]: for looking up the split, or broad if none exists
 #'  - [etrl_hla]: the lookup table that's used in this function
 #'
 #' @examples
@@ -247,6 +255,38 @@ strip_broad <- function(allele, check_result = FALSE) {
   } else {
     allele_stripped
   }
+}
+
+#' Get rows with serological equivalents of an HLA allele from ETRL HLA table
+#'
+#' `etrl_lookup()` takes in a string or character vector of HLA alleles, and
+#' returns their serological equivalents as defined in the ETRL HLA tables.
+#'
+#' @inheritParams get_resolution
+#'
+#' @return A data frame with as many rows as there were elements in the input,
+#'  and four columns:
+#'  1. The allele that was looked up (or `NA` if it didn't exist)
+#'  2. Its equivalent at the serological *split* level (or `NA` if it doesn't
+#'    have one)
+#'  3. Its equivalent at the serological *broad* level (or `NA` if it doesn't
+#'    have one)
+#'  4. Whether the allele has the public epitope (Bw4 or Bw6) (or `NA` if it
+#'    doesn't)
+#' @seealso [etrl_hla]: the lookup table that's used by and returned in this
+#'  function
+#' @keywords internal
+#' @export
+#'
+#' @examples
+#' allele_vec <- c(
+#'   "B15", "B*15:79N", "B*15:YETY",
+#'   "B*15:01:16", "B*15:02", "B*15:85"
+#' )
+#' etrl_lookup(allele_vec)
+etrl_lookup <- function(allele) {
+  ids <- match(etrl_convert(allele), etrl_hla$Allele)
+  etrl_hla[ids, ]
 }
 
 etrl_convert <- function(allele) {

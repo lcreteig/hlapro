@@ -97,18 +97,25 @@ get_resolution(c("A2", "A*01:AABJE", "B*42:08"))
 Get the serological equivalents of an allele as defined by the [ETRL HLA](https://etrl.eurotransplant.org/resources/hla-tables/) conversion tables
 
 ```{r downscaling}
-etrl_lookup(c("B*15:79N", "B*15:YETY", "B*15:01:16", "B*15:02", "B*15:85"))
+get_serology(c("B*15:79N", "B*15:YETY", "B*15:01:16", "B*15:02", "B*15:85"))
 ```
 
-Also supports lookup of specific serological equivalents at the broad level, or converting a serological split to a broad
+Also supports lookup of broads or splits specifically:
+
+```{r split}
+alleles <- c("A*01:01", "A*25:76:02")
+get_split(alleles)
+```
 
 ```{r broad}
 splits <- c("A24", "A*25:76:02")
 get_broad(splits)
 ```
 
+And whether an allele has the Bw4 or Bw6 epitope:
+
 ```{r public}
-b_s <- c("B14", "B63")
+b_s <- c("B14", "B63", "B*40:05", "A*01:01")
 get_public(b_s)
 ```
 

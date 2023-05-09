@@ -2,7 +2,7 @@
 % Please edit documentation in R/downscaling.R
 \name{etrl_lookup}
 \alias{etrl_lookup}
-\title{Get serological equivalents of an HLA-allele}
+\title{Get rows with serological equivalents of an HLA allele from ETRL HLA table}
 \usage{
 etrl_lookup(allele)
 }
@@ -26,33 +26,6 @@ doesn't)
 \code{etrl_lookup()} takes in a string or character vector of HLA alleles, and
 returns their serological equivalents as defined in the ETRL HLA tables.
 }
-\details{
-This function uses the EuroTransplant Reference Laboratory HLA (\link{etrl_hla})
-tables to do the lookup. These tables define several alleles for each protein
-(e.g. \code{HLA-A*01:01}, \code{HLA-A*01:02}), and their serological equivalents. All
-others are grouped into an XX code (\code{HLA-A*01:XX}), which is also mapped to
-a serological equivalent.
-}
-\section{Workings}{
-
-
-All entered alleles will first be reduced to the two-field level (see
-\code{\link[=reduce_to_nth_field]{reduce_to_nth_field()}}). If this reduced allele occurs in the lookup table,
-the corresponding rows are returned. If not, it will be converted into an XX
-code, and that row will be returned.
-}
-
-\section{Exceptions}{
-
-
-If the allele is already in serological notation (e.g. \code{A1}), the lookup
-fails and empty rows are returned (though e.g. \code{A1} is of course present
-in the other columns of the lookup table)
-
-If the allele has a suffix (e.g. \verb{HLA-C*01:37N}), it has no serological
-equivalent, and hence will also return empty rows.
-}
-
 \examples{
 allele_vec <- c(
   "B15", "B*15:79N", "B*15:YETY",
@@ -64,3 +37,4 @@ etrl_lookup(allele_vec)
 \link{etrl_hla}: the lookup table that's used by and returned in this
 function
 }
+\keyword{internal}
