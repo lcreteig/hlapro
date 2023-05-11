@@ -288,3 +288,11 @@ test_that("public lookup is vectorized", {
     c("Bw6", "Bw4", NA, "Bw6", NA)
   )
 })
+
+# reorder_alleles() -------------------------------------------------------
+
+test_that("reordering works when order is serology", {
+  in_order <- c("A1","A2")
+  to_order <- c("A*02:01:01", "A*01:01")
+  expect_equal(reorder_alleles(in_order, to_order), c("A*01:01", "A*02:01:01"))
+})

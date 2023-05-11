@@ -300,6 +300,10 @@ etrl_convert <- function(allele) {
     ifelse(is_serology(allele), allele, no = _) # return serology as is
 }
 
+reorder_alleles <- function(in_order, to_order) {
+  to_order[order(match(get_serology(to_order), get_serology(in_order)))]
+}
+
 make_xx <- function(allele) {
   stringr::str_c(reduce_to_nth_field(allele, 1), ":XX")
 }
