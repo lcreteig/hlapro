@@ -224,37 +224,44 @@ reduce_to_nth_field <- function(allele, n) {
   replace(allele, res_idx, stringr::str_sub(allele[res_idx], 1, ends))
 }
 
-#' Strip broad in `split`(`broad`) notation
+#' Strip broads from typing string if the split is also present
 #'
 #' @description
-#' Removes parentheses and their contents, in e.g. `A24(A9)`. Because this
-#' notation is not accepted by [validate_allele()], and broads can always be
-#' added back with [get_broad()].
+#' Sometimes a typing will contain both the split and the broad, e.g. `A24(A9)`
+#' or `A10 A25`. The latter can cause a typing to contain more than 2 alleles
+#' for a given locus, which cannot be handled with [extract_alleles_str()]; the
+#' former is not accepted by [validate_allele()]. Besides, the broads are
+#' redundant in this case, and can always be added back with [get_broad()].
 #'
 #' TODO: should at some point be subsumed in a general `hla_clean()` type
 #' function
 #'
-#' @inheritParams get_resolution
-#' @param check_result If TRUE, returns input as is if the result of removing
-#' the parentheses does not result in an existing split in [etrl_hla]. Sometimes
-#' splits and broads are reversed (e.g. `A9(A24)`), in which case we don't want
-#' to proceed.
+#' @param typing A string containing the HLA allele or the full space-separated
+#' HLA typing.
 #'
-#' @return a vector of same length as allele
+#' @return A string without the broad alleles in the input
 #' @keywords internal
 #' @export
 #'
 #' @examples
 #' strip_broad("A24(A9)")
-strip_broad <- function(allele, check_result = FALSE) {
-  allele_stripped <- stringr::str_remove(allele, r"(\(.*\))")
-
-  if (check_result) {
-    # return input as is if the result is not an existing split
-    ifelse(is_split(allele), allele_stripped, allele)
-  } else {
-    allele_stripped
-  }
+#' strip_broad("A9(A24)") # also works when the split is in parentheses
+#' strip_broad("A24(A9) A10 A25") # removes both A9 and A10
+strip_broad <- function(typing) {
+  # remove any parentheses and split up the individual alleles
+  typing_clean <- stringr::str_replace_all(
+    typing,
+    c(
+      "\\(" = " ",
+      "\\)" = ""
+    )
+  ) |>
+    stringr::str_split_1(" ")
+  # get broad-level equivalent of all the splits in the typing
+  broads_with_splits <- get_broad(typing_clean[is_split(typing_clean)])
+  # remove these from the typing
+  typing_clean[!(typing_clean %in% broads_with_splits)] |>
+    stringr::str_flatten(" ") # make into single string again
 }
 
 #' Get rows with serological equivalents of an HLA allele from ETRL HLA table

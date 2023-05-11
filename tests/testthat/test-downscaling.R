@@ -292,7 +292,26 @@ test_that("public lookup is vectorized", {
 # reorder_alleles() -------------------------------------------------------
 
 test_that("reordering works when order is serology", {
-  in_order <- c("A1","A2")
+  in_order <- c("A1", "A2")
   to_order <- c("A*02:01:01", "A*01:01")
   expect_equal(reorder_alleles(in_order, to_order), c("A*01:01", "A*02:01:01"))
+})
+
+
+# strip_broad() -----------------------------------------------------------
+
+test_that("split(broad) works", {
+  expect_equal(strip_broad("A24(A9)"), "A24")
+})
+
+test_that("broad(split) works", {
+  expect_equal(strip_broad("A9(A24)"), "A24")
+})
+
+test_that("broads without split are not removed", {
+  expect_equal(strip_broad("A10"), "A10")
+})
+
+test_that("typing string works", {
+  expect_equal(strip_broad("A24(A9) A10 A25 B70"), "A24 A25 B70")
 })

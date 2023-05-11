@@ -2,30 +2,30 @@
 % Please edit documentation in R/downscaling.R
 \name{strip_broad}
 \alias{strip_broad}
-\title{Strip broad in \code{split}(\code{broad}) notation}
+\title{Strip broads from typing string if the split is also present}
 \usage{
-strip_broad(allele, check_result = FALSE)
+strip_broad(typing)
 }
 \arguments{
-\item{allele}{A string or character vector with (an) HLA allele(s).}
-
-\item{check_result}{If TRUE, returns input as is if the result of removing
-the parentheses does not result in an existing split in \link{etrl_hla}. Sometimes
-splits and broads are reversed (e.g. \code{A9(A24)}), in which case we don't want
-to proceed.}
+\item{typing}{A string containing the HLA allele or the full space-separated
+HLA typing.}
 }
 \value{
-a vector of same length as allele
+A string without the broad alleles in the input
 }
 \description{
-Removes parentheses and their contents, in e.g. \code{A24(A9)}. Because this
-notation is not accepted by \code{\link[=validate_allele]{validate_allele()}}, and broads can always be
-added back with \code{\link[=get_broad]{get_broad()}}.
+Sometimes a typing will contain both the split and the broad, e.g. \code{A24(A9)}
+or \verb{A10 A25}. The latter can cause a typing to contain more than 2 alleles
+for a given locus, which cannot be handled with \code{\link[=extract_alleles_str]{extract_alleles_str()}}; the
+former is not accepted by \code{\link[=validate_allele]{validate_allele()}}. Besides, the broads are
+redundant in this case, and can always be added back with \code{\link[=get_broad]{get_broad()}}.
 
 TODO: should at some point be subsumed in a general \code{hla_clean()} type
 function
 }
 \examples{
 strip_broad("A24(A9)")
+strip_broad("A9(A24)") # also works when the split is in parentheses
+strip_broad("A24(A9) A10 A25") # removes both A9 and A10
 }
 \keyword{internal}
