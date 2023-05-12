@@ -291,12 +291,71 @@ test_that("public lookup is vectorized", {
 
 # reorder_alleles() -------------------------------------------------------
 
-test_that("reordering works when order is serology", {
+test_that("nothing is done when already in order", {
+  in_order <- c("A1", "A2")
+  to_order <- c("A1", "A2")
+  expect_equal(reorder_alleles(in_order, to_order), c("A1", "A2"))
+})
+
+test_that("reordering with two unique alleles works", {
+  in_order <- c("A2", "A1")
+  to_order <- c("A1", "A2")
+  expect_equal(reorder_alleles(in_order, to_order), c("A2", "A1"))
+})
+
+test_that("missings in to-be-ordered vector are respected", {
+  in_order <- c("A1", "A2")
+  to_order <- c("A1", NA)
+  expect_equal(reorder_alleles(in_order, to_order), c("A1", NA))
+  in_order <- c("A2", "A1")
+  to_order <- c("A1", NA)
+  expect_equal(reorder_alleles(in_order, to_order), c(NA, "A1"))
+  in_order <- c("A2", "A1")
+  to_order <- c(NA, NA)
+  expect_equal(reorder_alleles(in_order, to_order), c(NA, NA))
+})
+
+test_that("missings in in-order vector are respected", {
+  in_order <- c(NA, NA)
+  to_order <- c("A1", "A2")
+  expect_equal(reorder_alleles(in_order, to_order), c("A1", "A2"))
+  in_order <- c("A1", NA)
+  to_order <- c("A1", "A2")
+  expect_equal(reorder_alleles(in_order, to_order), c("A1", "A2"))
+  in_order <- c("A2", NA)
+  to_order <- c("A1", "A2")
+  expect_equal(reorder_alleles(in_order, to_order), c("A2", "A1"))
+})
+
+test_that("alleles with no serological equivalent are handled", {
+  in_order <- c("C*04:09N", "C*01:02")
+  to_order <- c("Cw1", NA)
+  expect_equal(reorder_alleles(in_order, to_order), c("Cw1", NA))
+  in_order <- c("Cw1", NA)
+  to_order <- c("C*01:02", "C*04:09N")
+  expect_equal(reorder_alleles(in_order, to_order), c("C*01:02", "C*04:09N"))
+  in_order <- c("C*04:09N", "C*01:02")
+  to_order <- c("C*01:02", "C*04:09N")
+  expect_equal(reorder_alleles(in_order, to_order), c("C*04:09N", "C*01:02"))
+})
+
+test_that("reordering works when resolutions differ", {
+  in_order <- c("A1", "A2")
+  to_order <- c("A*01:01", "A*02:01:01")
+  expect_equal(reorder_alleles(in_order, to_order), c("A*01:01", "A*02:01:01"))
+  in_order <- c("A*01:01", "A*02:01:01")
+  to_order <- c("A1", "A2")
+  expect_equal(reorder_alleles(in_order, to_order), c("A1", "A2"))
   in_order <- c("A1", "A2")
   to_order <- c("A*02:01:01", "A*01:01")
   expect_equal(reorder_alleles(in_order, to_order), c("A*01:01", "A*02:01:01"))
+  in_order <- c("A*02:01:01", "A*01:01")
+  to_order <- c("A1", "A2")
+  expect_equal(reorder_alleles(in_order, to_order), c("A2", "A1"))
+  in_order <- c("A24", "A2") # has a split
+  to_order <- c("A2", "A9") # has a broad
+  expect_equal(reorder_alleles(in_order, to_order), c("A9", "A2"))
 })
-
 
 # strip_broad() -----------------------------------------------------------
 

@@ -308,7 +308,22 @@ etrl_convert <- function(allele) {
 }
 
 reorder_alleles <- function(in_order, to_order) {
-  to_order[order(match(get_serology(to_order), get_serology(in_order)))]
+  in1 <- in_order[1]
+  to1 <- to_order[1]
+  # if more than 2 unique alleles, they're not in same format: scale down
+  if (length(union(in_order, to_order)) > 2) {
+    in1 <- get_broad(in_order[1])
+    to1 <- get_broad(to_order[1])
+  }
+  if (!is.na(in1) && !is.na(to1) && in1 != to1) {
+    return(rev(to_order))
+  }
+  to_order
+}
+
+reorder_alleles2 <- function(in_order, to_order) {
+  reordered <- to_order[match(union(in_order, to_order), to_order)]
+  reordered[!is.na(reordered)]
 }
 
 make_xx <- function(allele) {
