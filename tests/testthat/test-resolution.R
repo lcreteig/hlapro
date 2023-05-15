@@ -22,9 +22,9 @@ test_that("MACs are intermediate", {
   expect_equal(get_resolution("DPB1*04BDVU"), "intermediate")
 })
 
-
-test_that("Ambiguous alleles are intermediate", {
+test_that("Ambiguous alleles are handled", {
   expect_equal(get_resolution("C*01:02/C*01:03/C*01:04"), "intermediate")
+  expect_equal(get_resolution("C*01:02:01/C*01:02:02"), "high")
   expect_equal(get_resolution("HLA-A*23:26/HLA-A*23:39"), "intermediate")
   expect_equal(get_resolution("DRB1*13:02/13:36/13:67/13:96"), "intermediate")
 })
@@ -65,7 +65,12 @@ test_that("mutate in dataframe works", {
 
 test_that("fields are counted accurately", {
   expect_equal(get_n_fields("A1"), 1)
+  expect_equal(get_n_fields("A*01"), 1)
   expect_equal(get_n_fields("A*01:01"), 2)
   expect_equal(get_n_fields("A*01:01:01"), 3)
   expect_equal(get_n_fields("A*01:01:01:01"), 4)
+})
+
+test_that("count stops at ambiguous alleles", {
+  expect_equal(get_n_fields("A*01:01/A*01:02"), 2)
 })

@@ -68,5 +68,5 @@ get_resolution <- function(allele) {
 #' get_n_fields()
 #'
 get_n_fields <- function(allele) {
-  stringr::str_count(allele, ":") + 1
+  stringr::str_count(stringr::str_remove(allele, r"(\/.*)"), ":") + 1
 }
