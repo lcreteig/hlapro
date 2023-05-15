@@ -4,10 +4,17 @@
 \alias{get_resolution}
 \title{Determine the level of resolution of an HLA-allele}
 \usage{
-get_resolution(allele)
+get_resolution(allele, extended = FALSE)
 }
 \arguments{
 \item{allele}{A string or character vector with (an) HLA allele(s).}
+
+\item{extended}{When \code{TRUE}, the returned resolution also contains:
+\itemize{
+\item for high resolution: the number of fields ("second field", "third field",
+"fourth field")
+\item for low resolution: whether the allele is a serological split or broad
+}}
 }
 \value{
 A string or character vector of the same length as \code{allele},
@@ -39,8 +46,10 @@ Resolution is defined as follows:
 }
 \examples{
 get_resolution("A2") # low
+get_resolution("A2", extended = TRUE) # low - broad
 get_resolution("A*01:AABJE") # intermediate
 get_resolution("A*24:09") # high
+get_resolution("A*24:09", extended = TRUE) # high - second field
 
 # also works with character vectors, or in a data frame
 allele_vec <- c("A2", "A*01:AABJE", "B*42:08")

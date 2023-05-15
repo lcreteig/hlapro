@@ -16,6 +16,10 @@
 #'    - `HLA-A*24:02:01:02L` (maximum)
 #'
 #' @param allele A string or character vector with (an) HLA allele(s).
+#' @param extended When `TRUE`, the returned resolution also contains:
+#'  - for high resolution: the number of fields ("second field", "third field",
+#'  "fourth field")
+#'  - for low resolution: whether the allele is a serological split or broad
 #'
 #' @return A string or character vector of the same length as `allele`,
 #'   with `"low"`, `"intermediate"`, or `"high"` for each element.
@@ -23,8 +27,10 @@
 #'
 #' @examples
 #' get_resolution("A2") # low
+#' get_resolution("A2", extended = TRUE) # low - broad
 #' get_resolution("A*01:AABJE") # intermediate
 #' get_resolution("A*24:09") # high
+#' get_resolution("A*24:09", extended = TRUE) # high - second field
 #'
 #' # also works with character vectors, or in a data frame
 #' allele_vec <- c("A2", "A*01:AABJE", "B*42:08")
@@ -33,22 +39,38 @@
 #' tidyr::tibble(alleles = allele_vec) |>
 #'   dplyr::mutate(resolution = get_resolution(allele_vec))
 #'
-get_resolution <- function(allele) {
-  # N.B. assumes all ambiguities are intermediate, even when >2 field codes
-  dplyr::case_when(
+get_resolution <- function(allele, extended = FALSE) {
+  res <- dplyr::case_when(
     # "*" followed by capital letter (but not XX), or digits and then a slash
     stringr::str_detect(
       allele,
       r"(\*\d+:?(?!XX)([A-Z]|\d+\/))"
     ) ~ "intermediate",
     # "*" followed by 4 digits with optional semicolon in between
-    # TODO: return field code with high?
     stringr::str_detect(
       allele,
       r"(\*\d{2,3}:?\d{2,3})"
     ) ~ "high",
     is.na(allele) ~ NA_character_,
     .default = "low"
+  )
+
+  if (!extended) {
+    return(res)
+  }
+
+  ord_seq <- c("first", "second", "third", "fourth")
+
+  dplyr::case_when(
+    res == "low" & !is.na(get_split(allele)) ~ "low - split",
+    res == "low" & !is.na(get_broad(allele)) ~ "low - broad",
+    res == "high" ~ stringr::str_c(
+      res,
+      " - ",
+      ord_seq[get_n_fields(allele)],
+      " field"
+    ),
+    .default = res
   )
 }
 

@@ -48,6 +48,31 @@ test_that(">2 field codes is high", {
   expect_equal(get_resolution("DQA1*02:01:01G"), "high")
 })
 
+test_that("extended mode works", {
+  expect_equal(
+    get_resolution("B*42:08", extended = TRUE),
+    "high - second field"
+  )
+  expect_equal(
+    get_resolution("A*02:101:01", extended = TRUE),
+    "high - third field"
+  )
+  expect_equal(
+    get_resolution("A*01:101:01:02N", extended = TRUE),
+    "high - fourth field"
+  )
+  expect_equal(
+    get_resolution("C*01:02/C*01:03/C*01:04", extended = TRUE),
+    "intermediate"
+  )
+  expect_equal(get_resolution("A*01:AABJE", extended = TRUE), "intermediate")
+  expect_equal(get_resolution("A2", extended = TRUE), "low - broad")
+  expect_equal(get_resolution("A32", extended = TRUE), "low - split")
+  expect_equal(get_resolution("A*02", extended = TRUE), "low - broad")
+  expect_equal(get_resolution("A*32:XX", extended = TRUE), "low - split")
+  expect_equal(get_resolution(NA, extended = TRUE), NA_character_)
+})
+
 test_that("vectors work", {
   expect_equal(
     get_resolution(c("A2", "A*01:AABJE", "B*42:08")),
