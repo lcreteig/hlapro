@@ -330,9 +330,12 @@ test_that("missings in in-order vector are respected", {
 test_that("alleles with no serological equivalent are handled", {
   in_order <- c("C*04:09N", "C*01:02")
   to_order <- c("Cw1", NA)
-  expect_equal(reorder_alleles(in_order, to_order), c("Cw1", NA))
+  expect_equal(reorder_alleles(in_order, to_order), c(NA, "Cw1"))
   in_order <- c("Cw1", NA)
   to_order <- c("C*01:02", "C*04:09N")
+  expect_equal(reorder_alleles(in_order, to_order), c("C*01:02", "C*04:09N"))
+  in_order <- c("Cw1", NA)
+  to_order <- c("C*04:09N", "C*01:02")
   expect_equal(reorder_alleles(in_order, to_order), c("C*01:02", "C*04:09N"))
   in_order <- c("C*04:09N", "C*01:02")
   to_order <- c("C*01:02", "C*04:09N")
@@ -355,6 +358,28 @@ test_that("reordering works when resolutions differ", {
   in_order <- c("A24", "A2") # has a split
   to_order <- c("A2", "A9") # has a broad
   expect_equal(reorder_alleles(in_order, to_order), c("A9", "A2"))
+})
+
+test_that("data frames with groupings work", {
+  df_in <- tibble::tibble(
+    id = c("001", "001", "002", "002"),
+    locus = c("A", "A", "A", "A"),
+    allele = c("1", "2", "1", "2"),
+    in_order = c("A2", "A1", "A3", NA),
+    to_order = c("A*01:01", "A*02:01:01", "A3", NA)
+  )
+  df_out <- df_in |>
+    dplyr::mutate(to_order = c("A*02:01:01", "A*01:01", "A3", NA))
+  expect_equal(
+    df_in |>
+      dplyr::group_by(id, locus) |>
+      dplyr::mutate(
+        to_order =
+          reorder_alleles(in_order, to_order)
+      ) |>
+      dplyr::ungroup(),
+    df_out
+  )
 })
 
 # strip_broad() -----------------------------------------------------------

@@ -264,6 +264,46 @@ strip_broad <- function(typing) {
     stringr::str_flatten(" ") # make into single string again
 }
 
+#' Swap a pair of HLA-alleles to match another
+#'
+#' `reorder_alleles()` takes in two length-2 character vectors of HLA alleles,
+#'  and if they're not in the same order, reorders the 2nd to match the 1st.
+#'  This can be useful when you have multiple sources of HLA typings for one
+#'  individual that you're trying to match up.
+#'
+#'  If the vectors contain alleles in different nomenclatures / of different
+#'  resolutions, the order is determined based on their serological broad-level
+#'  equivalents.
+#'
+#' @param in_order,to_order A character vector of two HLA alleles of a certain
+#'  locus. The order of `to_order` will be reversed, to match `in_order`, if
+#'  necessary.
+#'
+#' @return A vector with the same alleles as `to_order`, possible reordered.
+#' @keywords internal
+#' @export
+#'
+#' @examples
+#' reorder_alleles(in_order = c("A1", "A2"), to_order = c("A2", "A1"))
+#' # can accommodate missing/homozygous typings
+#' reorder_alleles(in_order = c("A1", NA), to_order = c("A2", "A1"))
+#' # still works if the typings are in a different format/resolution
+#' reorder_alleles(in_order = c("A1", "A2"), to_order = c("A*02:01", "A*01:01"))
+reorder_alleles <- function(in_order, to_order) {
+  to_order_orig <- to_order
+  # if more than 2 unique alleles, they're not in same format: scale down
+  if (length(union(in_order, to_order)) > 2) {
+    in_order <- get_broad(in_order)
+    to_order <- get_broad(to_order)
+  }
+  # use identical() to allow for NA comparisons
+  if (identical(in_order[1], to_order[2]) ||
+    identical(in_order[2], to_order[1])) {
+    return(rev(to_order_orig))
+  }
+  to_order_orig
+}
+
 #' Get rows with serological equivalents of an HLA allele from ETRL HLA table
 #'
 #' `etrl_lookup()` takes in a string or character vector of HLA alleles, and
@@ -305,25 +345,6 @@ etrl_convert <- function(allele) {
   ifelse(allele_f2 %in% etrl_hla$Allele, allele_f2, make_xx(allele_f2)) |>
     replace(has_suffix(allele), "") |> # suffixes cannot be reduced
     ifelse(is_serology(allele), allele, no = _) # return serology as is
-}
-
-reorder_alleles <- function(in_order, to_order) {
-  in1 <- in_order[1]
-  to1 <- to_order[1]
-  # if more than 2 unique alleles, they're not in same format: scale down
-  if (length(union(in_order, to_order)) > 2) {
-    in1 <- get_broad(in_order[1])
-    to1 <- get_broad(to_order[1])
-  }
-  if (!is.na(in1) && !is.na(to1) && in1 != to1) {
-    return(rev(to_order))
-  }
-  to_order
-}
-
-reorder_alleles2 <- function(in_order, to_order) {
-  reordered <- to_order[match(union(in_order, to_order), to_order)]
-  reordered[!is.na(reordered)]
 }
 
 make_xx <- function(allele) {
