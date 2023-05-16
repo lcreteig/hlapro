@@ -247,21 +247,30 @@ reduce_to_nth_field <- function(allele, n) {
 #' strip_broad("A24(A9)")
 #' strip_broad("A9(A24)") # also works when the split is in parentheses
 #' strip_broad("A24(A9) A10 A25") # removes both A9 and A10
+#' # also works on character vectors
+#' strip_broad(c("A24(A9)", "A25(A10)"))
 strip_broad <- function(typing) {
-  # remove any parentheses and split up the individual alleles
-  typing_clean <- stringr::str_replace_all(
-    typing,
-    c(
-      "\\(" = " ",
-      "\\)" = ""
-    )
-  ) |>
-    stringr::str_split_1(" ")
-  # get broad-level equivalent of all the splits in the typing
-  broads_with_splits <- get_broad(typing_clean[is_split(typing_clean)])
-  # remove these from the typing
-  typing_clean[!(typing_clean %in% broads_with_splits)] |>
-    stringr::str_flatten(" ") # make into single string again
+  strip_broad_1 <- function(string) {
+    if (is.na(string)) {
+      return(string)
+    }
+    # remove any parentheses and split up the individual alleles
+    typing_clean <- stringr::str_replace_all(
+      string,
+      c(
+        "\\(" = " ",
+        "\\)" = ""
+      )
+    ) |>
+      stringr::str_split_1(" ")
+    # get broad-level equivalent of all the splits in the typing
+    broads_with_splits <- get_broad(typing_clean[is_split(typing_clean)])
+    # remove these from the typing
+    typing_clean[!(typing_clean %in% broads_with_splits)] |>
+      stringr::str_flatten(" ") # make into single string again
+  }
+
+  purrr::map_chr(typing, strip_broad_1)
 }
 
 #' Swap a pair of HLA-alleles to match another
