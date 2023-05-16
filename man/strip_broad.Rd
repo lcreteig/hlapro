@@ -14,7 +14,7 @@ HLA typing.}
 A string without the broad alleles in the input
 }
 \description{
-Sometimes a typing will contain both the split and the broad, e.g. \code{A24(A9)}
+Sometimes a typing will contain both the split and the broad, e.g. \code{A24(9)}
 or \verb{A10 A25}. The latter can cause a typing to contain more than 2 alleles
 for a given locus, which cannot be handled with \code{\link[=extract_alleles_str]{extract_alleles_str()}}; the
 former is not accepted by \code{\link[=validate_allele]{validate_allele()}}. Besides, the broads are
@@ -24,10 +24,10 @@ TODO: should at some point be subsumed in a general \code{hla_clean()} type
 function
 }
 \examples{
-strip_broad("A24(A9)")
-strip_broad("A9(A24)") # also works when the split is in parentheses
-strip_broad("A24(A9) A10 A25") # removes both A9 and A10
+strip_broad("A24(9)")
+strip_broad("A9(24)") # also works when the split is in parentheses
+strip_broad("A24(9) A10 A25") # removes both A9 and A10
 # also works on character vectors
-strip_broad(c("A24(A9)", "A25(A10)"))
+strip_broad(c("A24(9)", "A25(10)"))
 }
 \keyword{internal}

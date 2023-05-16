@@ -227,7 +227,7 @@ reduce_to_nth_field <- function(allele, n) {
 #' Strip broads from typing string if the split is also present
 #'
 #' @description
-#' Sometimes a typing will contain both the split and the broad, e.g. `A24(A9)`
+#' Sometimes a typing will contain both the split and the broad, e.g. `A24(9)`
 #' or `A10 A25`. The latter can cause a typing to contain more than 2 alleles
 #' for a given locus, which cannot be handled with [extract_alleles_str()]; the
 #' former is not accepted by [validate_allele()]. Besides, the broads are
@@ -244,11 +244,11 @@ reduce_to_nth_field <- function(allele, n) {
 #' @export
 #'
 #' @examples
-#' strip_broad("A24(A9)")
-#' strip_broad("A9(A24)") # also works when the split is in parentheses
-#' strip_broad("A24(A9) A10 A25") # removes both A9 and A10
+#' strip_broad("A24(9)")
+#' strip_broad("A9(24)") # also works when the split is in parentheses
+#' strip_broad("A24(9) A10 A25") # removes both A9 and A10
 #' # also works on character vectors
-#' strip_broad(c("A24(A9)", "A25(A10)"))
+#' strip_broad(c("A24(9)", "A25(10)"))
 strip_broad <- function(typing) {
   strip_broad_1 <- function(string) {
     if (is.na(string)) {
@@ -258,7 +258,7 @@ strip_broad <- function(typing) {
     typing_clean <- stringr::str_replace_all(
       string,
       c(
-        "\\(" = " ",
+        "([A-Za-z]+)(\\d+)\\([A-Za-z]*" = "\\1\\2 \\1", # re-insert locus
         "\\)" = ""
       )
     ) |>
