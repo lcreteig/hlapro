@@ -85,5 +85,7 @@ validate_allele <- function(allele) {
     $                    # END of HLA string
   )", comments = TRUE)
 
-  stringr::str_detect(allele, pattern)
+  # if there's a ":", there must also be a *
+  !(stringr::str_detect(allele, ":") & !stringr::str_detect(allele, "\\*")) &
+    stringr::str_detect(allele, pattern)
 }

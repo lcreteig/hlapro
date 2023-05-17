@@ -102,6 +102,10 @@ test_that("ambiguities are allowed", {
   expect_true(validate_allele("DRB1*11/13"))
 })
 
+test_that("no illegal (combinations of) characters", {
+  expect_false(validate_allele("B42:02")) # missing "*"
+})
+
 test_that("vectors work", {
   expect_equal(
     validate_allele(c("A2", "A*01:AABJE", "A*24:02:01:02L", "not")),
