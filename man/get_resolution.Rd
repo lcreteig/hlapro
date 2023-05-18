@@ -13,7 +13,8 @@ get_resolution(allele, extended = FALSE)
 \itemize{
 \item for high resolution: the number of fields ("second field", "third field",
 "fourth field")
-\item for low resolution: whether the allele is a serological split or broad
+\item for low resolution: whether the allele is a serological/molecular
+split/broad
 }}
 }
 \value{

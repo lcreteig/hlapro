@@ -18,8 +18,9 @@
 #' @param allele A string or character vector with (an) HLA allele(s).
 #' @param extended When `TRUE`, the returned resolution also contains:
 #'  - for high resolution: the number of fields ("second field", "third field",
-#'  "fourth field")
-#'  - for low resolution: whether the allele is a serological split or broad
+#'    "fourth field")
+#'  - for low resolution: whether the allele is a serological/molecular
+#'    split/broad
 #'
 #' @return A string or character vector of the same length as `allele`,
 #'   with `"low"`, `"intermediate"`, or `"high"` for each element.
@@ -62,8 +63,14 @@ get_resolution <- function(allele, extended = FALSE) {
   ord_seq <- c("first", "second", "third", "fourth")
 
   dplyr::case_when(
-    res == "low" & !is.na(get_split(allele)) ~ "low - split",
-    res == "low" & !is.na(get_broad(allele)) ~ "low - broad",
+    res == "low" & !is_serology(allele) & !is.na(get_split(allele))
+    ~ "molecular - split",
+    res == "low" & is_serology(allele) & !is.na(get_split(allele))
+    ~ "serology - split",
+    res == "low" & !is_serology(allele) & !is.na(get_broad(allele))
+    ~ "molecular - broad",
+    res == "low" & is_serology(allele) & !is.na(get_broad(allele))
+    ~ "serology - broad",
     res == "high" ~ stringr::str_c(
       res,
       " - ",

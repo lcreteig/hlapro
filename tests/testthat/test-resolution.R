@@ -66,10 +66,10 @@ test_that("extended mode works", {
     "intermediate"
   )
   expect_equal(get_resolution("A*01:AABJE", extended = TRUE), "intermediate")
-  expect_equal(get_resolution("A2", extended = TRUE), "low - broad")
-  expect_equal(get_resolution("A32", extended = TRUE), "low - split")
-  expect_equal(get_resolution("A*02", extended = TRUE), "low - broad")
-  expect_equal(get_resolution("A*32:XX", extended = TRUE), "low - split")
+  expect_equal(get_resolution("A2", extended = TRUE), "serology - broad")
+  expect_equal(get_resolution("A32", extended = TRUE), "serology - split")
+  expect_equal(get_resolution("A*02", extended = TRUE), "molecular - broad")
+  expect_equal(get_resolution("A*32:XX", extended = TRUE), "molecular - split")
   expect_equal(get_resolution(NA, extended = TRUE), NA_character_)
 })
 
