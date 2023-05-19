@@ -382,32 +382,40 @@ test_that("data frames with groupings work", {
   )
 })
 
-# strip_broad() -----------------------------------------------------------
+# strip_redundant() -----------------------------------------------------------
 
 test_that("split(broad) works", {
-  expect_equal(strip_broad("A24(9)"), "A24")
+  expect_equal(strip_redundant("A24(9)"), "A24")
 })
 
 test_that("broad(split) works", {
-  expect_equal(strip_broad("A9(24)"), "A24")
+  expect_equal(strip_redundant("A9(24)"), "A24")
 })
 
 test_that("broads without split are not removed", {
-  expect_equal(strip_broad("A10"), "A10")
+  expect_equal(strip_redundant("A10"), "A10")
+})
+
+test_that("splits are removed if there's something higher", {
+  expect_equal(strip_redundant("DR5 DR11 DRB1*11:XX"), "DRB1*11:XX")
+  expect_equal(
+    strip_redundant("DR1 DRB1*01:02 DR7 DRB1*07:XX"),
+    c("DRB1*01:02 DRB1*07:XX")
+  )
 })
 
 test_that("typing string works", {
-  expect_equal(strip_broad("A24(9) A10 A25 B70"), "A24 A25 B70")
-  expect_equal(strip_broad("A24(9) B64(14)"), "A24 B64")
+  expect_equal(strip_redundant("A24(9) A10 A25 B70"), "A24 A25 B70")
+  expect_equal(strip_redundant("A24(9) B64(14)"), "A24 B64")
 })
 
 test_that("NA returns NA", {
-  expect_equal(strip_broad(NA), NA_character_)
+  expect_equal(strip_redundant(NA), NA_character_)
 })
 
 test_that("stripping is vectorized", {
   expect_equal(
-    strip_broad(c("A24(9)", "A24(9) A10 A25 B70", NA)),
+    strip_redundant(c("A24(9)", "A24(9) A10 A25 B70", NA)),
     c("A24", "A24 A25 B70", NA)
   )
 })

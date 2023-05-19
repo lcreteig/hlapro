@@ -224,14 +224,17 @@ reduce_to_nth_field <- function(allele, n) {
   replace(allele, res_idx, stringr::str_sub(allele[res_idx], 1, ends))
 }
 
-#' Strip broads from typing string if the split is also present
+#' Strip redundant alleles from typing string if higher resolution is available
 #'
 #' @description
-#' Sometimes a typing will contain both the split and the broad, e.g. `A24(9)`
-#' or `A10 A25`. The latter can cause a typing to contain more than 2 alleles
-#' for a given locus, which cannot be handled with [extract_alleles_str()]; the
-#' former is not accepted by [validate_allele()]. Besides, the broads are
-#' redundant in this case, and can always be added back with [get_broad()].
+#' Sometimes a typing will contain multiple "versions" of an allele at different
+#' levels of resolution. Most commonly this is both the split and the broad,
+#' e.g. `A24(9)` or `A10 A25`. The latter can cause a typing to contain more
+#' than 2 alleles for a given locus, which cannot be handled with
+#' [extract_alleles_str()]; the former is not accepted by [validate_allele()].
+#' Besides, the broads are redundant in this case, and can always be added back
+#' with [get_broad()]. Sometimes even three "versions" are included: the split,
+#' the broad, and the two-field allele, e.g. `DR5 DR11 DRB1*11:03`.
 #'
 #' TODO: should at some point be subsumed in a general `hla_clean()` type
 #' function
@@ -239,18 +242,19 @@ reduce_to_nth_field <- function(allele, n) {
 #' @param typing A string containing the HLA allele or the full space-separated
 #' HLA typing.
 #'
-#' @return A string without the broad alleles in the input
+#' @return A string without the redundant alleles in the input
 #' @keywords internal
 #' @export
 #'
 #' @examples
-#' strip_broad("A24(9)")
-#' strip_broad("A9(24)") # also works when the split is in parentheses
-#' strip_broad("A24(9) A10 A25") # removes both A9 and A10
+#' strip_redundant("A24(9)")
+#' strip_redundant("A9(24)") # also works when the split is in parentheses
+#' strip_redundant("A24(9) A10 A25") # removes both A9 and A10
+#' strip_redundant("DR5 DR11 DRB1*11:03") # removes both the split and the broad
 #' # also works on character vectors
-#' strip_broad(c("A24(9)", "A25(10)"))
-strip_broad <- function(typing) {
-  strip_broad_1 <- function(string) {
+#' strip_redundant(c("A24(9)", "A25(10)"))
+strip_redundant <- function(typing) {
+  strip_redundant_1 <- function(string) {
     if (is.na(string)) {
       return(string)
     }
@@ -263,14 +267,17 @@ strip_broad <- function(typing) {
       )
     ) |>
       stringr::str_split_1(" ")
-    # get broad-level equivalent of all the splits in the typing
-    broads_with_splits <- get_broad(typing_clean[is_split(typing_clean)])
+    splits <- typing_clean[is_split(typing_clean)] # all splits in typing
+    geno <- typing_clean[!is_serology(typing_clean)] # all molecular typings
+    # get lower-level equivalents
+    broad_with_split <- get_broad(c(splits, geno))
+    split_with_higher <- get_split(geno)
     # remove these from the typing
-    typing_clean[!(typing_clean %in% broads_with_splits)] |>
+    typing_clean[!(typing_clean %in% c(broad_with_split, split_with_higher))] |>
       stringr::str_flatten(" ") # make into single string again
   }
 
-  purrr::map_chr(typing, strip_broad_1)
+  purrr::map_chr(typing, strip_redundant_1)
 }
 
 #' Swap a pair of HLA-alleles to match another
