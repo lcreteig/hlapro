@@ -291,10 +291,12 @@ test_that("public lookup is vectorized", {
 
 # reorder_alleles() -------------------------------------------------------
 
+# TODO: add test for single alleles that don't match?
+
 test_that("nothing is done when already in order", {
   in_order <- c("A1", "A2")
   to_order <- c("A1", "A2")
-  expect_equal(reorder_alleles(in_order, to_order), c("A1", "A2"))
+  expect_equal(reorder_alleles(in_order, to_order), to_order)
 })
 
 test_that("reordering with two unique alleles works", {
@@ -325,6 +327,9 @@ test_that("missings in in-order vector are respected", {
   in_order <- c("A2", NA)
   to_order <- c("A1", "A2")
   expect_equal(reorder_alleles(in_order, to_order), c("A2", "A1"))
+  in_order <- c("DQ3", NA)
+  to_order <- c("DQ2", "DQ7") # one split
+  expect_equal(reorder_alleles(in_order, to_order), c("DQ7", "DQ2"))
 })
 
 test_that("alleles with no serological equivalent are handled", {
@@ -355,9 +360,29 @@ test_that("reordering works when resolutions differ", {
   in_order <- c("A*02:01:01", "A*01:01")
   to_order <- c("A1", "A2")
   expect_equal(reorder_alleles(in_order, to_order), c("A2", "A1"))
+  # one split one broad
+  in_order <- c("A24", "A2") # has a split
+  to_order <- c("A9", "A2") # has a broad
+  expect_equal(reorder_alleles(in_order, to_order), c("A9", "A2"))
   in_order <- c("A24", "A2") # has a split
   to_order <- c("A2", "A9") # has a broad
   expect_equal(reorder_alleles(in_order, to_order), c("A9", "A2"))
+  # two splits with different order: reverse
+  in_order <- c("A23", "A24")
+  to_order <- c("A*24:02", "A*23:01")
+  expect_equal(reorder_alleles(in_order, to_order), c("A*23:01", "A*24:02"))
+  # two splits with same order: don't reverse
+  in_order <- c("A23", "A24")
+  to_order <- c("A*23:01", "A*24:02")
+  expect_equal(reorder_alleles(in_order, to_order), c("A*23:01", "A*24:02"))
+  # already in order; don't reverse
+  in_order <- c("A*32:01:01:01", "A*26:01:01:01")
+  to_order <- c("A25", "A26")
+  expect_equal(reorder_alleles(in_order, to_order), c("A25", "A26"))
+  # out of order; reverse
+  in_order <- c("A*32:01:01:01", "A*26:01:01:01")
+  to_order <- c("A26", "A25")
+  expect_equal(reorder_alleles(in_order, to_order), c("A25", "A26"))
 })
 
 test_that("data frames with groupings work", {

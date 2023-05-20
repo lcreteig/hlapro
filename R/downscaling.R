@@ -288,8 +288,10 @@ strip_redundant <- function(typing) {
 #'  individual that you're trying to match up.
 #'
 #'  If the vectors contain alleles in different nomenclatures / of different
-#'  resolutions, the order is determined based on their serological broad-level
-#'  equivalents.
+#'  resolutions, the order is determined based on scaling down the resolution.
+#'  First it tries to scale down to the 2-field level; if still all alleles
+#'  differ from each other, it tries the serological split level, and finally
+#'  the serological broad level.
 #'
 #' @param in_order,to_order A character vector of two HLA alleles of a certain
 #'  locus. The order of `to_order` will be reversed, to match `in_order`, if
@@ -307,10 +309,19 @@ strip_redundant <- function(typing) {
 #' reorder_alleles(in_order = c("A1", "A2"), to_order = c("A*02:01", "A*01:01"))
 reorder_alleles <- function(in_order, to_order) {
   to_order_orig <- to_order
-  # if more than 2 unique alleles, they're not in same format: scale down
-  if (length(union(in_order, to_order)) > 2) {
-    in_order <- get_broad(in_order)
-    to_order <- get_broad(to_order)
+
+  # scale down further and further if necessary
+  downscaling_levels <- c(
+    get_broad,
+    get_serology,
+    \(x) reduce_to_nth_field(x, 2)
+  )
+  ii <- 3
+  # if all unique alleles, they're not in same format: scale down
+  while ((length(unique(c(in_order, to_order))) > 3) && ii != 0) {
+    in_order <- downscaling_levels[[ii]](in_order)
+    to_order <- downscaling_levels[[ii]](to_order)
+    ii <- ii - 1
   }
   # use identical() to allow for NA comparisons
   if (identical(in_order[1], to_order[2]) ||

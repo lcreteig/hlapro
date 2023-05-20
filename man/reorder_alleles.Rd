@@ -22,8 +22,10 @@ individual that you're trying to match up.
 }
 \details{
 If the vectors contain alleles in different nomenclatures / of different
-resolutions, the order is determined based on their serological broad-level
-equivalents.
+resolutions, the order is determined based on scaling down the resolution.
+First it tries to scale down to the 2-field level; if still all alleles
+differ from each other, it tries the serological split level, and finally
+the serological broad level.
 }
 \examples{
 reorder_alleles(in_order = c("A1", "A2"), to_order = c("A2", "A1"))
