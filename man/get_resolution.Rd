@@ -14,7 +14,8 @@ get_resolution(allele, extended = FALSE)
 \item for high resolution: the number of fields ("second field", "third field",
 "fourth field")
 \item for low resolution: whether the allele is a serological/molecular
-split/broad
+split/broad or
+\href{https://hla.alleles.org/antigens/broads_splits.html}{associated antigen}
 }}
 }
 \value{

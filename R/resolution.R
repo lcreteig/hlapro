@@ -20,7 +20,8 @@
 #'  - for high resolution: the number of fields ("second field", "third field",
 #'    "fourth field")
 #'  - for low resolution: whether the allele is a serological/molecular
-#'    split/broad
+#'    split/broad or
+#'    [associated antigen](https://hla.alleles.org/antigens/broads_splits.html)
 #'
 #' @return A string or character vector of the same length as `allele`,
 #'   with `"low"`, `"intermediate"`, or `"high"` for each element.
@@ -61,8 +62,9 @@ get_resolution <- function(allele, extended = FALSE) {
   }
 
   ord_seq <- c("first", "second", "third", "fourth")
-
   dplyr::case_when(
+    res == "low" & is_associated(allele)
+    ~ "serology - associated",
     res == "low" & !is_serology(allele) & !is.na(get_split(allele))
     ~ "molecular - split",
     res == "low" & is_serology(allele) & !is.na(get_split(allele))

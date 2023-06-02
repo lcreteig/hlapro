@@ -406,6 +406,10 @@ is_broad <- function(allele) {
   allele %in% unique(etrl_hla$`ET MatchDeterminantBroad`)
 }
 
+is_associated <- function(allele) {
+  is_serology(allele) & stringr::str_detect(allele, r"([A-Z]-?\d{3,4})")
+}
+
 is_public <- function(allele) {
   allele %in% c("Bw4", "Bw6")
 }

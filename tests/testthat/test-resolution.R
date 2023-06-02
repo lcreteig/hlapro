@@ -70,6 +70,11 @@ test_that("extended mode works", {
   expect_equal(get_resolution("A32", extended = TRUE), "serology - split")
   expect_equal(get_resolution("A*02", extended = TRUE), "molecular - broad")
   expect_equal(get_resolution("A*32:XX", extended = TRUE), "molecular - split")
+  expect_equal(get_resolution("A203", extended = TRUE), "serology - associated")
+  expect_equal(
+    get_resolution("DR1403", extended = TRUE),
+    "serology - associated"
+  )
   expect_equal(get_resolution(NA, extended = TRUE), NA_character_)
 })
 
