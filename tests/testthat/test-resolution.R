@@ -16,6 +16,7 @@ test_that("MACs are intermediate", {
   # v3
   expect_equal(get_resolution("A*01:AABJE"), "intermediate")
   expect_equal(get_resolution("DRB1*07:GC"), "intermediate")
+  expect_equal(get_resolution("C*17:XXHN"), "intermediate") # starts with XX
   # v2
   expect_equal(get_resolution("B*15CFRG"), "intermediate")
   expect_equal(get_resolution("A*01KG"), "intermediate")

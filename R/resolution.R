@@ -46,7 +46,7 @@ get_resolution <- function(allele, extended = FALSE) {
     # "*" followed by capital letter (but not XX), or digits and then a slash
     stringr::str_detect(
       allele,
-      r"(\*\d+:?(?!XX)([A-Z]|\d+\/))"
+      r"(\*\d+:?(?!XX$)([A-Z]|\d+\/))"
     ) ~ "intermediate",
     # "*" followed by 4 digits with optional semicolon in between
     stringr::str_detect(
