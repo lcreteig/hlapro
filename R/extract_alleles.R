@@ -37,6 +37,7 @@
 #' extract_alleles_str("DQB1*03:01 DQB1*05:01 DRB1*04:AMR",
 #'   loci = c("DRB1", "DQB1")
 #' )
+# TODO: call count_alleles() and throw warning when >2?
 extract_alleles_str <- function(string,
                                 loci = c(
                                   "A", "B", "C", "DPB1",
@@ -66,6 +67,7 @@ extract_alleles_str <- function(string,
 
 #' @rdname extract_alleles_str
 #' @export
+# TODO: Get rid of this in favor of unnesting extract_alleles_str() result?
 extract_alleles_df <- function(df,
                                col_typing,
                                loci = c(
@@ -94,6 +96,26 @@ extract_alleles_df <- function(df,
     purrr::reduce(dplyr::full_join)
 }
 
+count_alleles <- function(string,
+                          loci = c(
+                            "A", "B", "C",
+                            "DPB1", "DQA1", "DQB1", "DRB1", "DRB."
+                          )) {
+  loci <- rlang::arg_match(loci, multiple = TRUE)
+
+  # locus should not be preceded by / (an ambiguity) or a capital,
+  # and should be followed either by a digit (serology) or * (molecular)
+  base_pattern <- r"((?<!\/|[A-Z]){locus}(\d+|\*))"
+
+  counts <- stringr::str_count(string,
+    pattern = stringr::str_glue(
+      base_pattern,
+      locus = locus_patterns[loci]
+    )
+  )
+  rlang::set_names(counts, names(locus_patterns[loci]))
+}
+
 build_pattern <- function(locus, strip_locus) {
   if (strip_locus) { # do not include the locus and * in the match
     allele_pattern <- r"((?:{locus}[-\*]?(\S+)))"
@@ -107,19 +129,6 @@ build_pattern <- function(locus, strip_locus) {
     # ("B" in "DRB1") or other prefixes (e.g. "A" in "HLA-")
     neg = "(?<![:A-Z])",
     allele = allele_pattern, # match locus and following non-spaces
-    loci = list(
-      A = "A",
-      B = "B(?![Ww])", # B cannot be followed by "W" (public)
-      C = "C[Ww]?", # in serological notation, C is followed by "w"
-      DPB1 = "DP(?:w|-|B1)", # either "DPw" "DP-" or "DPB1"
-      DQA1 = "DQA[-1]", # either "DQA-" or DQA1
-      DQB1 = "DQ(?!A)(?:B1)?", # could be "DQB1" but also "DQ" with no A after
-      DRB1 = "DR(?!A|B[2-9]|5[1-3])(?:B1)?", # either "DRB1"
-      # or "DR" (excluding DRA, DR51-53)
-      DRB. = r"(DR(?:(?=5[1-3])|B(?=[3-5](?!\*Neg))))" # either DR51/52/53 or
-      # DRB3/4/5. Sometimes all 3 are specified, with 1-2 having suffix "*Neg".
-      # These should be skipped, in order to still retrieve full typing
-    ),
     # don't capture other alleles in between: i.e. any that aren't current locus
     inbetween = r"((?:\s(?!{locus})\S+)*\s?)"
   )
@@ -127,9 +136,23 @@ build_pattern <- function(locus, strip_locus) {
   # build the regular expression from its sub-parts
   stringr::str_c(
     regexps$neg,
-    stringr::str_glue(regexps$allele, locus = regexps$loci[locus]),
-    stringr::str_glue(regexps$inbetween, locus = regexps$loci[locus]),
-    stringr::str_glue(regexps$allele, locus = regexps$loci[locus]),
+    stringr::str_glue(regexps$allele, locus = locus_patterns[locus]),
+    stringr::str_glue(regexps$inbetween, locus = locus_patterns[locus]),
+    stringr::str_glue(regexps$allele, locus = locus_patterns[locus]),
     "?" # second allele is optional
   )
 }
+
+locus_patterns <- c(
+  A = "A",
+  B = "B(?![Ww])", # B cannot be followed by "W" (public)
+  C = "C[Ww]?", # in serological notation, C is followed by "w"
+  DPB1 = "DP(?:w|-|B1)", # either "DPw" "DP-" or "DPB1"
+  DQA1 = "DQA[-1]", # either "DQA-" or DQA1
+  DQB1 = "DQ(?!A)(?:B1)?", # could be "DQB1" but also "DQ" with no A after
+  DRB1 = "DR(?!A|B[2-9]|5[1-3])(?:B1)?", # either "DRB1"
+  # or "DR" (excluding DRA, DR51-53)
+  DRB. = r"(DR(?:(?=5[1-3])|B(?=[3-5](?!\*Neg))))" # either DR51/52/53 or
+  # DRB3/4/5. Sometimes all 3 are specified, with 1-2 having suffix "*Neg".
+  # These should be skipped, in order to still retrieve full typing)
+)

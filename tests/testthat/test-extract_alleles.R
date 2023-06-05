@@ -1,3 +1,5 @@
+# extract_alleles() -------------------------------------------------------
+
 # Vectorization -----------------------------------------------------------
 
 test_that("multiple loci can be extracted", {
@@ -706,3 +708,83 @@ test_that("'DRB's in MACs are not extracted", {
   df_out <- tidyr::tibble(df_in, DRB._1 = "5*03:MAC", DRB._2 = "5*01:AM")
   expect_equal(extract_alleles_df(df_in, typing, loci = "DRB."), df_out)
 })
+
+
+# count_alleles() ---------------------------------------------------------
+
+# HLA-A
+test_that("HLA-A is counted correctly", {
+  expect_equal(count_alleles("", "A"), c(A = 0))
+  expect_equal(count_alleles("A1", "A"), c(A = 1))
+  expect_equal(count_alleles("HLA-A*01", "A"), c(A = 1))
+  expect_equal(count_alleles("A*01 A1", "A"), c(A = 2))
+  expect_equal(count_alleles("A*01:01/A*01:02", "A"), c(A = 1))
+  expect_equal(count_alleles("A*01:AABJE", "A"), c(A = 1))
+  expect_equal(count_alleles("A*07:985:01:02A B*07:01", "A"), c(A = 1))
+})
+
+# HLA-B
+test_that("HLA-B is counted correctly", {
+  expect_equal(count_alleles("B1", "B"), c(B = 1))
+  expect_equal(count_alleles("B*15:01", "B"), c(B = 1))
+  expect_equal(count_alleles("B1 B8 Bw4 Bw6", "B"), c(B = 2))
+  expect_equal(count_alleles("B1 B8 DRB1*01:01", "B"), c(B = 2))
+})
+
+# HLA-C
+test_that("HLA-C is counted correctly", {
+  expect_equal(count_alleles("Cw1", "C"), c(C = 1))
+  expect_equal(count_alleles("C*01:02", "C"), c(C = 1))
+  expect_equal(count_alleles("C*01:02 C*02:XX", "C"), c(C = 2))
+  expect_equal(count_alleles("C*07:985:01:02C DQB1*01:01", "C"), c(C = 1))
+})
+
+# HLA-DPB1
+test_that("HLA-DPB1 is counted correctly", {
+  expect_equal(count_alleles("DPB1*04:02 DPB1*05:01", "DPB1"), c(DPB1 = 2))
+  expect_equal(count_alleles("DP-01", "DPB1"), c(DPB1 = 1))
+  expect_equal(count_alleles("DP-0202", "DPB1"), c(DPB1 = 1))
+  expect_equal(count_alleles("DPB1*05:DPBA", "DPB1"), c(DPB1 = 1))
+})
+
+# HLA-DQA1
+test_that("HHLA-DQA1 is counted correctly", {
+  expect_equal(count_alleles("DQA1*04:02 DQA1*01:07Q", "DQA1"), c(DQA1 = 2))
+  expect_equal(count_alleles("DQA-01 DQ3", "DQA1"), c(DQA1 = 1))
+  expect_equal(count_alleles("DQA1*05:DQAA", "DQA1"), c(DQA1 = 1))
+})
+
+# HLA-DQB1
+test_that("HLA-DQB1 is counted correctly", {
+  expect_equal(count_alleles("DQB1*02:01 DQB1*02:53Q", "DQB1"), c(DQB1 = 2))
+  expect_equal(count_alleles("DQ3 DQA-01", "DQB1"), c(DQB1 = 1))
+  expect_equal(count_alleles("DQB1*05:DQBB", "DQB1"), c(DQB1 = 1))
+})
+
+# HLA-DRB1
+test_that("HLA-DRB1 is counted correctly", {
+  expect_equal(count_alleles("DRB1*01:01 DRB1*03:01", "DRB1"), c(DRB1 = 2))
+  expect_equal(count_alleles("DRB3*01:01 DR52", "DRB1"), c(DRB1 = 0))
+  expect_equal(count_alleles("DR1 DR17", "DRB1"), c(DRB1 = 2))
+  expect_equal(count_alleles("DRB5*04:11 DRB1*04:11", "DRB1"), c(DRB1 = 1))
+})
+
+# HLA-DRB3/4/5 alleles
+test_that("HLA-DRB3/4/5 is counted correctly", {
+  expect_equal(count_alleles("DRB3*01:01 DRB5*02:XX", "DRB."), c(DRB. = 2))
+  expect_equal(count_alleles("DRB1*01:01 DR1", "DRB."), c(DRB. = 0))
+  expect_equal(count_alleles("DR52 DR53", "DRB."), c(DRB. = 2))
+  expect_equal(count_alleles("DRB5*04:11 DRB1*04:11", "DRB."), c(DRB. = 1))
+})
+
+# All loci
+test_that("Alleles in full typing are counted correctly", {
+  typing <- "A1 B7 B*42:08 Cw3 DQ5 DQB1*03:241 DR4 DRB1*07:CYMD DP-0202 DR52"
+  typing_counts <- c(
+    A = 1, B = 2, C = 1,
+    DPB1 = 1, DQA1 = 0, DQB1 = 2, DRB1 = 2, DRB. = 1
+  )
+  expect_equal(count_alleles(typing), typing_counts)
+})
+
+# Vectorization
