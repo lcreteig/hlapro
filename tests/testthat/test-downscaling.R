@@ -421,6 +421,10 @@ test_that("broads without split are not removed", {
   expect_equal(strip_redundant("A10"), "A10")
 })
 
+test_that("homozygotes are retained", {
+  expect_equal(strip_redundant("A29 A29"), "A29 A29")
+})
+
 test_that("splits are removed if there's something higher", {
   expect_equal(strip_redundant("DR5 DR11 DRB1*11:XX"), "DRB1*11:XX")
   expect_equal(

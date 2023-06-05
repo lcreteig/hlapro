@@ -273,7 +273,7 @@ strip_redundant <- function(typing) {
     broad_with_split <- get_broad(c(splits, geno))
     split_with_higher <- get_split(geno)
     # remove these from the typing
-    setdiff(typing_clean, c(broad_with_split, split_with_higher)) |>
+    typing_clean[!(typing_clean %in% c(broad_with_split, split_with_higher))] |>
       stringr::str_flatten(" ") # make into single string again
   }
 
