@@ -712,9 +712,14 @@ test_that("'DRB's in MACs are not extracted", {
 
 # count_alleles() ---------------------------------------------------------
 
+# NA
+test_that("NAs are handled", {
+  expect_equal(count_alleles(NA, "A"), c(A = NA_integer_))
+  expect_equal(count_alleles("", "A"), c(A = 0))
+})
+
 # HLA-A
 test_that("HLA-A is counted correctly", {
-  expect_equal(count_alleles("", "A"), c(A = 0))
   expect_equal(count_alleles("A1", "A"), c(A = 1))
   expect_equal(count_alleles("HLA-A*01", "A"), c(A = 1))
   expect_equal(count_alleles("A*01 A1", "A"), c(A = 2))
@@ -788,3 +793,12 @@ test_that("Alleles in full typing are counted correctly", {
 })
 
 # Vectorization
+test_that("Counting is vectorized over typings", {
+  typings <- c("A1 B7 B*42:08", "A*02:01 Cw3", NA)
+  typings_counts <- list(
+    c(A = 1, B = 2, C = 0),
+    c(A = 1, B = 0, C = 1),
+    c(A = NA_integer_, B = NA_integer_, C = NA_integer_)
+  )
+  expect_equal(count_alleles(typings, loci = c("A", "B", "C")), typings_counts)
+})

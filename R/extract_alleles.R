@@ -96,7 +96,34 @@ extract_alleles_df <- function(df,
     purrr::reduce(dplyr::full_join)
 }
 
-count_alleles <- function(string,
+#' Count the number of alleles for each locus in an HLA typing string
+#'
+#' @description
+#'
+#' `count_alleles()` takes in a character vector or string of HLA typings, and
+#' returns the number of alleles that the string contains for each locus.
+#'
+#' This can be useful when validating whether a typing string contains a typing
+#' for each locus. Also, this function can alert you when a typing string
+#' contains more than two alleles for each locus, which can be intentional
+#' (e.g. when the typing contains both the broad and the split) or a mistake.
+#'
+#' @inheritParams extract_alleles_str
+#' @param typings A(n) (character vector of) HLA typing string(s).
+#'
+#' @return A (list of) named integer vector(s), with the loci as names, and
+#'   the number of found alleles per locus as values.
+#' @export
+#'
+#' @examples
+#' typing <- "A1 A2 B7 B8 Cw3 DQ5 DQ8 DR4 DR11 DR52 DR53"
+#' count_alleles(typing, loci = "A")
+#' count_alleles(typing)
+#'
+#' # Also works with character vectors
+#' typing <- c("A1 A2 B7 B8 Cw3", "Cw3 Cw7", NA)
+#' count_alleles(typing, loci = c("A", "B", "C"))
+count_alleles <- function(typings,
                           loci = c(
                             "A", "B", "C",
                             "DPB1", "DQA1", "DQB1", "DRB1", "DRB."
@@ -107,13 +134,21 @@ count_alleles <- function(string,
   # and should be followed either by a digit (serology) or * (molecular)
   base_pattern <- r"((?<!\/|[A-Z]){locus}(\d+|\*))"
 
-  counts <- stringr::str_count(string,
-    pattern = stringr::str_glue(
-      base_pattern,
-      locus = locus_patterns[loci]
+  # count alleles per locus and return as named integer vector
+  count_alleles_1 <- function(string, loci) {
+    counts <- stringr::str_count(string,
+      pattern = stringr::str_glue(
+        base_pattern,
+        locus = locus_patterns[loci]
+      )
     )
-  )
-  rlang::set_names(counts, names(locus_patterns[loci]))
+    rlang::set_names(counts, names(locus_patterns[loci]))
+  }
+
+  if (length(typings) > 1) {
+    return(purrr::map(typings, \(x) count_alleles_1(x, loci)))
+  }
+  count_alleles_1(typings, loci)
 }
 
 build_pattern <- function(locus, strip_locus) {
@@ -152,6 +187,7 @@ locus_patterns <- c(
   DQB1 = "DQ(?!A)(?:B1)?", # could be "DQB1" but also "DQ" with no A after
   DRB1 = "DR(?!A|B[2-9]|5[1-3])(?:B1)?", # either "DRB1"
   # or "DR" (excluding DRA, DR51-53)
+  # TODO: now what we have count_alleles(), remove *Neg
   DRB. = r"(DR(?:(?=5[1-3])|B(?=[3-5](?!\*Neg))))" # either DR51/52/53 or
   # DRB3/4/5. Sometimes all 3 are specified, with 1-2 having suffix "*Neg".
   # These should be skipped, in order to still retrieve full typing)
