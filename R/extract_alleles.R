@@ -23,6 +23,7 @@
 #'   - If `FALSE`, will retain the locus as it was in the original typing.
 #'
 #' @return Either a character vector or a data frame with the named alleles.
+#'  A warning will be shown if any loci in the input have more than two alleles.
 #' @export
 #'
 #' @examples
@@ -37,7 +38,6 @@
 #' extract_alleles_str("DQB1*03:01 DQB1*05:01 DRB1*04:AMR",
 #'   loci = c("DRB1", "DQB1")
 #' )
-# TODO: call count_alleles() and throw warning when >2?
 extract_alleles_str <- function(string,
                                 loci = c(
                                   "A", "B", "C", "DPB1",
@@ -49,6 +49,13 @@ extract_alleles_str <- function(string,
 
   # get rid of any leading/trailing/double spaces
   string <- stringr::str_squish(string)
+
+  if (any(count_alleles(string, loci) > 2)) {
+    rlang::warn(c("One or more loci found with more than 2 alleles.",
+      "x" = "`extract_alleles_str()` will only pick the first two.",
+      "i" = "Use `hlapro::count_alleles()` to find out more."
+    ))
+  }
 
   extract_str <- function(locus, string) {
     pattern <- build_pattern(locus, strip_locus)
@@ -67,7 +74,6 @@ extract_alleles_str <- function(string,
 
 #' @rdname extract_alleles_str
 #' @export
-# TODO: Get rid of this in favor of unnesting extract_alleles_str() result?
 extract_alleles_df <- function(df,
                                col_typing,
                                loci = c(
@@ -79,6 +85,20 @@ extract_alleles_df <- function(df,
 
   # get rid of any leading/trailing/double spaces
   df <- dplyr::mutate(df, dplyr::across({{ col_typing }}, stringr::str_squish))
+
+  warn_flag <- df |>
+    dplyr::pull({{ col_typing }}) |>
+    append(NA) |> # force this to be a list
+    count_alleles(loci) |>
+    purrr::list_c() |>
+    purrr::some(\(x) !is.na(x) & x > 2)
+
+  if (warn_flag) {
+    rlang::warn(c("One or more loci found with more than 2 alleles.",
+      "x" = "`extract_alleles_df()` will only pick the first two.",
+      "i" = "Use `hlapro::count_alleles()` to find out more."
+    ))
+  }
 
   extract_df <- function(locus, df, col_typing) {
     pattern <- build_pattern(locus, strip_locus)

@@ -39,6 +39,7 @@ typing \code{string} for each row.}
 }
 \value{
 Either a character vector or a data frame with the named alleles.
+A warning will be shown if any loci in the input have more than two alleles.
 }
 \description{
 Takes in a space-separated HLA typing string and splits it into

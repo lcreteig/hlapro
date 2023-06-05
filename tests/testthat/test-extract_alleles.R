@@ -108,6 +108,17 @@ test_that("extraction is robust to leading spaces", {
   expect_equal(extract_alleles_df(df_in, typing, loci = "A"), df_out)
 })
 
+
+# Loci with more than two alleles -----------------------------------------
+
+test_that("Loci with more than two alleles throw a warning", {
+  expect_warning(extract_alleles_str("A1 A2 A3", loci = "A"))
+  expect_warning(extract_alleles_df(tidyr::tibble(typing = "A1 A2 A3"),
+    typing,
+    loci = "A"
+  ))
+})
+
 # HLA-A -------------------------------------------------------------------
 
 test_that("both HLA-A alleles are extracted from beginning", {
