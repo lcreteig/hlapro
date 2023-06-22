@@ -10,7 +10,8 @@ db_get_version(ard)
 \item{ard}{The Python database connection object created by \code{\link[=db_initialize]{db_initialize()}}}
 }
 \description{
-Print version of initialized IPD-IMGT/HLA database
+Thin wrapper around the \code{ard.db_get_version()} method of the
+\href{https://github.com/nmdp-bioinformatics/py-ard}{\code{py-ard}} Python package.
 }
 \examples{
 \dontrun{
