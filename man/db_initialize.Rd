@@ -25,6 +25,6 @@ developed by the NMDP to initialize the
 }
 \examples{
 \dontrun{
-ard <- db_initialize(data_dir = "~/ipd_db/", imgt_version = "3510")
+ard <- db_initialize(data_dir = "~/ipd_db", imgt_version = "3510")
 }
 }
