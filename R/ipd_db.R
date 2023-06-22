@@ -38,3 +38,28 @@ db_initialize <- function(data_dir, imgt_version = "Latest") {
 db_get_version <- function(ard) {
   ard$get_db_version()
 }
+
+reduce_to_serology <- function(ard, allele) {
+  purrr::map_chr(allele, \(x) ard$redux(x, "S"))
+}
+
+reduce_to_field2 <- function(ard, allele) {
+  purrr::map_chr(allele, \(x) ard$redux(x, "U2"))
+}
+
+mac_lookup <- function(ard, allele) {
+  purrr::map_chr(allele, ard$lookup_mac)
+}
+
+mac_expand <- function(ard, allele) {
+  purrr::map_chr(allele, ard$expand_mac)
+}
+
+is_in_ipd_db <- function(ard, allele) {
+  # ard$validate() throws an error if the allele is not in the db, instead of
+  # returning "FALSE", so we need to wrap it
+  safe_validate <- purrr::safely(ard$validate, otherwise = FALSE)
+  purrr::map(allele, safe_validate) |>
+    purrr::map("result") |>
+    purrr::simplify()
+}
