@@ -6,7 +6,7 @@
 \usage{
 count_alleles(
   typings,
-  loci = c("A", "B", "C", "DPB1", "DQA1", "DQB1", "DRB1", "DRB.")
+  loci = c("A", "B", "C", "DPA1", "DPB1", "DQA1", "DQB1", "DRB1", "DRB.")
 )
 }
 \arguments{

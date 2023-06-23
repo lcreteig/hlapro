@@ -40,8 +40,8 @@
 #' )
 extract_alleles_str <- function(string,
                                 loci = c(
-                                  "A", "B", "C", "DPB1",
-                                  "DQA1", "DQB1", "DRB1", "DRB."
+                                  "A", "B", "C",
+                                  "DPA1", "DPB1", "DQA1", "DQB1", "DRB1", "DRB."
                                 ),
                                 strip_locus = TRUE) {
   loci <- rlang::arg_match(loci, multiple = TRUE)
@@ -78,7 +78,7 @@ extract_alleles_df <- function(df,
                                col_typing,
                                loci = c(
                                  "A", "B", "C",
-                                 "DPB1", "DQA1", "DQB1", "DRB1", "DRB."
+                                 "DPA1", "DPB1", "DQA1", "DQB1", "DRB1", "DRB."
                                ),
                                strip_locus = TRUE) {
   loci <- rlang::arg_match(loci, multiple = TRUE)
@@ -146,7 +146,7 @@ extract_alleles_df <- function(df,
 count_alleles <- function(typings,
                           loci = c(
                             "A", "B", "C",
-                            "DPB1", "DQA1", "DQB1", "DRB1", "DRB."
+                            "DPA1", "DPB1", "DQA1", "DQB1", "DRB1", "DRB."
                           )) {
   loci <- rlang::arg_match(loci, multiple = TRUE)
 
@@ -202,6 +202,7 @@ locus_patterns <- c(
   A = "A",
   B = "B(?![Ww])", # B cannot be followed by "W" (public)
   C = "C[Ww]?", # in serological notation, C is followed by "w"
+  DPA1 = "DPA[-1]", # either "DQA-" or DQA1
   DPB1 = "DP(?:w|-|B1)", # either "DPw" "DP-" or "DPB1"
   DQA1 = "DQA[-1]", # either "DQA-" or DQA1
   DQB1 = "DQ(?!A)(?:B1)?", # could be "DQB1" but also "DQ" with no A after

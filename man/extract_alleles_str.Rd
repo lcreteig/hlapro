@@ -7,14 +7,14 @@
 \usage{
 extract_alleles_str(
   string,
-  loci = c("A", "B", "C", "DPB1", "DQA1", "DQB1", "DRB1", "DRB."),
+  loci = c("A", "B", "C", "DPA1", "DPB1", "DQA1", "DQB1", "DRB1", "DRB."),
   strip_locus = TRUE
 )
 
 extract_alleles_df(
   df,
   col_typing,
-  loci = c("A", "B", "C", "DPB1", "DQA1", "DQB1", "DRB1", "DRB."),
+  loci = c("A", "B", "C", "DPA1", "DPB1", "DQA1", "DQB1", "DRB1", "DRB."),
   strip_locus = TRUE
 )
 }
