@@ -3,6 +3,8 @@
 export(clean_hla)
 export(count_alleles)
 export(df_to_gl)
+export(db_get_version)
+export(db_initialize)
 export(etrl_lookup)
 export(extract_alleles_df)
 export(extract_alleles_str)
