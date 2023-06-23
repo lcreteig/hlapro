@@ -18,6 +18,7 @@ Imports:
     dplyr,
     purrr,
     readxl,
+    reticulate,
     rlang (>= 1.1.0),
     rvest,
     stringr (>= 1.5.0),
@@ -36,6 +37,12 @@ Suggests:
     usethis
 Language: en-US
 Config/testthat/edition: 3
+Config/reticulate:
+  list(
+    packages = list(
+      list(package = "py-ard",  pip = TRUE)
+    )
+  )
 URL: https://github.com/lcreteig/hlapro,
     https://lcreteig.github.io/hlapro/
 BugReports: https://github.com/lcreteig/hlapro/issues
