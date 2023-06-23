@@ -18,6 +18,10 @@
 * New `extract_alleles_str()`, `extract_alleles_df()` gets alleles for each 
   locus from HLA typing string, and separates them into named list elements 
   / new columns in a data frame.
+  
+  - Use `count_alleles()` to inspect the number of alleles per locus. The
+  `extract_alleles()_*` functions also use `count_alleles()` to warn whenever 
+  they encounter a typing with more than two alleles per locus.
 
 # hlapro 0.1.0
 

@@ -76,6 +76,18 @@ df <- tidyr::tibble(typing = "A1 A2 B7 B8 Cw3 DQ5 DQ8 DR4 DR11 DR52 DR53")
 extract_alleles_df(df, typing, loci = c("A", "B", "C"))
 ```
 
+If there's more than two alleles for a given locus in the typing, you'll receive a warning:
+
+```{r more than two alleles}
+typing <- "A1 A2 A3 B7 B8 Cw1"
+extract_alleles_str(typing)
+```
+Use `count_alleles()` to easily inspect the number of alleles per locus:
+
+```{r count alleles}
+count_alleles(typing)
+```
+
 ### Validating alleles
 
 Check whether alleles are well-formed
