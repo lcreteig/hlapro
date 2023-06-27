@@ -69,10 +69,10 @@ Extract HLA alleles from a typing string
 ``` r
 typing <- "A1 A2 B7 B8 Cw3 DQ5 DQ8 DR4 DR11 DR52 DR53"
 extract_alleles_str(typing)
-#>    A_1    A_2    B_1    B_2    C_1    C_2 DPB1_1 DPB1_2 DQA1_1 DQA1_2 DQB1_1 
-#>    "1"    "2"    "7"    "8"    "3"     NA     NA     NA     NA     NA    "5" 
-#> DQB1_2 DRB1_1 DRB1_2 DRB._1 DRB._2 
-#>    "8"    "4"   "11"   "52"   "53"
+#>    A_1    A_2    B_1    B_2    C_1    C_2 DPA1_1 DPA1_2 DPB1_1 DPB1_2 DQA1_1 
+#>    "1"    "2"    "7"    "8"    "3"     NA     NA     NA     NA     NA     NA 
+#> DQA1_2 DQB1_1 DQB1_2 DRB1_1 DRB1_2 DRB._1 DRB._2 
+#>     NA    "5"    "8"    "4"   "11"   "52"   "53"
 
 df <- tidyr::tibble(typing = "A1 A2 B7 B8 Cw3 DQ5 DQ8 DR4 DR11 DR52 DR53")
 extract_alleles_df(df, typing, loci = c("A", "B", "C"))
@@ -93,18 +93,33 @@ extract_alleles_str(typing)
 #> Warning: One or more loci found with more than 2 alleles.
 #> ✖ `extract_alleles_str()` will only pick the first two.
 #> ℹ Use `hlapro::count_alleles()` to find out more.
-#>    A_1    A_2    B_1    B_2    C_1    C_2 DPB1_1 DPB1_2 DQA1_1 DQA1_2 DQB1_1 
+#>    A_1    A_2    B_1    B_2    C_1    C_2 DPA1_1 DPA1_2 DPB1_1 DPB1_2 DQA1_1 
 #>    "1"    "2"    "7"    "8"    "1"     NA     NA     NA     NA     NA     NA 
-#> DQB1_2 DRB1_1 DRB1_2 DRB._1 DRB._2 
-#>     NA     NA     NA     NA     NA
+#> DQA1_2 DQB1_1 DQB1_2 DRB1_1 DRB1_2 DRB._1 DRB._2 
+#>     NA     NA     NA     NA     NA     NA     NA
 ```
 
 Use `count_alleles()` to easily inspect the number of alleles per locus:
 
 ``` r
 count_alleles(typing)
-#>    A    B    C DPB1 DQA1 DQB1 DRB1 DRB. 
-#>    3    2    1    0    0    0    0    0
+#>    A    B    C DPA1 DPB1 DQA1 DQB1 DRB1 DRB. 
+#>    3    2    1    0    0    0    0    0    0
+```
+
+### Cleaning allele strings
+
+Correcting some common formatting issues
+
+``` r
+allele_vec <- c(
+  " A'*1 ", # spurious whitespace, punctuation, no leading zero, missing XX code
+  "A10(25)", # redundant typing (includes both split and broad)
+  "C*03:01/02" # locus and allele group left off in ambiguity
+)
+
+clean_hla(allele_vec)
+#> [1] "A*01:XX"         "A25"             "C*03:01/C*03:02"
 ```
 
 ### Validating alleles

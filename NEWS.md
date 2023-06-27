@@ -1,5 +1,8 @@
 # hlapro (development version)
 
+* New `clean_hla()` function to correct common formatting issues in HLA allele
+  typing strings.
+
 * New functions to get serological equivalents of an allele from the 
   [ETRL HLA tables](https://etrl.eurotransplant.org). These tables are also
   shipped with the package as the `etrl_hla` data frame:

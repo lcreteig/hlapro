@@ -88,6 +88,21 @@ Use `count_alleles()` to easily inspect the number of alleles per locus:
 count_alleles(typing)
 ```
 
+### Cleaning allele strings
+
+Correcting some common formatting issues
+
+```{r clean alleles}
+allele_vec <- c(
+  " A'*1 ", # spurious whitespace, punctuation, no leading zero, missing XX code
+  "A10(25)", # redundant typing (includes both split and broad)
+  "C*03:01/02" # locus and allele group left off in ambiguity
+)
+
+clean_hla(allele_vec)
+```
+
+
 ### Validating alleles
 
 Check whether alleles are well-formed
