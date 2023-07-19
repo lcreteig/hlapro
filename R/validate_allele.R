@@ -78,7 +78,7 @@ validate_allele <- function(allele) {
                          # ALL that follows are optional ambiguities (0 or more)
     (\/                  # a forward slash
     (?:\1\*)?            # followed by optional locus (must be same as before)
-    \d{2,3}              # 2-3 digits (first field)
+    \d{2,4}              # 2-4 digits (first field)
     (?::\d{2,3}){0,3}    # 0-3 more fields with 2-3 digits each, colon-separated
     [NLSCAQ]?            # optional suffix
     )*                   # END of ambiguities (repeat 0 or more times)

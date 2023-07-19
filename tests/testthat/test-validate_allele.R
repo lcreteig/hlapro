@@ -53,6 +53,7 @@ test_that("prefixing is allowed", {
 
 test_that("protein-level typings are valid", {
   expect_true(validate_allele("A*74:06"))
+  expect_true(validate_allele("DPB1*1486:01Q"))
   expect_false(validate_allele("A*10001:01")) # too many digits in protein
   expect_true(validate_allele("B*81:01"))
   expect_true(validate_allele("C*01:02"))
