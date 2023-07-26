@@ -1006,3 +1006,67 @@ test_that("Single alleles work", {
     )
   )
 })
+
+
+# df_to_gl() --------------------------------------------------------------
+
+test_that("Restriction of loci works", {
+  df_in <- tidyr::tibble(
+    A_1 = "A*01:01", A_2 = "A*03:01",
+    B_1 = "B*07:01", B_2 = "B*08:02"
+  )
+  df_out <- tidyr::tibble(glstring = "hla#2023#HLA-A*01:01+HLA-A*03:01")
+  expect_equal(
+    df_to_gl(df_in, namespace = "hla", version_or_date = "2023", loci = "A"),
+    df_out
+  )
+})
+
+test_that("Multi-locus multi-allele multi-ID extraction with NAs works", {
+  df_in <- tidyr::tibble(
+    id = c("001", "002"),
+    A_1 = c("A*01:01", "A*03:01"),
+    A_2 = c(NA, "A*02:01"),
+    B_1 = c("B*07:01", "B*07:02"),
+    B_2 = c("B*08:01", "B*08:02")
+  ) |>
+    dplyr::group_by(id)
+  df_out <- tidyr::tibble(
+    id = c("001", "002"),
+    glstring = c(
+      "hla#2023#HLA-A*01:01^HLA-B*07:01+HLA-B*08:01",
+      "hla#2023#HLA-A*02:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:02"
+    )
+  )
+  expect_equal(
+    df_to_gl(df_in, namespace = "hla", version_or_date = "2023"),
+    df_out
+  )
+})
+
+# gl_to_df() --------------------------------------------------------------
+
+test_that("Single GL string with single allele works", {
+  df_out <- tidyr::tibble(
+    glstring_index = 1, namespace = "hla",
+    version_or_date = "2023", DQB1_1 = "HLA-DQB1*02:53Q"
+  )
+  expect_equal(gl_to_df("hla#2023#HLA-DQB1*02:53Q"), df_out)
+})
+
+test_that("Multi-allele multi-locus vector of incomplete GL Strings works", {
+  glstrings <- c(
+    "hla#2023#HLA-A*01:01:01:01+HLA-A*02:07",
+    "hla#2023#HLA-DRA*01:02:02:05+HLA-DRA*01:04"
+  )
+  df_out <- tidyr::tibble(
+    glstring_index = c(1, 2),
+    namespace = c("hla", "hla"),
+    version_or_date = "2023",
+    A_1 = c("HLA-A*01:01:01:01", NA),
+    A_2 = c("HLA-A*02:07", NA),
+    DRA_1 = c(NA, "HLA-DRA*01:02:02:05"),
+    DRA_2 = c(NA, "HLA-DRA*01:04")
+  )
+  expect_equal(gl_to_df(glstrings), df_out)
+})

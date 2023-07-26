@@ -252,19 +252,17 @@ df_to_gl <- function(df,
 gl_to_df <- function(glstrings) {
   glsc_lst <- purrr::map(glstrings, gl_to_vec)
   tidyr::tibble(glsc = glsc_lst) |>
-    tidyr::unnest_wider(.data$glsc) |>
-    dplyr::mutate(
-      glstring_id = dplyr::row_number(),
+    tidyr::unnest_wider(.data$glsc) |> # one row per gl string
+    dplyr::mutate( # add glstring index
+      glstring_index = dplyr::row_number(),
       .before = dplyr::everything()
-    ) |>
+    ) |> # unpack glstrings: one row per allele
     tidyr::unnest_longer(.data$allele_list, values_to = "typing") |>
-    dplyr::group_by(.data$glstring_id) |>
-    dplyr::mutate(
-      locus = get_loci(.data$typing),
-      allele = dplyr::row_number(.data$locus)
-    ) |>
-    tidyr::pivot_wider(
-      id_cols = .data$glstring_id,
+    dplyr::mutate(locus = get_loci(.data$typing)) |>
+    dplyr::group_by(.data$glstring_index, .data$locus) |>
+    dplyr::mutate(allele = dplyr::row_number(.data$locus)) |> # add allele 1/2
+    tidyr::pivot_wider( # one column per locus/allele
+      id_cols = c(.data$glstring_index, .data$namespace, .data$version_or_date),
       values_from = .data$typing,
       names_from = c(.data$locus, .data$allele),
       names_sep = "_",
