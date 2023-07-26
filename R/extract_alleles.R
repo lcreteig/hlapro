@@ -1,3 +1,6 @@
+# TODO: extract_alleles_df() and gl_to_df() have a different API;
+# consider equalizing (i.e., take in a df or a vector)
+
 #' Split an HLA typing string into alleles
 #'
 #' @description Takes in a space-separated HLA typing string and splits it into
@@ -214,9 +217,61 @@ locus_patterns <- c(
   # These should be skipped, in order to still retrieve full typing)
 )
 
-# TODO:
-# add tab2gl: gather_loci followed by vec_to_gl
-# add gl2tab: gl_to_vec, get_loci, id for alleles, then spread_loci
+df_to_gl <- function(df,
+                     namespace = "hla",
+                     version_or_date = NULL,
+                     col_typing = "glstring",
+                     loci = c(
+                       "A", "B", "C",
+                       "DPA1", "DPB1", "DQA1", "DQB1", "DRB1", "DRB."
+                     ),
+                     suffixes = c("1", "2"),
+                     sep = "_") {
+  loci <- rlang::arg_match(loci, multiple = TRUE)
+
+  # build names of columns containing HLAs (e.g. "A_1", "A_2", "B_1", etc.)
+  typing_cols <- paste0(
+    rep(loci, each = length(suffixes)),
+    sep, suffixes
+  )
+
+  df |>
+    tidyr::pivot_longer(
+      cols = tidyr::any_of(typing_cols),
+      names_to = c("locus", "allele"),
+      names_sep = sep,
+      values_to = col_typing
+    ) |>
+    dplyr::summarise(dplyr::across(col_typing, ~ vec_to_gl(.x,
+      namespace = namespace,
+      version_or_date = version_or_date
+    )))
+}
+
+#' @importFrom rlang .data
+gl_to_df <- function(glstrings) {
+  glsc_lst <- purrr::map(glstrings, gl_to_vec)
+  tidyr::tibble(glsc = glsc_lst) |>
+    tidyr::unnest_wider(.data$glsc) |>
+    dplyr::mutate(
+      glstring_id = dplyr::row_number(),
+      .before = dplyr::everything()
+    ) |>
+    tidyr::unnest_longer(.data$allele_list, values_to = "typing") |>
+    dplyr::group_by(.data$glstring_id) |>
+    dplyr::mutate(
+      locus = get_loci(.data$typing),
+      allele = dplyr::row_number(.data$locus)
+    ) |>
+    tidyr::pivot_wider(
+      id_cols = .data$glstring_id,
+      values_from = .data$typing,
+      names_from = c(.data$locus, .data$allele),
+      names_sep = "_",
+      names_expand = TRUE
+    ) |>
+    dplyr::ungroup()
+}
 
 vec_to_gl <- function(allele_list, namespace = "hla", version_or_date = NULL) {
   if (is.null(version_or_date)) {
