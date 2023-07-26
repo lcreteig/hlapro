@@ -338,6 +338,14 @@ remove_suffixes_groups <- function(allele) {
   stringr::str_remove(allele, "[NLSCAQPG]$")
 }
 
+has_hla_prefix <- function(allele) {
+  stringr::str_detect(allele, "^HLA-")
+}
+
+add_hla_prefix <- function(allele) {
+  ifelse(has_hla_prefix(allele), allele, stringr::str_c("HLA-", allele))
+}
+
 remove_hla_prefix <- function(allele) {
   stringr::str_remove(allele, "^HLA-")
 }

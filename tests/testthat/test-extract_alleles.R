@@ -878,3 +878,131 @@ test_that("Counting is vectorized over typings", {
   )
   expect_equal(count_alleles(typings, loci = c("A", "B", "C")), typings_counts)
 })
+
+# vec_to_gl() -------------------------------------------------------------
+
+test_that("Alleles are separated with genotype delimiter", {
+  expect_equal(
+    vec_to_gl(c("A*01:01:01:01", "A*02:07"), "hla", "2023"),
+    "hla#2023#HLA-A*01:01:01:01+HLA-A*02:07"
+  )
+  expect_equal(
+    vec_to_gl(c("DRA*01:02:02:05", "DRA*01:04"), "hla", "2023"),
+    "hla#2023#HLA-DRA*01:02:02:05+HLA-DRA*01:04"
+  )
+})
+
+test_that("Loci are separated with locus delimiter", {
+  expect_equal(
+    vec_to_gl(c("A*02:07", "B*07:08"), "hla", "2023"),
+    "hla#2023#HLA-A*02:07^HLA-B*07:08"
+  )
+  expect_equal(
+    vec_to_gl(c("DQA1*01:01:11", "DQB1*05:132Q"), "hla", "2023"),
+    "hla#2023#HLA-DQA1*01:01:11^HLA-DQB1*05:132Q"
+  )
+})
+
+test_that("Multi-locus multi-allele strings are encoded correctly", {
+  expect_equal(
+    vec_to_gl(
+      c("A*02:07", "B*07:08", "B*08:01", "C*03:04"),
+      "hla", "2023"
+    ),
+    "hla#2023#HLA-A*02:07^HLA-B*07:08+HLA-B*08:01^HLA-C*03:04"
+  )
+})
+
+test_that("NAs work", {
+  expect_equal(vec_to_gl(NA, "hla", "2023"), NA)
+  expect_equal(
+    vec_to_gl(
+      c("A*02:07", NA, "B*07:08"),
+      "hla", "2023"
+    ),
+    "hla#2023#HLA-A*02:07^HLA-B*07:08"
+  )
+})
+
+test_that("Single alleles work", {
+  expect_equal(vec_to_gl("C*03:04", "hla", "2023"), "hla#2023#HLA-C*03:04")
+})
+
+# gl_to_vec() -------------------------------------------------------------
+
+test_that("Genotype delimiters are split", {
+  expect_equal(
+    gl_to_vec(
+      "hla#2023#HLA-A*01:01:01:01+HLA-A*02:07"
+    ),
+    list(
+      namespace = "hla",
+      version_or_date = "2023",
+      allele_list = c("HLA-A*01:01:01:01", "HLA-A*02:07")
+    )
+  )
+  expect_equal(
+    gl_to_vec(
+      "hla#2023#HLA-DRA*01:02:02:05+HLA-DRA*01:04"
+    ),
+    list(
+      namespace = "hla",
+      version_or_date = "2023",
+      allele_list = c("HLA-DRA*01:02:02:05", "HLA-DRA*01:04")
+    )
+  )
+})
+
+test_that("Loci are separated with locus delimiter", {
+  expect_equal(
+    gl_to_vec(
+      "hla#2023#HLA-A*02:07^HLA-B*07:08"
+    ),
+    list(
+      namespace = "hla",
+      version_or_date = "2023",
+      allele_list = c("HLA-A*02:07", "HLA-B*07:08")
+    )
+  )
+  expect_equal(
+    gl_to_vec(
+      "hla#2023#HLA-DQA1*01:01:11^HLA-DQB1*05:132Q"
+    ),
+    list(
+      namespace = "hla",
+      version_or_date = "2023",
+      allele_list = c("HLA-DQA1*01:01:11", "HLA-DQB1*05:132Q")
+    )
+  )
+})
+
+test_that("Multi-locus multi-allele strings are encoded correctly", {
+  expect_equal(
+    gl_to_vec(
+      "hla#2023#HLA-A*02:07^HLA-B*07:08+HLA-B*08:01^HLA-C*03:04"
+    ),
+    list(
+      namespace = "hla",
+      version_or_date = "2023",
+      allele_list = c(
+        "HLA-A*02:07", "HLA-B*07:08", "HLA-B*08:01",
+        "HLA-C*03:04"
+      )
+    )
+  )
+})
+
+test_that("NAs work", {
+  expect_equal(gl_to_vec(NA), NA)
+})
+
+test_that("Single alleles work", {
+  expect_equal(
+    gl_to_vec("hla#2023#HLA-C*03:04"),
+    list(
+      namespace = "hla",
+      version_or_date = "2023",
+      allele_list = "HLA-C*03:04"
+    )
+  )
+})

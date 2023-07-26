@@ -213,3 +213,55 @@ locus_patterns <- c(
   # DRB3/4/5. Sometimes all 3 are specified, with 1-2 having suffix "*Neg".
   # These should be skipped, in order to still retrieve full typing)
 )
+
+# TODO:
+# add tab2gl: gather_loci followed by vec_to_gl
+# add gl2tab: gl_to_vec, get_loci, id for alleles, then spread_loci
+
+vec_to_gl <- function(allele_list, namespace = "hla", version_or_date = NULL) {
+  if (is.null(version_or_date)) {
+    version_or_date <- Sys.Date()
+  }
+  if (all(is.na(allele_list))) {
+    return(NA)
+  }
+
+  allele_list <- allele_list[!is.na(allele_list)] |>
+    stringr::str_sort() |>
+    add_hla_prefix()
+  loci <- get_loci(allele_list)
+
+  for (ii in seq_along(loci)[-1]) { # for each allele
+    sep <- "^" # assume they are different loci, use locus delimiter
+    if (loci[ii] == loci[ii - 1]) { # but if locus is same as previous allele
+      sep <- "+" # use genotype delimiter
+    }
+    allele_list[ii] <- paste0(sep, allele_list[ii]) # add delim to allele
+  }
+
+  # put all alleles and their delims together, prefix with metadata
+  stringr::str_c(
+    namespace, "#",
+    version_or_date, "#",
+    stringr::str_flatten(allele_list)
+  )
+}
+
+gl_to_vec <- function(glstring) {
+  if (is.na(glstring)) {
+    return(NA)
+  }
+
+  glsc <- stringr::str_split_1(glstring, "#")
+
+  list(
+    namespace = glsc[1],
+    version_or_date = glsc[2],
+    allele_list = stringr::str_split_1(glsc[3], r"([\+\^"])")
+  )
+}
+
+get_loci <- function(allele_list) {
+  # get every letter/digit before a "*"
+  stringr::str_extract(allele_list, "\\w+(?=\\*)")
+}
