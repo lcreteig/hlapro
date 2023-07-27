@@ -36,6 +36,7 @@ hlatools
 https
 IMGT
 immunotation
+io
 IPD
 LazyData
 lcreteig
@@ -43,6 +44,7 @@ leonreteig
 Luminex
 nd
 ORCID
+pkgdown
 positivity
 PROCARE
 purrr

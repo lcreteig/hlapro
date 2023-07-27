@@ -6,6 +6,7 @@
 <!-- badges: start -->
 
 [![check-standard](https://github.com/lcreteig/hlapro/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/lcreteig/hlapro/actions/workflows/check-standard.yaml)
+[![pkgdown](https://github.com/lcreteig/hlapro/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/lcreteig/hlapro/actions/workflows/pkgdown.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/lcreteig/hlapro/branch/main/graph/badge.svg)](https://app.codecov.io/gh/lcreteig/hlapro?branch=main)
 [![CRAN
