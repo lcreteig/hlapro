@@ -1,5 +1,9 @@
 # hlapro (development version)
 
+* New `gl_to_df()` and `df_to_gl()` functions to convert between a data frame
+  with one column per allele and a [GL String](https://glstring.org) containing
+  all alleles.
+
 * New `clean_hla()` function to correct common formatting issues in HLA allele
   typing strings.
 

@@ -140,6 +140,16 @@ get_resolution(c("A2", "A*01:AABJE", "B*42:08"))
 #> [1] "low"          "intermediate" "high"
 ```
 
+Use the extended mode to get more information:
+
+``` r
+get_resolution(c("A2", "A*24:XX", "A*01:AB", "B*42:08", "A*01:01:01:01"),
+  extended = TRUE
+)
+#> [1] "serology - broad"    "molecular - split"   "intermediate"       
+#> [4] "high - second field" "high - fourth field"
+```
+
 ### Downscaling to serological equivalents
 
 Get the serological equivalents of an allele as defined by the [ETRL
@@ -171,6 +181,55 @@ And whether an allele has the Bw4 or Bw6 epitope:
 b_s <- c("B14", "B63", "B*40:05", "A*01:01")
 get_public(b_s)
 #> [1] "Bw6" "Bw4" "Bw6" NA
+```
+
+### Converting to and from GL Strings
+
+Typing data often comes in a data frame like this:
+
+``` r
+typing_df <- tidyr::tibble(
+  id = c("001", "002"),
+  A_1 = c("A*01:01", "A*02:01"), A_2 = c("A*03:01", "A*29:02"),
+  B_1 = c("B*08:01", "B*07:02"), B_2 = c("B*07:02", NA_character_),
+  C_1 = c("C*07:01", "C*05:01"), C_2 = c("C*07:02", NA_character_)
+)
+typing_df
+#> # A tibble: 2 × 7
+#>   id    A_1     A_2     B_1     B_2     C_1     C_2    
+#>   <chr> <chr>   <chr>   <chr>   <chr>   <chr>   <chr>  
+#> 1 001   A*01:01 A*03:01 B*08:01 B*07:02 C*07:01 C*07:02
+#> 2 002   A*02:01 A*29:02 B*07:02 <NA>    C*05:01 <NA>
+```
+
+Use `df_to_gl()` to convert all the individual allele columns into a
+single [GL String](https://glstring.org):
+
+``` r
+typing_df_gl <- typing_df |>
+  dplyr::group_by(id) |> # convert each typing to its own GL String
+  df_to_gl()
+typing_df_gl
+#> # A tibble: 2 × 2
+#>   id    glstring                                                                
+#>   <chr> <chr>                                                                   
+#> 1 001   hla#2023-07-27#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
+#> 2 002   hla#2023-07-27#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
+```
+
+Use `gl_to_df()` to go the opposite way: from a dataframe of GL Strings
+to one columns per allele:
+
+``` r
+typing_df_gl |>
+  dplyr::mutate(gl_df = gl_to_df(glstring)) |>
+  tidyr::unnest(gl_df)
+#> # A tibble: 2 × 11
+#>   id    glstring      glstring_index namespace version_or_date A_1   A_2   B_1  
+#>   <chr> <chr>                  <int> <chr>     <chr>           <chr> <chr> <chr>
+#> 1 001   hla#2023-07-…              1 hla       2023-07-27      HLA-… HLA-… HLA-…
+#> 2 002   hla#2023-07-…              2 hla       2023-07-27      HLA-… HLA-… HLA-…
+#> # ℹ 3 more variables: B_2 <chr>, C_1 <chr>, C_2 <chr>
 ```
 
 ## Other packages

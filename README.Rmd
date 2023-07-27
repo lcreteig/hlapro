@@ -102,7 +102,6 @@ allele_vec <- c(
 clean_hla(allele_vec)
 ```
 
-
 ### Validating alleles
 
 Check whether alleles are well-formed
@@ -117,6 +116,14 @@ Determine whether an allele is of low/intermediate/high resolution
 
 ```{r resolution}
 get_resolution(c("A2", "A*01:AABJE", "B*42:08"))
+```
+
+Use the extended mode to get more information:
+
+```{r resolution_extended}
+get_resolution(c("A2", "A*24:XX", "A*01:AB", "B*42:08", "A*01:01:01:01"),
+  extended = TRUE
+)
 ```
 
 ### Downscaling to serological equivalents
@@ -144,6 +151,37 @@ And whether an allele has the Bw4 or Bw6 epitope:
 ```{r public}
 b_s <- c("B14", "B63", "B*40:05", "A*01:01")
 get_public(b_s)
+```
+
+### Converting to and from GL Strings
+
+Typing data often comes in a data frame like this:
+
+```{r example typing df}
+typing_df <- tidyr::tibble(
+  id = c("001", "002"),
+  A_1 = c("A*01:01", "A*02:01"), A_2 = c("A*03:01", "A*29:02"),
+  B_1 = c("B*08:01", "B*07:02"), B_2 = c("B*07:02", NA_character_),
+  C_1 = c("C*07:01", "C*05:01"), C_2 = c("C*07:02", NA_character_)
+)
+typing_df
+```
+
+Use `df_to_gl()` to convert all the individual allele columns into a single [GL String](https://glstring.org):
+
+```{r df_to_gl}
+typing_df_gl <- typing_df |>
+  dplyr::group_by(id) |> # convert each typing to its own GL String
+  df_to_gl()
+typing_df_gl
+```
+
+Use `gl_to_df()` to go the opposite way: from a dataframe of GL Strings to one columns per allele:
+
+```{r gl_to_df}
+typing_df_gl |>
+  dplyr::mutate(gl_df = gl_to_df(glstring)) |>
+  tidyr::unnest(gl_df)
 ```
 
 ## Other packages
