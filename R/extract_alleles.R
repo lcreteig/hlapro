@@ -302,7 +302,6 @@ df_to_gl <- function(df,
 #' @seealso
 #' - [gl_to_vec()] for the basic conversion of a GL String to a vector
 #' - [df_to_gl()] for the opposite operation
-#' @importFrom rlang .data
 #' @export
 #'
 #' @examples
