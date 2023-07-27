@@ -1,5 +1,5 @@
 # TODO: extract_alleles_df() and gl_to_df() have a different API;
-# consider equalizing (i.e., take in a df or a vector)
+# consider equalizing (i.e., take in a df or a vector; probably latter).
 
 #' Split an HLA typing string into alleles
 #'
@@ -217,6 +217,41 @@ locus_patterns <- c(
   # These should be skipped, in order to still retrieve full typing)
 )
 
+#' Convert multiple columns of HLA allele typings to a single-column GL String
+#'
+#' `df_to_gl()` takes in a data frame with HLA typings, and summarizes these
+#' columns into a single column with [GL Strings](https://glstring.org).
+#'
+#' @param df A dataframe with HLA typings. The names of each HLA typing column
+#' should follow the format `{locus}{sep}{suffix}`, e.g. `"A_1"` or `"DPB1_2"`.
+#' @inheritParams vec_to_gl
+#' @param col_typing The name for the new column with the GL Strings.
+#' @inheritParams extract_alleles_str
+#' @param suffixes What differentiates the alleles for each locus (defaults to
+#' `"1"` and `"2"`) in the column names.
+#' @param sep What separates the `loci` from the `suffixes` in the column names.
+#'
+#' @return A dataframe with the same amount of rows, but where the columns with
+#' typings of individual alleles have been replaced with a single GL String.
+#' @seealso
+#' - [vec_to_gl()] for the construction of the GL string
+#' - [gl_to_df()] for the opposite operation
+#' @export
+#'
+#' @examples
+#' # Make a dataframe following the default naming scheme, with two typings
+#' df_in <- tidyr::tibble(
+#'   id = c("001", "002"),
+#'   A_1 = c("A*01:01", "A*03:01"),
+#'   A_2 = c(NA, "A*02:01"),
+#'   B_1 = c("B*07:01", "B*07:02"),
+#'   B_2 = c("B*08:01", "B*08:02"),
+#'   C_1 = c("C*01:01", "C*01:02"),
+#'   C_2 = c("C*03:04", NA)
+#' )
+#' df_in |>
+#'   dplyr::group_by(id) |> # make one GL string for each typing
+#'   df_to_gl()
 df_to_gl <- function(df,
                      namespace = "hla",
                      version_or_date = NULL,
@@ -248,7 +283,49 @@ df_to_gl <- function(df,
     )))
 }
 
+#' Convert a vector of GL Strings to a data frame with one column per allele
+#'
+#' `gl_to_df()` takes in a character vector of
+#' [GL Strings](https://glstring.org), and transforms it into a wide data frame
+#' with one row per GL String and one column per allele.
+#'
+#' @param glstrings A character vector of GL Strings.
+#'
+#' @return A data frame with the following three columns:
+#'  1. `glstring_index` Counter for each GL String in the vector
+#'  2. `namespace` (e.g. `"hla"`)
+#'  3. `version_or_date` (e.g. `"3.29.0"` or `"2023-05-27"`)
+#'
+#'  In addition, the data frame will have one column for every locus/allele
+#'  found in the GL strings (e.g. `A_1`, `A_2`, `B_1`, `B_2`, `C_1`, `C_2`
+#'  for a class I typing).
+#' @seealso
+#' - [gl_to_vec()] for the basic conversion of a GL String to a vector
+#' - [df_to_gl()] for the opposite operation
 #' @importFrom rlang .data
+#' @export
+#'
+#' @examples
+#' glstrings <-
+#'   c(
+#'     "hla#2023#HLA-A*01:01^HLA-B*07:01+HLA-B*08:01^HLA-C*01:01+HLA-C*03:04",
+#'     "hla#2023#HLA-A*02:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:02^HLA-C*01:02"
+#'   )
+#' gl_to_df(glstrings)
+#'
+#' # If your GL Strings are in a data frame with some ID'ing columns that you
+#' # want to keep attached, call `gl_to_df()` on the GL String column in your
+#' # data frame:
+#' typing_df <- tidyr::tibble(
+#'   id = c("001", "002"),
+#'   glstrings = c(
+#'     "hla#2023#HLA-A*01:01:01:01+HLA-A*02:07",
+#'     "hla#2023#HLA-DRA*01:02:02:05+HLA-DRA*01:04"
+#'   )
+#' )
+#' typing_df |>
+#'   dplyr::mutate(gl_df = gl_to_df(glstrings)) |> # make the data frame
+#'   tidyr::unnest(gl_df) # combine with your existing data frame
 gl_to_df <- function(glstrings) {
   glsc_lst <- purrr::map(glstrings, gl_to_vec)
   tidyr::tibble(glsc = glsc_lst) |>
@@ -271,6 +348,72 @@ gl_to_df <- function(glstrings) {
     dplyr::ungroup()
 }
 
+#' Split a GL String into metadata and a vector of alleles
+#'
+#' `gl_to_vec()` takes in a [GL String](https://glstring.org) and converts it to
+#' a list containing the GL String metadata (namespace, version/data) and a
+#' character vector of the individual HLA alleles.
+#'
+#' @param glstring Any valid GL String.
+#'
+#' @return A named list of length three containing the:
+#'    1. `namespace` (e.g. `"hla"`)
+#'    2. `version_or_date` (e.g. `"3.29.0"` or `"2023-05-27"`)
+#'    3. `allele_list` (e.g. `c("HLA-A*01:01", "B*07:08")`)
+#' @seealso
+#' - [vec_to_gl()] for the opposite operation
+#' - [gl_to_df()] for converting a vector of GL Strings to a dataframe with one
+#' column per locus/allele
+#' @keywords internal
+#' @export
+#'
+#' @examples
+#' # return list that includes the metadata
+#' gl_to_vec("hla#2018-06#HLA-A*02:69+HLA-A*23:30")
+#' # access the allele list directly to keep just the vector of HLAs
+#' gl_to_vec("hla#2018-06#HLA-A*02:69+HLA-A*23:30")$allele_list
+gl_to_vec <- function(glstring) {
+  if (is.na(glstring)) {
+    return(NA)
+  }
+
+  glsc <- stringr::str_split_1(glstring, "#")
+
+  list(
+    namespace = glsc[1],
+    version_or_date = glsc[2],
+    allele_list = stringr::str_split_1(glsc[3], r"([\+\^"])")
+  )
+}
+
+#' Convert a vector of HLA alleles to a GL String
+#'
+#' `vec_to_gl()` constructs a [GL String](https://glstring.org) from a character
+#' vector of HLAs, as well as some metadata (namespace, version/data).
+#'
+#' @param allele_list a character vector of HLA alleles.
+#' @param namespace
+#' [Specification](https://glstring.org/syntax-1.1.html#namespace) of the
+#' HLA nomenclature system. Defaults to `"hla"`.
+#' @param version_or_date
+#' [Specification](https://glstring.org/syntax-1.1.html#versionordate) of the
+#' version of the `namespace` used, or the date the GL String was constructed.
+#' If not specified, uses today's date as the default.
+#'
+#' @return A valid GL String.
+#' @seealso
+#' - [gl_to_vec()] for the opposite operation
+#' - [df_to_gl()] for converting a dataframe with one column per locus/allele to
+#' a GL String
+#' @keywords internal
+#' @export
+#'
+#' @examples
+#' vec_to_gl(c("A*02:302", "A*23:26/A*23:39", "B*44:02:13", "B*49:08"))
+#' vec_to_gl(
+#'   allele_list = c("HLA-A*02:69", "HLA-A*23:30"),
+#'   namespace = "hla", version_or_date = "2018-06"
+#' )
 vec_to_gl <- function(allele_list, namespace = "hla", version_or_date = NULL) {
   if (is.null(version_or_date)) {
     version_or_date <- Sys.Date()
@@ -300,20 +443,7 @@ vec_to_gl <- function(allele_list, namespace = "hla", version_or_date = NULL) {
   )
 }
 
-gl_to_vec <- function(glstring) {
-  if (is.na(glstring)) {
-    return(NA)
-  }
-
-  glsc <- stringr::str_split_1(glstring, "#")
-
-  list(
-    namespace = glsc[1],
-    version_or_date = glsc[2],
-    allele_list = stringr::str_split_1(glsc[3], r"([\+\^"])")
-  )
-}
-
+# TODO: use locus_patterns?
 get_loci <- function(allele_list) {
   # get every letter/digit before a "*"
   stringr::str_extract(allele_list, "\\w+(?=\\*)")
