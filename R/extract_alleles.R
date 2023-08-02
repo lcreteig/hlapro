@@ -452,8 +452,16 @@ vec_to_gl <- function(allele_list, namespace = "hla", version_or_date = NULL) {
   )
 }
 
-# TODO: use locus_patterns?
 get_loci <- function(allele_list) {
-  # get every letter/digit before a "*"
-  stringr::str_extract(allele_list, "\\w+(?=\\*)")
+  loci <- rep(NA, length(allele_list))
+  # locus should not be preceded by a capital or a :
+  base_pattern <- r"((?<![:A-Z]){locus})"
+  for (ii in seq_along(locus_patterns)) { # detect locus in allele list
+    is_current_locus <- stringr::str_detect(
+      allele_list,
+      stringr::str_glue(base_pattern, locus = locus_patterns[ii])
+    )
+    loci <- ifelse(is_current_locus, names(locus_patterns[ii]), loci)
+  }
+  return(loci)
 }
