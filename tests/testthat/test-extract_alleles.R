@@ -887,8 +887,8 @@ test_that("Alleles are separated with genotype delimiter", {
     "hla#2023#HLA-A*01:01:01:01+HLA-A*02:07"
   )
   expect_equal(
-    vec_to_gl(c("DRA*01:02:02:05", "DRA*01:04"), "hla", "2023"),
-    "hla#2023#HLA-DRA*01:02:02:05+HLA-DRA*01:04"
+    vec_to_gl(c("DRB1*03:15:01:01", "DRB1*04:93"), "hla", "2023"),
+    "hla#2023#HLA-DRB1*03:15:01:01+HLA-DRB1*04:93"
   )
 })
 
@@ -943,12 +943,12 @@ test_that("Genotype delimiters are split", {
   )
   expect_equal(
     gl_to_vec(
-      "hla#2023#HLA-DRA*01:02:02:05+HLA-DRA*01:04"
+      "hla#2023#HLA-DRB1*03:15:01:01+HLA-DRB1*04:93"
     ),
     list(
       namespace = "hla",
       version_or_date = "2023",
-      allele_list = c("HLA-DRA*01:02:02:05", "HLA-DRA*01:04")
+      allele_list = c("HLA-DRB1*03:15:01:01", "HLA-DRB1*04:93")
     )
   )
 })
@@ -1057,7 +1057,7 @@ test_that("Single GL string with single allele works", {
 test_that("Multi-allele multi-locus vector of incomplete GL Strings works", {
   glstrings <- c(
     "hla#2023#HLA-A*01:01:01:01+HLA-A*02:07",
-    "hla#2023#HLA-DRA*01:02:02:05+HLA-DRA*01:04"
+    "hla#2023#HLA-DRB1*03:15:01:01+HLA-DRB1*04:93"
   )
   df_out <- tidyr::tibble(
     glstring_index = c(1, 2),
@@ -1065,8 +1065,8 @@ test_that("Multi-allele multi-locus vector of incomplete GL Strings works", {
     version_or_date = "2023",
     A_1 = c("HLA-A*01:01:01:01", NA),
     A_2 = c("HLA-A*02:07", NA),
-    DRA_1 = c(NA, "HLA-DRA*01:02:02:05"),
-    DRA_2 = c(NA, "HLA-DRA*01:04")
+    DRB1_1 = c(NA, "HLA-DRB1*03:15:01:01"),
+    DRB1_2 = c(NA, "HLA-DRB1*04:93")
   )
   expect_equal(gl_to_df(glstrings), df_out)
 })

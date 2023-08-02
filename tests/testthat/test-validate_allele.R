@@ -12,7 +12,6 @@ test_that("serological/antigen notation is valid", {
   expect_true(validate_allele("Cw3"))
   expect_true(validate_allele("DR8"))
   expect_false(validate_allele("DRB11")) # if there's a B, needs "*" notation
-  expect_false(validate_allele("DRA1")) # needs "*" notation
   expect_true(validate_allele("DR10"))
   expect_true(validate_allele("DR52"))
   expect_true(validate_allele("DQ1"))
@@ -57,7 +56,6 @@ test_that("protein-level typings are valid", {
   expect_false(validate_allele("A*10001:01")) # too many digits in protein
   expect_true(validate_allele("B*81:01"))
   expect_true(validate_allele("C*01:02"))
-  expect_true(validate_allele("DRA*01:01"))
   expect_true(validate_allele("DRB1*01:01"))
   expect_false(validate_allele("DRB*01:01")) # DR not disambiguated
   expect_true(validate_allele("DRB1*12:02"))

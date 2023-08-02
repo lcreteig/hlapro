@@ -26,7 +26,7 @@ but not be well-formed (e.g. \code{"HLA-A**02;01"}).
 
 The following are explicitly considered valid HLAs:
 \itemize{
-\item alleles belonging to loci A, B, C, DRA/DRB, DQA/DQB, DPA/DPB (which is
+\item alleles belonging to loci A, B, C, DRB, DQA/DQB, DPA/DPB (which is
 \emph{not} an exhaustive list of class I or class II HLAs, but simply the ones
 that are often typed in the context of transplantation research/matching)
 \item serological/antigen notation, such as \code{"A2"}, \code{"DP-0201"}

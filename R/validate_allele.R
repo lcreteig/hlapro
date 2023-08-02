@@ -11,7 +11,7 @@
 #'
 #' The following are explicitly considered valid HLAs:
 #'
-#' - alleles belonging to loci A, B, C, DRA/DRB, DQA/DQB, DPA/DPB (which is
+#' - alleles belonging to loci A, B, C, DRB, DQA/DQB, DPA/DPB (which is
 #'   *not* an exhaustive list of class I or class II HLAs, but simply the ones
 #'   that are often typed in the context of transplantation research/matching)
 #' - serological/antigen notation, such as `"A2"`, `"DP-0201"`
@@ -44,7 +44,6 @@ validate_allele <- function(allele) {
     (?:HLA-)?            # optional "HLA-" prefix
     (?<locus>            # START of loci
     A|Bw?|Cw?|           # class I loci (incl. "Cw" and "Bw")
-    DRA(?=\*)|           # DRA*
     DR(?:B[1-9](?=\*))?| # DR, or DRB1-9*
     DQA(?=-)|DQA1(?=\*)| # DQA- or DQA1*
     DQ(?:B1(?=\*))?|     # DQ, or DQB1*,

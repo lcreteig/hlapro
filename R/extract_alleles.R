@@ -325,7 +325,7 @@ df_to_gl <- function(df,
 #'   id = c("001", "002"),
 #'   glstrings = c(
 #'     "hla#2023#HLA-A*01:01:01:01+HLA-A*02:07",
-#'     "hla#2023#HLA-DRA*01:02:02:05+HLA-DRA*01:04"
+#'     "hla#2023#HLA-DRB1*03:15:01:01+HLA-DRB1*04:93"
 #'   )
 #' )
 #' typing_df |>
