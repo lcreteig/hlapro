@@ -23,9 +23,9 @@ comp_haplos <- top_haplos_ser |> # keep only haplos with alleles compatible with
          B_broad %in% typing_alleles | B_split %in% typing_alleles,
          DRB1_broad %in% typing_alleles | DRB1_split %in% typing_alleles)
 
-# combine all permutations of haplos (i.e., make phased genotypes)
-cross_join(comp_haplos, comp_haplos, suffix = c("_1", "_2")) |>
-  # make genotype out of serological equivalents of alleles in phased genotype
+cross_join(comp_haplos, comp_haplos, suffix = c("_1", "_2")) |> # combine all permutations of haplos
+  filter(EURCAU_rank_1 < EURCAU_rank_2) |>  # make heterozygous phased genotypes: keep only unique combinations of haplos
+  # make genotype out of serological equivalents of alleles in phased genotypes
   mutate(genotype_ser = pmap(
     .l = list(A_broad_1, A_broad_2, A_split_1, A_split_2,
               B_broad_1, B_broad_2, B_split_1, B_split_2,
@@ -36,6 +36,17 @@ cross_join(comp_haplos, comp_haplos, suffix = c("_1", "_2")) |>
   mutate(
     phased_freq = 2 * EURCAU_freq_1 * EURCAU_freq_2,
     likelihood = phased_freq / sum(phased_freq)
-  ) |>
-  slice_max(likelihood)
-
+  ) |> View()
+  rowid_to_column(var = "id_phased_geno") |>
+  select(!contains(c("broad", "split"))) |>
+  pivot_longer(cols = starts_with(c("A_", "B_", "C_", "DRB1_", "DQB1_")),
+               names_to = c("locus", "haplo"),
+               names_sep = "_",
+               values_to = "typing") |>
+  group_by(id_phased_geno, phased_freq, likelihood) |>
+  summarise(unphased_geno = str_flatten(str_sort(typing), " ")) |> # make unphased genotypes
+  group_by(unphased_geno) |>
+  summarise(frequency_geno = sum(phased_freq),
+            likelihood_geno = sum(likelihood)) |>
+  slice_max(likelihood_geno)
+  #arrange(desc(likelihood_geno)) |> View()
