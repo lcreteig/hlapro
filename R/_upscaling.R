@@ -6,18 +6,19 @@ haplo_df <- read_xlsx("~/Downloads/A~C~B~DRB3-4-5~DRB1~DQB1.xlsx")
 
 top_haplos_ser <- haplo_df |>
   rename(`DRB.` = `DRB3-4-5`) |>
-  mutate(across(c(A, B, C, `DRB.`, DRB1, DQB1), ~ str_remove(.x, "g"))) |> # remove "g" suffix
+  mutate(across(c(A, B, `DRB.`, DRB1, DQB1), ~ str_remove(.x, "g"))) |> # remove "g" suffix
   slice_max(EURCAU_freq, n = 5000) |> # cf. BW, pick top 5000 haplos
   select(A, B, C, `DRB.`, DRB1, DQB1, EURCAU_freq, EURCAU_rank) |>
   # translate alleles to serological equivalents
   mutate(
-    across(c(A, B, C, `DRB.`, DRB1, DQB1), ~ get_broad(.x), .names = "{.col}_broad"),
-    across(c(A, B, C, `DRB.`, DRB1, DQB1), ~ get_split(.x), .names = "{.col}_split")
+    across(c(A, B, `DRB.`, DRB1, DQB1), ~ get_broad(.x), .names = "{.col}_broad"),
+    across(c(A, B, `DRB.`, DRB1, DQB1), ~ get_split(.x), .names = "{.col}_split")
   )
 
 typing <- "A2 A3 B52 B35 Cw4 DR11 DR52 DQ3"
 
-typing_alleles <- extract_alleles_str(typing, strip_locus = FALSE)
+typing_alleles <- extract_alleles_str(typing, strip_locus = FALSE,
+                                      loci = c("A", "B", "DRB1", "DRB.", "DQB1"))
 typing_alleles <- typing_alleles[!is.na(typing_alleles)]
 
 loci_present <- unique(str_extract(names(typing_alleles), r"(^.*(?=_))"))
@@ -95,4 +96,4 @@ cross_join(comp_haplos, comp_haplos, suffix = c("_1", "_2")) |> # combine all pe
   ) |>
   ungroup() |>
   relocate(unphased_geno, .after = id_unphased_geno) |>
-  slice_max(prob_unphased)
+  slice_max(prob_unphased) |> View()
