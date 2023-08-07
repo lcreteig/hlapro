@@ -5,48 +5,94 @@ library(hlapro)
 haplo_df <- read_xlsx("~/Downloads/A~C~B~DRB3-4-5~DRB1~DQB1.xlsx")
 
 top_haplos_ser <- haplo_df |>
-  mutate(across(c(A, B, C, `DRB3-4-5`, DRB1, DQB1), ~ str_remove(.x, "g"))) |> # remove "g" suffix
+  rename(`DRB.` = `DRB3-4-5`) |>
+  mutate(across(c(A, B, C, `DRB.`, DRB1, DQB1), ~ str_remove(.x, "g"))) |> # remove "g" suffix
   slice_max(EURCAU_freq, n = 5000) |> # cf. BW, pick top 5000 haplos
-  select(A, B, C, `DRB3-4-5`, DRB1, DQB1, EURCAU_freq, EURCAU_rank) |>
+  select(A, B, C, `DRB.`, DRB1, DQB1, EURCAU_freq, EURCAU_rank) |>
   # translate alleles to serological equivalents
-  mutate(across(c(A, B, DRB1), ~ get_broad(.x), .names = "{.col}_broad"),
-         across(c(A, B, DRB1), ~ get_split(.x), .names = "{.col}_split"))
+  mutate(
+    across(c(A, B, C, `DRB.`, DRB1, DQB1), ~ get_broad(.x), .names = "{.col}_broad"),
+    across(c(A, B, C, `DRB.`, DRB1, DQB1), ~ get_split(.x), .names = "{.col}_split")
+  )
 
-typing <- "A24 A28 B35 B61 DR4 DR11"
+typing <- "A2 A3 B52 B35 Cw4 DR11 DR52 DQ3"
 
-typing_alleles <- extract_alleles_str(typing,
-                                      strip_locus = FALSE,
-                                      loci = c("A", "B", "DRB1"))
+typing_alleles <- extract_alleles_str(typing, strip_locus = FALSE)
+typing_alleles <- typing_alleles[!is.na(typing_alleles)]
+
+loci_present <- unique(str_extract(names(typing_alleles), r"(^.*(?=_))"))
 
 comp_haplos <- top_haplos_ser |> # keep only haplos with alleles compatible with typing
-  filter(A_broad %in% typing_alleles | A_split %in% typing_alleles,
-         B_broad %in% typing_alleles | B_split %in% typing_alleles,
-         DRB1_broad %in% typing_alleles | DRB1_split %in% typing_alleles)
+  pivot_longer(
+    cols = ends_with(c("_broad", "_split")),
+    names_to = c("locus", ".value"),
+    names_sep = "_"
+  ) |>
+  filter(locus %in% loci_present) |>
+  group_by(EURCAU_rank) |>
+  filter(all(broad %in% typing_alleles | split %in% typing_alleles)) |>
+  ungroup() |>
+  pivot_wider(
+    names_from = locus,
+    values_from = c(broad, split),
+    names_glue = "{locus}_{.value}"
+  )
+# filter(A_broad %in% typing_alleles | A_split %in% typing_alleles,
+#        B_broad %in% typing_alleles | B_split %in% typing_alleles,
+#        DRB1_broad %in% typing_alleles | DRB1_split %in% typing_alleles)
 
 cross_join(comp_haplos, comp_haplos, suffix = c("_1", "_2")) |> # combine all permutations of haplos
-  filter(EURCAU_rank_1 < EURCAU_rank_2) |>  # make heterozygous phased genotypes: keep only unique combinations of haplos
-  # make genotype out of serological equivalents of alleles in phased genotypes
-  mutate(genotype_ser = pmap(
-    .l = list(A_broad_1, A_broad_2, A_split_1, A_split_2,
-              B_broad_1, B_broad_2, B_split_1, B_split_2,
-              DRB1_broad_1, DRB1_broad_2, DRB1_split_1, DRB1_split_2),
-    .f = c
-  )) |> # keep only phased genotypes that are same as input typing
-  filter(map_lgl(genotype_ser, \(x) all(typing_alleles %in% x))) |>
-  mutate(
-    phased_freq = 2 * EURCAU_freq_1 * EURCAU_freq_2,
-    likelihood = phased_freq / sum(phased_freq)
-  ) |> View()
+  filter(EURCAU_rank_1 < EURCAU_rank_2) |> # make heterozygous phased genotypes: keep only unique combinations of haplos
   rowid_to_column(var = "id_phased_geno") |>
-  select(!contains(c("broad", "split"))) |>
-  pivot_longer(cols = starts_with(c("A_", "B_", "C_", "DRB1_", "DQB1_")),
-               names_to = c("locus", "haplo"),
-               names_sep = "_",
-               values_to = "typing") |>
-  group_by(id_phased_geno, phased_freq, likelihood) |>
-  summarise(unphased_geno = str_flatten(str_sort(typing), " ")) |> # make unphased genotypes
+  # make genotype out of serological equivalents of alleles in phased genotypes
+  pivot_longer(
+    cols = contains(c("_broad_", "_split_")),
+    names_to = "locus_res_allele",
+    values_to = "ser_typing"
+  ) |>
+  group_by(id_phased_geno) |>
+  filter(all(typing_alleles %in% ser_typing)) |>
+  ungroup() |>
+  select(!c(locus_res_allele, ser_typing)) |>
+  distinct(id_phased_geno, .keep_all = TRUE) |>
+  # mutate(genotype_ser = pmap(
+  #   .l = list(A_broad_1, A_broad_2, A_split_1, A_split_2,
+  #             B_broad_1, B_broad_2, B_split_1, B_split_2,
+  #             DRB1_broad_1, DRB1_broad_2, DRB1_split_1, DRB1_split_2),
+  #   .f = c
+  # )) |> # keep only phased genotypes that are same as input typing
+  # filter(map_lgl(genotype_ser, \(x) all(typing_alleles %in% x))) |>
+  mutate(
+    freq_phased = 2 * EURCAU_freq_1 * EURCAU_freq_2,
+    prob_phased = freq_phased / sum(freq_phased)
+  ) |>
+  # rowid_to_column(var = "id_phased_geno") |>
+  # select(!contains(c("broad", "split"))) |>
+  pivot_longer(
+    cols = ends_with(c("_1", "_2")),
+    names_to = c(".value", "haplo"),
+    names_pattern = "(.*)_(\\d)"
+  ) |>
+  pivot_longer(
+    cols = c(A, B, C, `DRB.`, DRB1, DQB1),
+    names_to = "locus",
+    values_to = "typing"
+  ) |>
+  group_by(id_phased_geno) |>
+  mutate(unphased_geno = str_flatten(str_sort(typing), " ")) |> # make unphased genotypes
+  select(!c(locus, typing)) |>
+  distinct(id_phased_geno, EURCAU_rank, .keep_all = TRUE) |>
+  pivot_wider(
+    names_from = haplo,
+    names_prefix = "haplo_",
+    values_from = c(EURCAU_freq, EURCAU_rank)
+  ) |>
   group_by(unphased_geno) |>
-  summarise(frequency_geno = sum(phased_freq),
-            likelihood_geno = sum(likelihood)) |>
-  slice_max(likelihood_geno)
-  #arrange(desc(likelihood_geno)) |> View()
+  mutate(
+    id_unphased_geno = cur_group_rows(), .before = everything(),
+    freq_unphased = sum(freq_phased),
+    prob_unphased = sum(prob_phased)
+  ) |>
+  ungroup() |>
+  relocate(unphased_geno, .after = id_unphased_geno) |>
+  slice_max(prob_unphased)
