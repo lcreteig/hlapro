@@ -12,6 +12,7 @@ Provides tools for Human Leukocyte Antigen (HLA) data: genotypes as well as (Lum
 Useful links:
 \itemize{
   \item \url{https://github.com/lcreteig/hlapro}
+  \item \url{https://lcreteig.github.io/hlapro/}
   \item Report bugs at \url{https://github.com/lcreteig/hlapro/issues}
 }
 
