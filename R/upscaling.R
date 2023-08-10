@@ -3,7 +3,8 @@ upscale_typings <- function(filepath,
                             loci = c("A", "B", "DRB1", "DRB.", "DQB1"),
                             population = "EURCAU",
                             n_haplos = NULL,
-                            n_genos = 1) {
+                            n_genos = 1,
+                            as_list = FALSE) {
   # Load data and select haplotypes for given population
   haplo_df <- translate_top_haplos(filepath,
     loci = loci,
@@ -22,8 +23,9 @@ upscale_typings <- function(filepath,
       dplyr::slice_max(.data$unphased_prob, n = n_genos)
   }
 
-  purrr::map(typings, \(x) upscale_typing(haplo_df, x, loci)) |>
-    purrr::list_rbind(names_to = "id_input_typing")
+  res <- purrr::map(typings, \(x) upscale_typing(haplo_df, x, loci))
+  if (as_list) { return(res) }
+  purrr::list_rbind(res, names_to = "id_input_typing")
 }
 
 translate_top_haplos <- function(filepath, loci, population, n_haplos) {
