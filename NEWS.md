@@ -1,5 +1,9 @@
 # hlapro (development version)
 
+* New `upscale_typings()` function to impute high-resolution (two-field) 
+  genotypes for a low resolution serological input typing, based on [haplotype
+  frequencies released by the NMDP](http://frequency.nmdp.org)
+
 * New `gl_to_df()` and `df_to_gl()` functions to convert between a data frame
   with one column per allele and a [GL String](https://glstring.org) containing
   all alleles.

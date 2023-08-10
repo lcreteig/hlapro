@@ -184,6 +184,56 @@ get_public(b_s)
 #> [1] "Bw6" "Bw4" "Bw6" NA
 ```
 
+### Upscaling from serological equivalents to 2-field high resolution
+
+Depends on the haplotype frequencies released by the NMDP, which must be
+downloaded from [here](https://frequency.nmdp.org) after logging in and
+accepting the license.
+
+``` r
+upscale_typings(
+  filepath = "~/Downloads/A~C~B~DRB3-4-5~DRB1~DQB1.xlsx",
+  typing = "A24 A28 B35 B61 DR4 DR11"
+) |>
+  dplyr::select(unphased_geno, dplyr::starts_with("haplo"))
+#> # A tibble: 2 × 5
+#>   unphased_geno              haplo_freq_1 haplo_freq_2 haplo_rank_1 haplo_rank_2
+#>   <chr>                             <dbl>        <dbl>        <dbl>        <dbl>
+#> 1 A*24:02 A*68:01 B*35:03 B…    0.000585     0.000209           240          665
+#> 2 A*24:02 A*68:01 B*35:03 B…    0.0000849    0.0000597         1565         2058
+```
+
+Also able to upscale multiple typings at once, for instance in a
+dataframe:
+
+``` r
+typing_df <- tidyr::tibble(
+  id = c("001", "002"),
+  input_typings = c(
+    "A24 A28 B35 B61 DR4 DR11",
+    "A2 A3 B52 B35 Cw4 DR11 DR52 DQ3"
+  )
+)
+typing_df |>
+  dplyr::mutate(geno_df = upscale_typings(
+    "~/Downloads/A~C~B~DRB3-4-5~DRB1~DQB1.xlsx",
+    input_typings,
+    as_list = TRUE
+  )) |>
+  tidyr::unnest(geno_df)
+#> # A tibble: 6 × 12
+#>   id    input_typings id_unphased_geno unphased_geno unphased_freq unphased_prob
+#>   <chr> <chr>                    <int> <chr>                 <dbl>         <dbl>
+#> 1 001   A24 A28 B35 …              364 A*24:02 A*68…  0.000000254          0.121
+#> 2 001   A24 A28 B35 …              364 A*24:02 A*68…  0.000000254          0.121
+#> 3 002   A2 A3 B52 B3…               17 A*02:01 A*03…  0.0000000542         0.151
+#> 4 002   A2 A3 B52 B3…               17 A*02:01 A*03…  0.0000000542         0.151
+#> 5 002   A2 A3 B52 B3…               17 A*02:01 A*03…  0.0000000542         0.151
+#> 6 002   A2 A3 B52 B3…               17 A*02:01 A*03…  0.0000000542         0.151
+#> # ℹ 6 more variables: phased_freq <dbl>, phased_prob <dbl>, haplo_freq_1 <dbl>,
+#> #   haplo_freq_2 <dbl>, haplo_rank_1 <dbl>, haplo_rank_2 <dbl>
+```
+
 ### Converting to and from GL Strings
 
 Typing data often comes in a data frame like this:
@@ -214,8 +264,8 @@ typing_df_gl
 #> # A tibble: 2 × 2
 #>   id    glstring                                                                
 #>   <chr> <chr>                                                                   
-#> 1 001   hla#2023-07-27#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
-#> 2 002   hla#2023-07-27#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
+#> 1 001   hla#2023-08-10#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
+#> 2 002   hla#2023-08-10#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
 ```
 
 Use `gl_to_df()` to go the opposite way: from a dataframe of GL Strings
@@ -228,8 +278,8 @@ typing_df_gl |>
 #> # A tibble: 2 × 11
 #>   id    glstring      glstring_index namespace version_or_date A_1   A_2   B_1  
 #>   <chr> <chr>                  <int> <chr>     <chr>           <chr> <chr> <chr>
-#> 1 001   hla#2023-07-…              1 hla       2023-07-27      HLA-… HLA-… HLA-…
-#> 2 002   hla#2023-07-…              2 hla       2023-07-27      HLA-… HLA-… HLA-…
+#> 1 001   hla#2023-08-…              1 hla       2023-08-10      HLA-… HLA-… HLA-…
+#> 2 002   hla#2023-08-…              2 hla       2023-08-10      HLA-… HLA-… HLA-…
 #> # ℹ 3 more variables: B_2 <chr>, C_1 <chr>, C_2 <chr>
 ```
 
