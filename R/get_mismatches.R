@@ -20,6 +20,10 @@
 #' get_mismatches("A1 A2 B5", "A3 A4 B5 B12")
 #' #> "A1 A2"
 get_mismatches <- function(donor, recipient) {
+  stopifnot(
+    "donor typing is not a single string" = length(donor) == 1,
+    "recipient typing is not a single string" = length(recipient) == 1
+  )
   setdiff(
     # separate alleles by spaces
     stringr::str_split_1(donor, stringr::boundary("word")),

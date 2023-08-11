@@ -48,7 +48,7 @@ extract_alleles_str <- function(string,
                                 ),
                                 strip_locus = TRUE) {
   loci <- rlang::arg_match(loci, multiple = TRUE)
-  stopifnot(is.logical(strip_locus))
+  check_bool(strip_locus)
 
   # get rid of any leading/trailing/double spaces
   string <- stringr::str_squish(string)
@@ -84,7 +84,9 @@ extract_alleles_df <- function(df,
                                  "DPA1", "DPB1", "DQA1", "DQB1", "DRB1", "DRB."
                                ),
                                strip_locus = TRUE) {
+  check_data_frame(df)
   loci <- rlang::arg_match(loci, multiple = TRUE)
+  check_bool(strip_locus)
 
   # get rid of any leading/trailing/double spaces
   df <- dplyr::mutate(df, dplyr::across({{ col_typing }}, stringr::str_squish))
@@ -262,7 +264,11 @@ df_to_gl <- function(df,
                      ),
                      suffixes = c("1", "2"),
                      sep = "_") {
+  check_data_frame(df)
+  check_name(namespace)
+  check_name(col_typing)
   loci <- rlang::arg_match(loci, multiple = TRUE)
+  stopifnot(check_character(suffixes) & length(suffixes) == 2)
 
   # build names of columns containing HLAs (e.g. "A_1", "A_2", "B_1", etc.)
   typing_cols <- paste0(
@@ -414,9 +420,11 @@ gl_to_vec <- function(glstring) {
 #'   namespace = "hla", version_or_date = "2018-06"
 #' )
 vec_to_gl <- function(allele_list, namespace = "hla", version_or_date = NULL) {
+  check_name(namespace)
   if (is.null(version_or_date)) {
-    version_or_date <- Sys.Date()
+    version_or_date <- format(Sys.Date(), "%Y-%m-%d")
   }
+  check_name(version_or_date)
   if (all(is.na(allele_list))) {
     return(NA)
   }

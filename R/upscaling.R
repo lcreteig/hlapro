@@ -114,6 +114,7 @@ upscale_typings <- function(filepath,
                             n_genos = 1,
                             as_list = FALSE) {
   loci <- rlang::arg_match(loci, multiple = TRUE)
+  check_number_whole(n_genos)
 
   # Load data and select haplotypes for given population
   haplo_df <- translate_top_haplos(filepath,
@@ -144,7 +145,14 @@ upscale_typings <- function(filepath,
 }
 
 translate_top_haplos <- function(filepath, loci, population, n_haplos) {
-  haplo_df <- readxl::read_xlsx(filepath, na = "NA") |>
+  haplo_df <- readxl::read_xlsx(filepath, na = "NA")
+
+  stopifnot(
+    "`population` must occur in NMDP dataset" =
+      any(stringr::str_detect(colnames(haplo_df), population))
+  )
+
+  haplo_df <- haplo_df |>
     dplyr::rename(`DRB.` = .data$`DRB3-4-5`) |> # `DRB.` cf. rest of package
     # make generic name for the "freq" and "rank" cols, for ease of use later on
     dplyr::rename_with(\(x) stringr::str_replace_all(x, population, "haplo")) |>
@@ -156,10 +164,12 @@ translate_top_haplos <- function(filepath, loci, population, n_haplos) {
     dplyr::mutate(dplyr::across(
       dplyr::all_of(loci), ~ stringr::str_remove(.x, "g") # remove "g" from end
     ))
+
   # determine how many haplos to include if not user specified
   if (is.null(n_haplos)) {
     n_haplos <- max(haplo_df$haplo_rank, na.rm = TRUE)
   }
+  check_number_whole(n_haplos)
 
   haplo_df |>
     dplyr::slice_min(.data$haplo_rank, n = n_haplos) |>

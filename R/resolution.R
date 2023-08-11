@@ -42,6 +42,7 @@
 #'   dplyr::mutate(resolution = get_resolution(allele_vec))
 #'
 get_resolution <- function(allele, extended = FALSE) {
+  check_bool(extended)
   res <- dplyr::case_when(
     # "*" followed by capital letter (but not XX), or digits and then a slash
     stringr::str_detect(
