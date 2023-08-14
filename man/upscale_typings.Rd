@@ -7,7 +7,8 @@
 upscale_typings(
   filepath,
   typings,
-  loci = c("A", "B", "DRB1", "DRB.", "DQB1"),
+  loci_input = c("A", "B", "DRB1", "DRB.", "DQB1"),
+  loci_output = c("A", "B", "C", "DRB1", "DRB.", "DQB1"),
   population = "EURCAU",
   n_haplos = NULL,
   n_genos = 1,
@@ -21,12 +22,14 @@ as downloaded from \url{https://frequency.nmdp.org}.}
 \item{typings}{String or character vector of HLA typings, with
 space-separated alleles in serological notation.}
 
-\item{loci}{Character vector of loci in the input genotype to be used for
-upscaling. Must be a subset of \code{c("A", "B", "C", "DRB1", "DRB.", "DQB1")},
-where \code{DRB.} is DRB3/4/5. If one of these loci does not occur in the input
-typing, it will be ignored. N.B. this only controls the loci used for the
-\emph{input} to the upscaling algorithm; the \emph{output} will always contain all of
-them.}
+\item{loci_input}{Character vector of loci in the input genotype to be used
+for upscaling. Must be a subset of \code{c("A", "B", "C", "DRB1", "DRB.", "DQB1")}, where \code{DRB.} is DRB3/4/5. If one of these loci does not occur in
+the input typing, it will be ignored.}
+
+\item{loci_output}{Character vector of loci that the upscaled, output
+genotype should contain. Can be different from \code{loci_input}, for example if
+there's no typing at all for a certain locus and you want to infer it from
+the haplotypes. Must be a subset of \code{c("A", "B", "C", "DRB1", "DRB.", "DQB1")}, where \code{DRB.} is DRB3/4/5.}
 
 \item{population}{String specifying which population group to use the
 haplotype frequencies from. Must correspond to one of the abbreviations

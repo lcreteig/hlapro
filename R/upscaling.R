@@ -39,12 +39,15 @@
 #'   as downloaded from <https://frequency.nmdp.org>.
 #' @param typings String or character vector of HLA typings, with
 #'   space-separated alleles in serological notation.
-#' @param loci Character vector of loci in the input genotype to be used for
-#'   upscaling. Must be a subset of `c("A", "B", "C", "DRB1", "DRB.", "DQB1")`,
-#'   where `DRB.` is DRB3/4/5. If one of these loci does not occur in the input
-#'   typing, it will be ignored. N.B. this only controls the loci used for the
-#'   _input_ to the upscaling algorithm; the _output_ will always contain all of
-#'   them.
+#' @param loci_input Character vector of loci in the input genotype to be used
+#'   for upscaling. Must be a subset of `c("A", "B", "C", "DRB1", "DRB.",
+#'   "DQB1")`, where `DRB.` is DRB3/4/5. If one of these loci does not occur in
+#'   the input typing, it will be ignored.
+#' @param loci_output Character vector of loci that the upscaled, output
+#'   genotype should contain. Can be different from `loci_input`, for example if
+#'   there's no typing at all for a certain locus and you want to infer it from
+#'   the haplotypes. Must be a subset of `c("A", "B", "C", "DRB1", "DRB.",
+#'   "DQB1")`, where `DRB.` is DRB3/4/5.
 #' @param population String specifying which population group to use the
 #'   haplotype frequencies from. Must correspond to one of the abbreviations
 #'   that can be found on <https://haplostats.org>
@@ -108,43 +111,56 @@
 #' }
 upscale_typings <- function(filepath,
                             typings,
-                            loci = c("A", "B", "DRB1", "DRB.", "DQB1"),
+                            loci_input = c(
+                              "A", "B",
+                              "DRB1", "DRB.", "DQB1"
+                            ),
+                            loci_output = c(
+                              "A", "B", "C",
+                              "DRB1", "DRB.", "DQB1"
+                            ),
                             population = "EURCAU",
                             n_haplos = NULL,
                             n_genos = 1,
                             as_list = FALSE) {
-  loci <- rlang::arg_match(loci, multiple = TRUE)
+  loci_input <- rlang::arg_match(loci_input, multiple = TRUE)
+  loci_output <- rlang::arg_match(loci_output, multiple = TRUE)
   check_number_whole(n_genos)
 
   # Load data and select haplotypes for given population
   haplo_df <- translate_top_haplos(filepath,
-    loci = loci,
+    loci_input = loci_input,
+    loci_output = loci_output,
     population = population,
     n_haplos = n_haplos
   )
 
-  upscale_typing <- function(haplo_df, typing, loci) {
+  upscale_typing <- function(haplo_df, typing, loci_input) {
     # get alleles in input genotyping into a vector; only loci we want
     # consider for upscaling
-    alleles <- extract_alleles_str(typing, strip_locus = FALSE, loci = loci)
+    alleles <- extract_alleles_str(typing,
+      strip_locus = FALSE,
+      loci = loci_input
+    )
     alleles <- alleles[!is.na(alleles)]
 
     haplo_df |>
       select_compatible_haplos(alleles) |>
       make_phased_genotypes(alleles) |>
-      make_unphased_genotypes() |>
+      make_unphased_genotypes(loci_output) |>
       dplyr::slice_max(.data$unphased_prob, n = n_genos) # select top n_genos
   }
 
   # Perform upscaling for each typing
-  res <- purrr::map(typings, \(x) upscale_typing(haplo_df, x, loci))
+  res <- purrr::map(typings, \(x) upscale_typing(haplo_df, x, loci_input))
   if (as_list) {
     return(res)
   }
   purrr::list_rbind(res, names_to = "id_input_typing")
 }
 
-translate_top_haplos <- function(filepath, loci, population, n_haplos) {
+translate_top_haplos <- function(filepath, loci_input, loci_output,
+                                 population, n_haplos) {
   haplo_df <- readxl::read_xlsx(filepath, na = "NA")
 
   stopifnot(
@@ -153,16 +169,12 @@ translate_top_haplos <- function(filepath, loci, population, n_haplos) {
   )
 
   haplo_df <- haplo_df |>
-    dplyr::rename(`DRB.` = .data$`DRB3-4-5`) |> # `DRB.` cf. rest of package
+    dplyr::rename(`DRB.` = dplyr::matches("DRB3-4-5")) |> # `DRB3-4-5` to `DRB.`
     # make generic name for the "freq" and "rank" cols, for ease of use later on
     dplyr::rename_with(\(x) stringr::str_replace_all(x, population, "haplo")) |>
-    dplyr::select(dplyr::all_of(c(
-      "A", "B", "C",
-      "DRB.", "DRB1", "DQB1",
-      "haplo_freq", "haplo_rank"
-    ))) |>
-    dplyr::mutate(dplyr::across(
-      dplyr::all_of(loci), ~ stringr::str_remove(.x, "g") # remove "g" from end
+    dplyr::select(dplyr::all_of(c(loci_output, "haplo_freq", "haplo_rank"))) |>
+    dplyr::mutate(dplyr::across( # remove "g" from end
+      dplyr::all_of(loci_input), ~ stringr::str_remove(.x, "g")
     ))
 
   # determine how many haplos to include if not user specified
@@ -175,11 +187,11 @@ translate_top_haplos <- function(filepath, loci, population, n_haplos) {
     dplyr::slice_min(.data$haplo_rank, n = n_haplos) |>
     # translate alleles to serological equivalents
     dplyr::mutate(
-      dplyr::across(dplyr::all_of(loci), # new columns for broads
+      dplyr::across(dplyr::all_of(loci_input), # new columns for broads
         ~ get_broad(.x),
         .names = "{.col}_broad"
       ),
-      dplyr::across(dplyr::all_of(loci), # new columns for splits
+      dplyr::across(dplyr::all_of(loci_input), # new columns for splits
         ~ get_split(.x),
         .names = "{.col}_split"
       )
@@ -232,7 +244,7 @@ make_phased_genotypes <- function(df, alleles) {
     )
 }
 
-make_unphased_genotypes <- function(df) {
+make_unphased_genotypes <- function(df, loci_output) {
   df |>
     tidyr::pivot_longer(
       cols = tidyr::ends_with(c("_1", "_2")),
@@ -240,7 +252,7 @@ make_unphased_genotypes <- function(df) {
       names_pattern = "(.*)_(\\d)"
     ) |>
     tidyr::pivot_longer(
-      cols = dplyr::all_of(c("A", "B", "C", "DRB.", "DRB1", "DQB1")),
+      cols = dplyr::all_of(loci_output),
       names_to = "locus",
       values_to = "typing"
     ) |>
