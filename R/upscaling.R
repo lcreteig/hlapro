@@ -172,10 +172,7 @@ translate_top_haplos <- function(filepath, loci_input, loci_output,
     dplyr::rename(`DRB.` = dplyr::matches("DRB3-4-5")) |> # `DRB3-4-5` to `DRB.`
     # make generic name for the "freq" and "rank" cols, for ease of use later on
     dplyr::rename_with(\(x) stringr::str_replace_all(x, population, "haplo")) |>
-    dplyr::select(dplyr::all_of(c(loci_output, "haplo_freq", "haplo_rank"))) |>
-    dplyr::mutate(dplyr::across( # remove "g" from end
-      dplyr::all_of(loci_input), ~ stringr::str_remove(.x, "g")
-    ))
+    dplyr::select(dplyr::all_of(c(loci_output, "haplo_freq", "haplo_rank")))
 
   # determine how many haplos to include if not user specified
   if (is.null(n_haplos)) {
@@ -188,11 +185,11 @@ translate_top_haplos <- function(filepath, loci_input, loci_output,
     # translate alleles to serological equivalents
     dplyr::mutate(
       dplyr::across(dplyr::all_of(loci_input), # new columns for broads
-        ~ get_broad(.x),
+        ~ get_broad(stringr::str_remove(.x, "g")),
         .names = "{.col}_broad"
       ),
       dplyr::across(dplyr::all_of(loci_input), # new columns for splits
-        ~ get_split(.x),
+        ~ get_split(stringr::str_remove(.x, "g")),
         .names = "{.col}_split"
       )
     )
@@ -221,6 +218,9 @@ select_compatible_haplos <- function(df, alleles) {
 }
 
 make_phased_genotypes <- function(df, alleles) {
+  # TODO: add homozygous haplotypes also (i.e. filter 1 <= 2), as these do occur
+  # (albeit rarely). Phased freq is calculated differently though, so need to
+  # add a modifier column that differs when haplo 1 == haplo 2
   df |>
     dplyr::cross_join(df, suffix = c("_1", "_2")) |> # combine all permutations
     # make heterozygous phased genotypes: keep only unique haplo combinations
