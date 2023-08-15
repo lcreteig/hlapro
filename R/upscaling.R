@@ -218,13 +218,10 @@ select_compatible_haplos <- function(df, alleles) {
 }
 
 make_phased_genotypes <- function(df, alleles) {
-  # TODO: add homozygous haplotypes also (i.e. filter 1 <= 2), as these do occur
-  # (albeit rarely). Phased freq is calculated differently though, so need to
-  # add a modifier column that differs when haplo 1 == haplo 2
   df |>
     dplyr::cross_join(df, suffix = c("_1", "_2")) |> # combine all permutations
-    # make heterozygous phased genotypes: keep only unique haplo combinations
-    dplyr::filter(.data$haplo_rank_1 < .data$haplo_rank_2) |>
+    # make phased genotypes: keep only unique haplo combinations
+    dplyr::filter(.data$haplo_rank_1 <= .data$haplo_rank_2) |>
     tibble::rowid_to_column(var = "id_phased_geno") |>
     # make genotype out of serological equivalents  in phased genotypes
     tidyr::pivot_longer(
@@ -239,7 +236,9 @@ make_phased_genotypes <- function(df, alleles) {
     dplyr::select(!dplyr::all_of(c("locus_res_allele", "ser_typing"))) |>
     dplyr::distinct(.data$id_phased_geno, .keep_all = TRUE) |>
     dplyr::mutate( # calculate phased genotype frequency / probability
-      phased_freq = 2 * .data$haplo_freq_1 * .data$haplo_freq_2,
+      # for phased frequency calculation, change multiplier if homo/hetero
+      multiplier = ifelse(.data$haplo_rank_1 == .data$haplo_rank_2, 1, 2),
+      phased_freq = .data$multiplier * .data$haplo_freq_1 * .data$haplo_freq_2,
       phased_prob = .data$phased_freq / sum(.data$phased_freq)
     )
 }

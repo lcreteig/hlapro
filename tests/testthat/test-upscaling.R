@@ -1,3 +1,6 @@
+# TODO: add test for homozygous haplotype frequency
+# TODO: add test for phased genotype frequencies (ground truth from HaploStats)
+# TODO: add test for outcome genotype (ground truth from HaploStats)
 test_that("serological typings return expected EURCAU genotype frequencies", {
   # NMDP data cannot be made available; users have to ID and accept license
   skip_on_cran()
