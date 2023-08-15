@@ -60,7 +60,8 @@ string(s), and "upscales" it to(two-field) high resolution based on
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">upscale_typings</span><span class="op">(</span></span>
 <span>  <span class="va">filepath</span>,</span>
 <span>  <span class="va">typings</span>,</span>
-<span>  loci <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"DRB1"</span>, <span class="st">"DRB."</span>, <span class="st">"DQB1"</span><span class="op">)</span>,</span>
+<span>  loci_input <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"DRB1"</span>, <span class="st">"DRB."</span>, <span class="st">"DQB1"</span><span class="op">)</span>,</span>
+<span>  loci_output <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"DRB1"</span>, <span class="st">"DRB."</span>, <span class="st">"DQB1"</span><span class="op">)</span>,</span>
 <span>  population <span class="op">=</span> <span class="st">"EURCAU"</span>,</span>
 <span>  n_haplos <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_genos <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -80,13 +81,17 @@ as downloaded from <a href="https://frequency.nmdp.org" class="external-link">ht
 space-separated alleles in serological notation.</p></dd>
 
 
-<dt>loci</dt>
-<dd><p>Character vector of loci in the input genotype to be used for
-upscaling. Must be a subset of <code>c("A", "B", "C", "DRB1", "DRB.", "DQB1")</code>,
-where <code>DRB.</code> is DRB3/4/5. If one of these loci does not occur in the input
-typing, it will be ignored. N.B. this only controls the loci used for the
-<em>input</em> to the upscaling algorithm; the <em>output</em> will always contain all of
-them.</p></dd>
+<dt>loci_input</dt>
+<dd><p>Character vector of loci in the input genotype to be used
+for upscaling. Must be a subset of <code>c("A", "B", "C", "DRB1", "DRB.", "DQB1")</code>, where <code>DRB.</code> is DRB3/4/5. If one of these loci does not occur in
+the input typing, it will be ignored.</p></dd>
+
+
+<dt>loci_output</dt>
+<dd><p>Character vector of loci that the upscaled, output
+genotype should contain. Can be different from <code>loci_input</code>, for example if
+there's no typing at all for a certain locus and you want to infer it from
+the haplotypes. Must be a subset of <code>c("A", "B", "C", "DRB1", "DRB.", "DQB1")</code>, where <code>DRB.</code> is DRB3/4/5.</p></dd>
 
 
 <dt>population</dt>
