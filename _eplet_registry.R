@@ -1,8 +1,8 @@
 library(tidyverse)
 library(rvest)
 
-page_url <- "https://www.epregistry.com.br/index/databases/database/ABC/"
-tbls_page <- read_html(page_url)
+base_url <- "https://www.epregistry.com.br/index/databases/database/"
+databases <- c("ABC", "DRB", "DQ", "DP", "DRDQDP")
 
 base_path <- "#table-result > div > table > tbody > tr > td:nth-child"
 col_paths <- c(
@@ -17,8 +17,20 @@ col_paths <- c(
 col_paths[] <- paste0(base_path, col_paths)
 
 
-df <- map(col_paths, \(x) html_text2(html_elements(tbls_page, x))) |>
-  as_tibble() |>
+scrape_column <- function(page_html, col_path) {
+  html_elements(page_html, col_path) |>
+    html_text2()
+}
+
+scrape_table <- function(base_url, database, col_paths) {
+  page_html <- read_html(paste0(base_url, database))
+  map(col_paths, \(x) scrape_column(page_html, x)) |>
+    list_assign(database = database)
+}
+
+tbl <- map(databases, \(x) scrape_table(base_url, x, col_paths)) |>
+  map(as_tibble) |>
+  list_rbind() |>
   mutate(confirmation = str_starts(confirmation, "Yes")) |>
   pivot_longer(c(alleles_luminex, alleles_all),
     names_to = "source",
