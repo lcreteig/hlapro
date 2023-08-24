@@ -1,3 +1,30 @@
+lookup_eplets <- function(eplet_df, alleles) {
+  lookup_eplet <- function(eplet_df, allele) {
+    eplet_df |>
+      dplyr::filter(alleles == allele) |>
+      dplyr::distinct(name) |>
+      dplyr::pull(name)
+  }
+
+  purrr::map(alleles, \(x) lookup_eplet(eplet_df, x)) |>
+    purrr::set_names(alleles)
+}
+
+lookup_alleles <- function(eplet_df, eplets, allele_set = c("luminex", "all")) {
+  rlang::arg_match(allele_set)
+
+  eplet_df <- dplyr::filter(eplet_df, source == allele_set)
+
+  lookup_allele <- function(eplet_df, eplet) {
+    eplet_df |>
+      dplyr::filter(name == eplet) |>
+      dplyr::pull(alleles)
+  }
+
+  purrr::map(eplets, \(x) lookup_allele(eplet_df, x)) |>
+    purrr::set_names(eplets)
+}
+
 load_eplet_registry <- function(folder_path = NULL,
                                 filename = NULL,
                                 print_version = TRUE,
@@ -125,6 +152,7 @@ scrape_eplet_registry <- function(file_path) {
     dplyr::group_by(id) |>
     tidyr::separate_longer_delim(alleles, delim = ",") |> # one row per allele
     # clean up whitespace at start/end
+    dplyr::ungroup() |>
     dplyr::mutate(dplyr::across(dplyr::everything(), ~ stringr::str_trim(.x)))
 
   registry_info <- fetch_registry_version()
