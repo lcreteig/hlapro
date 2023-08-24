@@ -1,3 +1,22 @@
+fetch_registry_version <- function() {
+  registry_url <- "https://www.epregistry.com.br"
+  version_text <- rvest::read_html(registry_url) |>
+    rvest::html_elements("body > footer > div.container > p:nth-child(2)") |>
+    rvest::html_text2()
+
+  version_date <- stringr::str_extract(version_text, r"(\d{4}-\d{2}-\d{2})")
+
+  invisible(c(
+    date = version_date,
+    # extract text following version date
+    notes = stringr::str_extract(version_text,
+      stringr::str_glue(r"((?:{version_date}\.\s)(.*))"),
+      group = 1
+    ),
+    url = registry_url
+  ))
+}
+
 scrape_eplet_registry <- function(base_url, databases) {
   # CSS selector paths to the individual columns
   # (scraping entire table with rvest::html_table resulted in misaligned rows/
@@ -27,7 +46,7 @@ scrape_eplet_registry <- function(base_url, databases) {
   }
 
   # for each database (i.e. page), scrape all columns, store in another list
-  purrr::map(databases, \(x) scrape_table(base_url, x, col_paths)) |>
+  df <- purrr::map(databases, \(x) scrape_table(base_url, x, col_paths)) |>
     purrr::map(tidyr::as_tibble) |> # make a dataframe out of each scraped db
     purrr::list_rbind() |> # combine into one dataframe
     # clean up the column: text always starts with "Yes" if eplet confirmed
@@ -42,4 +61,11 @@ scrape_eplet_registry <- function(base_url, databases) {
     tidyr::separate_longer_delim(alleles, delim = ",") |> # one row per allele
     # clean up whitespace at start/end
     dplyr::mutate(dplyr::across(dplyr::everything(), ~ stringr::str_trim(.x)))
+
+  registry_info <- fetch_registry_version()
+  attr(df, "date") <- registry_info[["date"]]
+  attr(df, "notes") <- registry_info[["notes"]]
+  attr(df, "url") <- registry_info[["url"]]
+
+  df
 }
