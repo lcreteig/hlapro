@@ -236,7 +236,10 @@ scrape_eplet_registry <- function(file_path) {
     tidyr::separate_longer_delim(.data$alleles, delim = ",") |>
     # clean up whitespace at start/end
     dplyr::ungroup() |>
-    dplyr::mutate(dplyr::across(dplyr::everything(), ~ stringr::str_trim(.x)))
+    dplyr::mutate(dplyr::across(
+      dplyr::where(is.character),
+      ~ stringr::str_trim(.x)
+    ))
 
   registry_info <- fetch_registry_version()
   attr(df, "date") <- registry_info[["date"]]
