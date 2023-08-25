@@ -14,6 +14,7 @@ Downscaling
 DPA
 DPB
 dplyr
+DQ
 DQA
 DQB
 DRA
@@ -21,6 +22,9 @@ DRB
 DSA
 DSAs
 epitope
+Eplet
+eplet
+eplets
 et
 ETRL
 etrl
@@ -44,6 +48,7 @@ homozygous
 https
 IMGT
 immunotation
+Interlocus
 io
 IPD
 Kamoun

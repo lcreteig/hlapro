@@ -1,32 +1,117 @@
+#' Lookup eplets corresponding to alleles in HLA Eplet Registry
+#'
+#' `lookup_eplets()` takes in a set of HLA alleles, and retrieves the
+#' corresponding eplets from the Eplet Registry table.
+#'
+#' @param eplet_df Data frame containing the Eplet Registry; from output of
+#'   [load_eplet_registry()].
+#' @param alleles String or character vector of HLA alleles.
+#'
+#' @return Named list, where each element is a character vector of eplets for
+#'   each allele in the input.
+#' @seealso [lookup_alleles()] for the reverse operation
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' df_eplets <- load_eplet_registry()
+#' lookup_eplets(df_eplets, "A*01:01")
+#' # Also works for vectors:
+#' lookup_eplets(df_eplets, c("A*01:01", "B*08:01"))
+#' }
 lookup_eplets <- function(eplet_df, alleles) {
   lookup_eplet <- function(eplet_df, allele) {
     eplet_df |>
-      dplyr::filter(alleles == allele) |>
-      dplyr::distinct(name) |>
-      dplyr::pull(name)
+      dplyr::filter(.data$alleles == allele) |>
+      dplyr::distinct(.data$name) |>
+      dplyr::pull(.data$name)
   }
 
   purrr::map(alleles, \(x) lookup_eplet(eplet_df, x)) |>
     purrr::set_names(alleles)
 }
 
-lookup_alleles <- function(eplet_df, eplets, allele_set = c("luminex", "all")) {
-  rlang::arg_match(allele_set)
+#' Lookup alleles corresponding to eplets in HLA Eplet Registry
+#'
+#' `lookup_alleles()` takes in a set of eplets, and retrieves the corresponding
+#' HLA alleles from the Eplet Registry table.
+#'
+#' @param eplet_df Data frame containing the Eplet Registry; from output of
+#'   [load_eplet_registry()].
+#' @param eplets String or character vector of Eplet names.
+#' @param allele_set Whether to return only Luminex alleles (`"luminex"`;
+#'   default) or all alleles (`"all"`).
+#'
+#' @return Named list, where each each element is a character vector of alleles
+#'   for each eplet in the input.
+#' @seealso [lookup_eplets()] for the reverse operation
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' df_eplets <- load_eplet_registry()
+#' lookup_alleles(df_eplets, "9F")
+#' lookup_alleles(df_eplets, "3P", allele_set = "all")
+#' # Also works for vectors:
+#' lookup_alleles(df_eplets, c("9F", "3S"))
+#' }
+lookup_alleles <- function(eplet_df, eplets, allele_set = "luminex") {
+  rlang::arg_match(allele_set, c("luminex", "all"))
 
-  eplet_df <- dplyr::filter(eplet_df, source == allele_set)
+  eplet_df <- dplyr::filter(eplet_df, .data$source == allele_set)
 
   lookup_allele <- function(eplet_df, eplet) {
     eplet_df |>
-      dplyr::filter(name == eplet) |>
-      dplyr::pull(alleles)
+      dplyr::filter(.data$name == eplet) |>
+      dplyr::pull(.data$alleles)
   }
 
   purrr::map(eplets, \(x) lookup_allele(eplet_df, x)) |>
     purrr::set_names(eplets)
 }
 
+#' Load HLA Eplet Registry table
+#'
+#' `load_eplet_registry()` returns a dataframe with the [HLA Eplet Registry
+#' table](https://www.epregistry.com.br), which maps HLA alleles to eplets. If
+#' no local copy exists, the function will prompt you whether you want to scrape
+#' the online registry to download a fresh copy.
+#'
+#' Currently incorporates only the HLA tables (A/B/C, DRB, DQ, DP and
+#' Interlocus), not MICA.
+#'
+#' @param folder_path Character path to the folder where the previously
+#'   downloaded table is stored, or where you want a new version to be stored.
+#'   Defaults to the R user cache directory.
+#' @param filename Character filename for the table.
+#' @param print_version Logical indicating whether to print message with version
+#'   information when loading the table. Turn this off by setting to `FALSE`.
+#' @param return_path Logical indicating whether to return the folder path
+#'   rather than the data frame.
+#' @param delete Logical indicating whether to delete the cached Eplet Registry.
+#' @return Either a data frame containing the Eplet Registry (default) or a
+#'   character string giving the path to the folder where it is/will be stored
+#'   (if `return_path` = `TRUE`).
+#' @export
+#' @seealso
+#'   - [lookup_alleles()] for a helper function that takes in eplets and looks
+#'   up the HLA alleles they occur on in the registry
+#'   - [lookup_eplets()] for a helper function that takes in alleles and looks
+#'   up which eplets occur on them in the registry
+#' @examples
+#' \dontrun{
+#' # (Down)load the eplet registry (to/)from the default path
+#' df_eplets <- load_eplet_registry()
+#' # Return the location of the default path
+#' load_eplet_registry(return_path = TRUE)
+#' # (Down)load the eplet registry (to/)from a custom path and a custom filename
+#' df_eplets <- load_eplet_registry("~/eplet_registry", "eplet_table.rds")
+#' # Delete the saved table
+#' load_eplet_registry("~/eplet_registry", "eplet_table.rds", delete = TRUE)
+#' }
+#'
 load_eplet_registry <- function(folder_path = NULL,
-                                filename = NULL,
+                                filename = "eplets.rds",
                                 print_version = TRUE,
                                 return_path = FALSE,
                                 delete = FALSE) {
@@ -36,10 +121,6 @@ load_eplet_registry <- function(folder_path = NULL,
 
   if (return_path) {
     return(folder_path)
-  }
-
-  if (is.null(filename)) {
-    filename <- "eplets.rds"
   }
 
   file_path <- file.path(folder_path, filename)
@@ -142,15 +223,17 @@ scrape_eplet_registry <- function(file_path) {
     purrr::map(tidyr::as_tibble) |> # make a dataframe out of each scraped db
     purrr::list_rbind() |> # combine into one dataframe
     # clean up the column: text always starts with "Yes" if eplet confirmed
-    dplyr::mutate(confirmation = stringr::str_starts(confirmation, "Yes")) |>
+    dplyr::mutate(confirmation = stringr::str_starts(
+      .data$confirmation, "Yes"
+    )) |>
     # one column for the alleles, and another for if they're luminex or not
-    tidyr::pivot_longer(c(alleles_luminex, alleles_all),
+    tidyr::pivot_longer(c(.data$alleles_luminex, .data$alleles_all),
       names_to = "source",
       names_prefix = "alleles_",
       values_to = "alleles"
     ) |>
-    dplyr::group_by(id) |>
-    tidyr::separate_longer_delim(alleles, delim = ",") |> # one row per allele
+    dplyr::group_by(.data$id) |> # one row per allele
+    tidyr::separate_longer_delim(.data$alleles, delim = ",") |>
     # clean up whitespace at start/end
     dplyr::ungroup() |>
     dplyr::mutate(dplyr::across(dplyr::everything(), ~ stringr::str_trim(.x)))
