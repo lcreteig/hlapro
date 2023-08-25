@@ -1,0 +1,168 @@
+df_eplets <- load_eplet_registry()
+
+# lookup_alleles() --------------------------------------------------------
+
+test_that("right alleles are returned", {
+  expect_equal(lookup_alleles(df_eplets, "23L"), list(`23L` = "DQB1*04:01"))
+  expect_equal(
+    lookup_alleles(df_eplets, "4Q", allele_set = "all"),
+    list(`4Q` = c(
+      "DRB1*01:144", "DRB1*07:01", "DRB1*07:03", "DRB1*07:04", "DRB1*07:07",
+      "DRB1*07:09", "DRB1*07:121", "DRB1*07:136", "DRB1*07:139", "DRB1*07:151",
+      "DRB1*07:152", "DRB1*07:153", "DRB1*09:01", "DRB1*09:20", "DRB1*09:21",
+      "DRB1*09:31", "DRB1*09:32", "DRB4*01:01", "DRB4*01:02", "DRB4*01:03",
+      "DRB4*01:07", "DRB4*01:151", "DRB4*01:152", "DRB4*01:155", "DRB4*01:156",
+      "DRB4*01:168"
+    ))
+  )
+})
+
+test_that("allele lookup is vectorized", {
+  expect_equal(
+    lookup_alleles(df_eplets, c("9D", "9T")),
+    list(
+      `9D` = c(
+        "B*08:01", "C*06:02", "C*07:01", "C*07:02",
+        "C*07:04", "C*18:01", "C*18:02"
+      ),
+      `9T` = c(
+        "A*29:01", "A*29:02", "A*31:01", "A*33:01", "A*33:03"
+      )
+    )
+  )
+})
+
+
+test_that("NAs are dealt with", {
+  expect_equal(
+    lookup_alleles(df_eplets, c("23L", NA)),
+    list(`23L` = "DQB1*04:01", `NA` = character(0))
+  )
+})
+
+# lookup_eplets() ---------------------------------------------------------
+
+test_that("right eplets are returned", {
+  expect_equal(
+    lookup_eplets(df_eplets, "DPA1*03:01"),
+    list(`DPA1*03:01` = c(
+      "11M", "28E", "31M", "50Q", "56A", "65I", "66S", "127L", "160F", "190T"
+    ))
+  )
+})
+
+test_that("allele lookup is vectorized", {
+  expect_equal(
+    lookup_eplets(df_eplets, c("DPA1*03:01", "DQA1*01:04")),
+    list(
+      `DPA1*03:01` = c(
+        "11M", "28E", "31M", "50Q", "56A", "65I", "66S", "127L", "160F", "190T"
+      ),
+      `DQA1*01:04` = c(
+        "2G", "25YT", "40E", "52SK", "75I", "129QS", "160A", "160AD", "185I"
+      )
+    )
+  )
+})
+
+test_that("allele lookup is vectorized", {
+  expect_equal(
+    lookup_eplets(df_eplets, c("DPA1*03:01", NA)),
+    list(
+      `DPA1*03:01` = c(
+        "11M", "28E", "31M", "50Q", "56A", "65I", "66S", "127L", "160F", "190T"
+      ),
+      `NA` = character(0)
+    )
+  )
+})
+
+# load_eplet_registry() ---------------------------------------------------
+
+test_that("returns path when return_path = TRUE", {
+  path <- load_eplet_registry(return_path = TRUE)
+  expect_type(path, "character")
+})
+
+test_that("load_eplet_registry prints message when print_version = TRUE", {
+  expect_message(load_eplet_registry(print_version = TRUE))
+})
+
+test_that("table has 8 columns", {
+  expect_equal(length(df_eplets), 8)
+})
+
+test_that("column names and types are correct", {
+  etrl_hla_info <- c(
+    id = "character",
+    name = "character",
+    description = "character",
+    exposition = "character",
+    confirmation = "logical",
+    database = "character",
+    source = "character",
+    alleles = "character"
+  )
+  expect_equal(purrr::map_chr(df_eplets, class), etrl_hla_info)
+})
+
+test_that("low cardinality character columns contain expected values", {
+  # exposition
+  values_exposition <- df_eplets |>
+    dplyr::filter(database != "DRDQDP") |> # these are undefined
+    dplyr::pull(exposition) |>
+    unique()
+  expect_setequal(
+    values_exposition,
+    c("Very Low", "Low", "Intermediate", "High")
+  )
+
+  # database
+  expect_setequal(
+    unique(df_eplets$database),
+    c("ABC", "DRB", "DQ", "DP", "DRDQDP")
+  )
+
+  # source
+  expect_setequal(
+    unique(df_eplets$source),
+    c("luminex", "all")
+  )
+})
+
+test_that("table has no empty eplets/alleles", {
+  expect_true(sum(is.na(df_eplets$name) | df_eplets$name == "") == 0)
+  expect_true(sum(is.na(df_eplets$alleles) | df_eplets$alleles == "") == 0)
+})
+
+test_that("a few randomly selected cells have same value as on the website", {
+  expect_equal(
+    dplyr::pull(df_eplets[df_eplets$name == "37Y", ], "exposition")[1],
+    "High"
+  )
+  expect_equal(
+    dplyr::pull(df_eplets[df_eplets$name == "71SA", ], "confirmation")[1],
+    TRUE
+  )
+  expect_equal(
+    dplyr::pull(df_eplets[df_eplets$name == "45EV", ], "description")[1],
+    "45E46V47Y"
+  )
+  expect_equal(
+    dplyr::pull(
+      dplyr::filter(df_eplets, name == "9T", source == "luminex"),
+      "alleles"
+    ),
+    c("A*29:01", "A*29:02", "A*31:01", "A*33:01", "A*33:03")
+  )
+  expect_equal(
+    dplyr::pull(
+      dplyr::filter(df_eplets, name == "3P", source == "all"),
+      "alleles"
+    ),
+    c(
+      "DQB1*06:01", "DQB1*06:103", "DQB1*06:205", "DQB1*06:243",
+      "DQB1*06:359", "DQB1*06:382", "DQB1*06:415", "DQB1*06:472"
+    )
+  )
+})
