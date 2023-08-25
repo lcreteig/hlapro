@@ -244,4 +244,5 @@ scrape_eplet_registry <- function(file_path) {
   attr(df, "url") <- registry_info[["url"]]
 
   saveRDS(df, file_path)
+  df
 }
