@@ -234,6 +234,7 @@ scrape_eplet_registry <- function(file_path) {
     ) |>
     dplyr::group_by(.data$id) |> # one row per allele
     tidyr::separate_longer_delim(.data$alleles, delim = ",") |>
+    dplyr::filter(.data$alleles != "") |> # get rid of trailing comma artefact
     # clean up whitespace at start/end
     dplyr::ungroup() |>
     dplyr::mutate(dplyr::across(
