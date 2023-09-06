@@ -20,6 +20,7 @@ Imports:
     readxl,
     rlang (>= 1.1.0),
     stringr (>= 1.5.0),
+    tibble,
     tidyr
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -29,7 +30,6 @@ Suggests:
     rvest,
     spelling,
     testthat (>= 3.0.0),
-    tibble,
     usethis
 Language: en-US
 Config/testthat/edition: 3

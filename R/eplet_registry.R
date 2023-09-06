@@ -1,8 +1,14 @@
 get_positive_eplets <- function(luminex_df, sample_col, alleles_col,
                                 assignment_col, eplet_df,
                                 pos_col = "eplets_pos") {
+  eplets_tbl <- unique(dplyr::pull(luminex_df, {{ alleles_col }})) |>
+    lookup_eplets(eplet_df, alleles = _) |>
+    tibble::enframe(name = "alleles", value = "eplets")
+
   luminex_df |>
-    dplyr::mutate(eplets = lookup_eplets(eplet_df, {{ alleles_col }})) |>
+    dplyr::left_join(eplets_tbl,
+      by = dplyr::join_by({{ alleles_col }} == "alleles")
+    ) |>
     tidyr::unnest_longer("eplets") |> # one row for each eplet
     dplyr::group_by({{ sample_col }}) |> # for each sample
     dplyr::reframe({{ pos_col }} := setdiff( # discard eplets that also occur on
