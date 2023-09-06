@@ -1,3 +1,39 @@
+#' Lookup and filter eplets unique to positive beads
+#'
+#' `get_positive_eplets()` takes in results from a Luminex single antigen bead
+#' assay, and extracts only the eplets that occur exclusively on positive- but
+#' not negative beads for each sample. That is, the set of eplets on negative
+#' beads is "subtracted" from the set of eplets on positive beads.
+#'
+#' @inheritParams lookup_alleles
+#' @param luminex_df Data frame with Luminex assay results.
+#' @param sample_col Name of column in `luminex_df` containing a character
+#'   vector of sample IDs.
+#' @param alleles_col Name of column in `luminex_df` containing a character
+#'   vector of bead specificities (i.e. the HLA coated on the bead).
+#' @param assignment_col Name of column in `luminex_df` containing a logical
+#'   vector with the bead assignment (TRUE = positive, FALSE = negative).
+#' @param pos_col Name of new column to contain positive-only eplets.
+#'
+#' @return Data frame with two columns, and one row for each eplet:
+#'  1. Character vector of sample IDs as in `sample_col`
+#'  2. Character vector of eplet names.
+#'
+#' @seealso [lookup_eplets()] is used internally to retrieve the eplets on each
+#'   allele from the HLA Registry
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' df_eplets <- load_eplet_registry()
+#' luminex_df <- dplyr::tribble(
+#'   ~sampleID, ~allele, ~positive,
+#'   "001", "A*01:01", TRUE,
+#'   "001", "A*02:01", FALSE,
+#'   "002", "A*01:01", TRUE
+#' )
+#' get_positive_eplets(luminex_df, sampleID, allele, positive, df_eplets)
+#' }
 get_positive_eplets <- function(luminex_df, sample_col, alleles_col,
                                 assignment_col, eplet_df,
                                 pos_col = "eplets_pos") {
@@ -22,8 +58,7 @@ get_positive_eplets <- function(luminex_df, sample_col, alleles_col,
 #' `lookup_eplets()` takes in a set of HLA alleles, and retrieves the
 #' corresponding eplets from the Eplet Registry table.
 #'
-#' @param eplet_df Data frame containing the Eplet Registry; from output of
-#'   [load_eplet_registry()].
+#' @inheritParams lookup_alleles
 #' @param alleles String or character vector of HLA alleles.
 #'
 #' @return Named list, where each element is a character vector of eplets for

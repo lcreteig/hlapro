@@ -76,6 +76,7 @@ Roxygen
 RoxygenNote
 rvest
 serological
+specificities
 stringr
 testthat
 tibble
