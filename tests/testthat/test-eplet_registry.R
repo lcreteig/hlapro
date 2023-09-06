@@ -159,7 +159,7 @@ test_that("allele lookup is vectorized", {
       `DPA1*03:01` = c(
         "11M", "28E", "31M", "50Q", "56A", "65I", "66S", "127L", "160F", "190T"
       ),
-      `NA` = character(0)
+      `NA` = NA_character_
     )
   )
 })

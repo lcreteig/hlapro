@@ -39,14 +39,7 @@ get_positive_eplets <- function(luminex_df, sample_col, alleles_col,
 #' lookup_eplets(df_eplets, c("A*01:01", "B*08:01"))
 #' }
 lookup_eplets <- function(eplet_df, alleles) {
-  lookup_eplet <- function(eplet_df, allele) {
-    eplet_df |>
-      dplyr::filter(.data$alleles == allele) |>
-      dplyr::distinct(.data$name) |>
-      dplyr::pull(.data$name)
-  }
-
-  purrr::map(alleles, \(x) lookup_eplet(eplet_df, x)) |>
+  purrr::map(alleles, \(x) unique(eplet_df$name[eplet_df$alleles == x])) |>
     purrr::set_names(alleles)
 }
 
@@ -78,14 +71,7 @@ lookup_alleles <- function(eplet_df, eplets, allele_set = "luminex") {
   rlang::arg_match(allele_set, c("luminex", "all"))
 
   eplet_df <- dplyr::filter(eplet_df, .data$source == allele_set)
-
-  lookup_allele <- function(eplet_df, eplet) {
-    eplet_df |>
-      dplyr::filter(.data$name == eplet) |>
-      dplyr::pull(.data$alleles)
-  }
-
-  purrr::map(eplets, \(x) lookup_allele(eplet_df, x)) |>
+  purrr::map(eplets, \(x) eplet_df$alleles[eplet_df$name %in% x]) |>
     purrr::set_names(eplets)
 }
 
