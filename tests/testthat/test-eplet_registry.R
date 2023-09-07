@@ -1,3 +1,90 @@
+# get_positive_eplets -----------------------------------------------------
+
+mock_eplet_df <- dplyr::tribble(
+  ~name, ~alleles,
+  "D111", "D*01:01",
+  "D112", "D*01:01",
+  "D113", "D*01:01",
+  "D113", "D*01:02"
+)
+
+test_that("negative eplets are 'subtracted' from positive eplets", {
+  luminex_df <- dplyr::tribble(
+    ~sampleID, ~allele, ~positive,
+    "001", "D*01:01", TRUE,
+    "001", "D*01:02", FALSE
+  )
+
+  expect_equal(
+    get_positive_eplets(luminex_df, sampleID, allele, positive, mock_eplet_df),
+    dplyr::tibble(
+      sampleID = c("001", "001"),
+      eplets_pos = c("D111", "D112")
+    )
+  )
+})
+
+test_that("output differs per ID", {
+  luminex_df <- dplyr::tribble(
+    ~sampleID, ~allele, ~positive,
+    "001", "D*01:01", TRUE,
+    "001", "D*01:02", FALSE,
+    "002", "D*01:01", TRUE,
+    "002", "D*01:02", TRUE,
+  )
+
+  expect_equal(
+    get_positive_eplets(luminex_df, sampleID, allele, positive, mock_eplet_df),
+    dplyr::tibble(
+      sampleID = c("001", "001", "002", "002", "002"),
+      eplets_pos = c("D111", "D112", "D111", "D112", "D113")
+    )
+  )
+})
+
+test_that("all rows are returned if no overlapping negative eplets", {
+  luminex_df <- dplyr::tribble(
+    ~sampleID, ~allele, ~positive,
+    "001", "D*01:01", TRUE,
+    "001", "D*01:02", TRUE,
+    "002", "D*01:02", TRUE
+  )
+
+  expect_equal(
+    get_positive_eplets(luminex_df, sampleID, allele, positive, mock_eplet_df),
+    dplyr::tibble(
+      sampleID = c("001", "001", "001", "002"),
+      eplets_pos = c("D111", "D112", "D113", "D113")
+    )
+  )
+})
+
+test_that("empty rows are returned if no eplets are positive", {
+  luminex_df <- dplyr::tribble(
+    ~sampleID, ~allele, ~positive,
+    "001", "D*01:01", FALSE,
+    "001", "D*01:02", FALSE
+  )
+
+  expect_equal(
+    get_positive_eplets(luminex_df, sampleID, allele, positive, mock_eplet_df),
+    dplyr::tibble(
+      sampleID = character(),
+      eplets_pos = character()
+    )
+  )
+
+  luminex_df <- luminex_df |>
+    dplyr::add_row(sampleID = "002", allele = "D*01:02", positive = TRUE)
+
+  expect_equal(
+    get_positive_eplets(luminex_df, sampleID, allele, positive, mock_eplet_df),
+    dplyr::tibble(sampleID = c("002"), eplets_pos = c("D113"))
+  )
+})
+
+# eplet_registry ----------------------------------------------------------
+
 df_eplets <- load_eplet_registry()
 
 # lookup_alleles() --------------------------------------------------------

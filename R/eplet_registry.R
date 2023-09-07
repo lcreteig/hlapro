@@ -1,3 +1,16 @@
+get_positive_eplets <- function(luminex_df, sample_col, alleles_col,
+                                assignment_col, eplet_df,
+                                pos_col = "eplets_pos") {
+  luminex_df |>
+    dplyr::mutate(eplets = lookup_eplets(eplet_df, {{ alleles_col }})) |>
+    tidyr::unnest_longer("eplets") |> # one row for each eplet
+    dplyr::group_by({{ sample_col }}) |> # for each sample
+    dplyr::reframe({{ pos_col }} := setdiff( # discard eplets that also occur on
+      .data$eplets[{{ assignment_col }}], # negative beads
+      .data$eplets[!{{ assignment_col }}]
+    ))
+}
+
 #' Lookup eplets corresponding to alleles in HLA Eplet Registry
 #'
 #' `lookup_eplets()` takes in a set of HLA alleles, and retrieves the
