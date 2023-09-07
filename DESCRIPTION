@@ -19,6 +19,7 @@ Imports:
     purrr,
     readxl,
     rlang (>= 1.1.0),
+    rvest,
     stringr (>= 1.5.0),
     tibble,
     tidyr
@@ -27,7 +28,6 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Suggests: 
     covr,
-    rvest,
     spelling,
     testthat (>= 3.0.0),
     usethis
