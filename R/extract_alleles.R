@@ -283,10 +283,10 @@ df_to_gl <- function(df,
       names_sep = sep,
       values_to = col_typing
     ) |>
-    dplyr::summarise(dplyr::across(col_typing, ~ vec_to_gl(.x,
-      namespace = namespace,
-      version_or_date = version_or_date
-    )))
+    dplyr::summarise(dplyr::across(
+      dplyr::all_of(col_typing),
+      ~ vec_to_gl(.x, namespace = namespace, version_or_date = version_or_date)
+    ))
 }
 
 #' Convert a vector of GL Strings to a data frame with one column per allele
@@ -334,19 +334,21 @@ df_to_gl <- function(df,
 gl_to_df <- function(glstrings) {
   glsc_lst <- purrr::map(glstrings, gl_to_vec)
   tidyr::tibble(glsc = glsc_lst) |>
-    tidyr::unnest_wider(.data$glsc) |> # one row per gl string
+    tidyr::unnest_wider("glsc") |> # one row per gl string
     dplyr::mutate( # add glstring index
       glstring_index = dplyr::row_number(),
       .before = dplyr::everything()
     ) |> # unpack glstrings: one row per allele
-    tidyr::unnest_longer(.data$allele_list, values_to = "typing") |>
+    tidyr::unnest_longer("allele_list", values_to = "typing") |>
     dplyr::mutate(locus = get_loci(.data$typing)) |>
     dplyr::group_by(.data$glstring_index, .data$locus) |>
     dplyr::mutate(allele = dplyr::row_number(.data$locus)) |> # add allele 1/2
     tidyr::pivot_wider( # one column per locus/allele
-      id_cols = c(.data$glstring_index, .data$namespace, .data$version_or_date),
-      values_from = .data$typing,
-      names_from = c(.data$locus, .data$allele),
+      id_cols = tidyr::all_of(
+        c("glstring_index", "namespace", "version_or_date")
+      ),
+      values_from = "typing",
+      names_from = tidyr::all_of(c("locus", "allele")),
       names_sep = "_",
       names_expand = TRUE
     ) |>

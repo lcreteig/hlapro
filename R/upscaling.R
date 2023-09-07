@@ -211,8 +211,8 @@ select_compatible_haplos <- function(df, alleles) {
     dplyr::filter(all(.data$broad %in% alleles | .data$split %in% alleles)) |>
     dplyr::ungroup() |>
     tidyr::pivot_wider( # one row per haplotype pair ()
-      names_from = .data$locus,
-      values_from = c(.data$broad, .data$split),
+      names_from = "locus",
+      values_from = tidyr::all_of(c("broad", "split")),
       names_glue = "{locus}_{.value}"
     )
 }
@@ -236,7 +236,7 @@ make_phased_genotypes <- function(df, alleles) {
     # keep only phased genotypes where *all* alleles occur in input genotype
     dplyr::filter(all(alleles %in% .data$ser_typing)) |>
     dplyr::ungroup() |>
-    dplyr::select(!c(.data$locus_res_allele, .data$ser_typing)) |>
+    dplyr::select(!dplyr::all_of(c("locus_res_allele", "ser_typing"))) |>
     dplyr::distinct(.data$id_phased_geno, .keep_all = TRUE) |>
     dplyr::mutate( # calculate phased genotype frequency / probability
       phased_freq = 2 * .data$haplo_freq_1 * .data$haplo_freq_2,
@@ -261,11 +261,11 @@ make_unphased_genotypes <- function(df, loci_output) {
     dplyr::mutate(unphased_geno = stringr::str_flatten(
       stringr::str_sort(.data$typing), " "
     )) |>
-    dplyr::select(!c(.data$locus, .data$typing)) |>
+    dplyr::select(!dplyr::all_of(c("locus", "typing"))) |>
     dplyr::distinct(.data$id_phased_geno, .data$haplo_rank, .keep_all = TRUE) |>
     tidyr::pivot_wider( # one row with both haplotypes
-      names_from = .data$haplo,
-      values_from = c(.data$haplo_freq, .data$haplo_rank)
+      names_from = "haplo",
+      values_from = tidyr::all_of(c("haplo_freq", "haplo_rank"))
     ) |>
     dplyr::group_by(.data$unphased_geno) |> # for each distinct unphased geno
     dplyr::mutate( # calculate frequency and probability
@@ -274,6 +274,6 @@ make_unphased_genotypes <- function(df, loci_output) {
       unphased_prob = sum(.data$phased_prob)
     ) |>
     dplyr::ungroup() |>
-    dplyr::relocate(.data$unphased_geno, .after = .data$id_unphased_geno) |>
-    dplyr::select(-.data$id_phased_geno)
+    dplyr::relocate("unphased_geno", .after = "id_unphased_geno") |>
+    dplyr::select(!("id_phased_geno"))
 }
