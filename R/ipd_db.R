@@ -75,7 +75,7 @@ db_get_version <- function(ard) {
 #' #> "B13"     "B15/B21"
 #' }
 reduce_to_serology <- function(ard, allele) {
-  purrr::map_chr(allele, \(x) ard$redux(x, "S"))
+  purrr::map_chr(allele, \(x) ifelse(!is.na(x), ard$redux(x, "S"), x))
 }
 
 #' Scale down HLA-alleles to two-field resolution
@@ -108,7 +108,7 @@ reduce_to_serology <- function(ard, allele) {
 #' #> "B*44:270" "B*44:66"
 #' }
 reduce_to_field2 <- function(ard, allele) {
-  purrr::map_chr(allele, \(x) ard$redux(x, "U2"))
+  purrr::map_chr(allele, \(x) ifelse(!is.na(x), ard$redux(x, "lgx"), x))
 }
 
 #' Encode an ambiguous HLA typing into a Multiple Allele Code (MAC)
@@ -139,7 +139,7 @@ reduce_to_field2 <- function(ard, allele) {
 #' #> "A*01:AB"   "A*25:BYHR"
 #' }
 mac_lookup <- function(ard, allele) {
-  purrr::map_chr(allele, ard$lookup_mac)
+  purrr::map_chr(allele, \(x) ifelse(!is.na(x), ard$lookup_mac(x), x))
 }
 
 #' Decode a Multiple Allele Code (MAC) into an ambiguous HLA typing
@@ -170,7 +170,7 @@ mac_lookup <- function(ard, allele) {
 #' #> "A*01:01/A*01:02" "A*25:01/A*26:01"
 #' }
 mac_expand <- function(ard, allele) {
-  purrr::map_chr(allele, ard$expand_mac)
+  purrr::map_chr(allele, \(x) ifelse(!is.na(x), ard$expand_mac(x), x))
 }
 
 #' Lookup whether allele exists in IPD-IMGT/HLA database
