@@ -81,11 +81,15 @@ reduce_to_serology <- function(ard, allele) {
 #' Scale down HLA-alleles to two-field resolution
 #'
 #' `reduce_to_field2()` is a thin wrapper around the `ard.redux()` method
-#' (Reduction Type `'U2'`) of the
+#' (Reduction Type `'lgx'` or `'U2'`) of the
 #' [`py-ard`](https://github.com/nmdp-bioinformatics/py-ard) Python package.
 #'
 #' @inherit reduce_to_serology details
 #' @inheritParams reduce_to_serology
+#' @param mode Reduction mode. `"lgx"` (default) reduces to the first allele in
+#'   the group of alleles (often indicated with `"g"` notation) that is
+#'   identical to the input allele in the antigen recognition domain (ARD).
+#'   `"U2"` performs an unambiguous reduction.
 #'
 #' @return A string or character vector of the same length as `allele`,
 #'   with the corresponding two-field alleles.
@@ -100,6 +104,11 @@ reduce_to_serology <- function(ard, allele) {
 #' #> "A*01:04N"
 #' reduce_to_field2(ard, "B*44:270:01")
 #' #> "B*44:270"
+#' # Some alleles return a different result depending on the reduction mode:
+#' reduce_to_field2(ard, "C*07:06", mode = "U2")
+#' #> "C*07:06"
+#' reduce_to_field2(ard, "C*07:06", mode = "lgx")
+#' #> "C*07:01"
 #' # N.B. serology can also be "reduced", but might lead to a long genotype:
 #' reduce_to_field2(ard, "Cw10")
 #' #> "C*03:02/C*03:04Q/C*03:04/C*03:06/C*03:26/C*03:28/C*03:46"
@@ -107,8 +116,9 @@ reduce_to_serology <- function(ard, allele) {
 #' reduce_to_field2(ard, c("B*44:270:01", "B*44:66"))
 #' #> "B*44:270" "B*44:66"
 #' }
-reduce_to_field2 <- function(ard, allele) {
-  purrr::map_chr(allele, \(x) ifelse(!is.na(x), ard$redux(x, "lgx"), x))
+reduce_to_field2 <- function(ard, allele, mode = c("lgx", "U2")) {
+  mode <- rlang::arg_match(mode)
+  purrr::map_chr(allele, \(x) ifelse(!is.na(x), ard$redux(x, mode), x))
 }
 
 #' Encode an ambiguous HLA typing into a Multiple Allele Code (MAC)
