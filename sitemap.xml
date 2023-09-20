@@ -43,6 +43,9 @@
     <loc>https://lcreteig.github.io/hlapro/reference/get_mismatches.html</loc>
   </url>
   <url>
+    <loc>https://lcreteig.github.io/hlapro/reference/get_positive_eplets.html</loc>
+  </url>
+  <url>
     <loc>https://lcreteig.github.io/hlapro/reference/get_public.html</loc>
   </url>
   <url>
@@ -65,6 +68,15 @@
   </url>
   <url>
     <loc>https://lcreteig.github.io/hlapro/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://lcreteig.github.io/hlapro/reference/load_eplet_registry.html</loc>
+  </url>
+  <url>
+    <loc>https://lcreteig.github.io/hlapro/reference/lookup_alleles.html</loc>
+  </url>
+  <url>
+    <loc>https://lcreteig.github.io/hlapro/reference/lookup_eplets.html</loc>
   </url>
   <url>
     <loc>https://lcreteig.github.io/hlapro/reference/reduce_to_nth_field.html</loc>
