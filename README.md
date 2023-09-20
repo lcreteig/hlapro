@@ -199,8 +199,8 @@ upscale_typings(
 #> # A tibble: 2 × 5
 #>   unphased_geno              haplo_freq_1 haplo_freq_2 haplo_rank_1 haplo_rank_2
 #>   <chr>                             <dbl>        <dbl>        <dbl>        <dbl>
-#> 1 A*24:02 A*68:01 B*35:03 B…    0.000585     0.000209           240          665
-#> 2 A*24:02 A*68:01 B*35:03 B…    0.0000849    0.0000597         1565         2058
+#> 1 A*24:02g A*68:01g B*35:03…    0.000585     0.000209           240          665
+#> 2 A*24:02g A*68:01g B*35:03…    0.0000849    0.0000597         1565         2058
 ```
 
 Also able to upscale multiple typings at once, for instance in a
@@ -221,17 +221,18 @@ typing_df |>
     as_list = TRUE
   )) |>
   tidyr::unnest(geno_df)
-#> # A tibble: 6 × 12
+#> # A tibble: 6 × 13
 #>   id    input_typings id_unphased_geno unphased_geno unphased_freq unphased_prob
 #>   <chr> <chr>                    <int> <chr>                 <dbl>         <dbl>
-#> 1 001   A24 A28 B35 …              364 A*24:02 A*68…  0.000000254          0.121
-#> 2 001   A24 A28 B35 …              364 A*24:02 A*68…  0.000000254          0.121
-#> 3 002   A2 A3 B52 B3…               17 A*02:01 A*03…  0.0000000542         0.151
-#> 4 002   A2 A3 B52 B3…               17 A*02:01 A*03…  0.0000000542         0.151
-#> 5 002   A2 A3 B52 B3…               17 A*02:01 A*03…  0.0000000542         0.151
-#> 6 002   A2 A3 B52 B3…               17 A*02:01 A*03…  0.0000000542         0.151
-#> # ℹ 6 more variables: phased_freq <dbl>, phased_prob <dbl>, haplo_freq_1 <dbl>,
-#> #   haplo_freq_2 <dbl>, haplo_rank_1 <dbl>, haplo_rank_2 <dbl>
+#> 1 001   A24 A28 B35 …              364 A*24:02g A*6…  0.000000254          0.121
+#> 2 001   A24 A28 B35 …              364 A*24:02g A*6…  0.000000254          0.121
+#> 3 002   A2 A3 B52 B3…               17 A*02:01g A*0…  0.0000000542         0.151
+#> 4 002   A2 A3 B52 B3…               17 A*02:01g A*0…  0.0000000542         0.151
+#> 5 002   A2 A3 B52 B3…               17 A*02:01g A*0…  0.0000000542         0.151
+#> 6 002   A2 A3 B52 B3…               17 A*02:01g A*0…  0.0000000542         0.151
+#> # ℹ 7 more variables: multiplier <dbl>, phased_freq <dbl>, phased_prob <dbl>,
+#> #   haplo_freq_1 <dbl>, haplo_freq_2 <dbl>, haplo_rank_1 <dbl>,
+#> #   haplo_rank_2 <dbl>
 ```
 
 ### Converting to and from GL Strings
@@ -264,8 +265,8 @@ typing_df_gl
 #> # A tibble: 2 × 2
 #>   id    glstring                                                                
 #>   <chr> <chr>                                                                   
-#> 1 001   hla#2023-08-10#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
-#> 2 002   hla#2023-08-10#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
+#> 1 001   hla#2023-09-20#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
+#> 2 002   hla#2023-09-20#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
 ```
 
 Use `gl_to_df()` to go the opposite way: from a dataframe of GL Strings
@@ -278,9 +279,66 @@ typing_df_gl |>
 #> # A tibble: 2 × 11
 #>   id    glstring      glstring_index namespace version_or_date A_1   A_2   B_1  
 #>   <chr> <chr>                  <int> <chr>     <chr>           <chr> <chr> <chr>
-#> 1 001   hla#2023-08-…              1 hla       2023-08-10      HLA-… HLA-… HLA-…
-#> 2 002   hla#2023-08-…              2 hla       2023-08-10      HLA-… HLA-… HLA-…
+#> 1 001   hla#2023-09-…              1 hla       2023-09-20      HLA-… HLA-… HLA-…
+#> 2 002   hla#2023-09-…              2 hla       2023-09-20      HLA-… HLA-… HLA-…
 #> # ℹ 3 more variables: B_2 <chr>, C_1 <chr>, C_2 <chr>
+```
+
+## Looking up eplets and alleles
+
+Grab database from the [HLA Eplet
+registry](https://www.epregistry.com.br) and use it to lookup which
+eplets occur on an HLA allele, or vice versa.
+
+``` r
+df_eplets <- load_eplet_registry()
+#> Loaded Eplet Registry table (Updated with IPD-IMGT/HLA 3.53.),
+#> released 2023-08-25, downloaded from https://www.epregistry.com.br
+lookup_alleles(df_eplets, "9F")
+#> $`9F`
+#>  [1] "A*01:01"    "A*02:01"    "A*02:02"    "A*02:03"    "A*02:07"   
+#>  [6] "A*02:18"    "A*03:01"    "A*03:02"    "A*32:01"    "A*36:01"   
+#> [11] "A*74:01"    "A*80:01"    "C*01:02"    "C*01:03"    "DQB1*04:01"
+#> [16] "DQB1*04:02" "DQB1*06:02"
+```
+
+``` r
+lookup_eplets(df_eplets, "A*01:01")
+#> $`A*01:01`
+#>  [1] "9F"    "44KM"  "62QE"  "65RA"  "65RNA" "66N"   "66NH"  "66NM"  "71HS" 
+#> [10] "76ANT" "77N"   "77NGT" "79GT"  "80T"   "80TL"  "90D"   "95I"   "97I"  
+#> [19] "99Y"   "109F"  "114R"  "116D"  "138MI" "144K"  "144KR" "149AH" "151H" 
+#> [28] "152A"  "152HA" "156R"  "163R"  "163RG" "166DG" "193PI" "275EL"
+```
+
+A common use case would be to lookup which eplets occur on a set of
+(positive) Luminex beads:
+
+``` r
+df_eplets <- load_eplet_registry()
+#> Loaded Eplet Registry table (Updated with IPD-IMGT/HLA 3.53.),
+#> released 2023-08-25, downloaded from https://www.epregistry.com.br
+luminex_df <- dplyr::tribble(
+  ~sampleID, ~allele, ~positive,
+  "001", "A*01:01", TRUE,
+  "001", "A*02:01", FALSE,
+  "002", "A*01:01", FALSE
+)
+get_positive_eplets(luminex_df, sampleID, allele, positive, df_eplets)
+#> # A tibble: 24 × 2
+#>    sampleID eplets_pos
+#>    <chr>    <chr>     
+#>  1 001      44KM      
+#>  2 001      62QE      
+#>  3 001      65RNA     
+#>  4 001      66N       
+#>  5 001      66NH      
+#>  6 001      66NM      
+#>  7 001      76ANT     
+#>  8 001      77N       
+#>  9 001      77NGT     
+#> 10 001      90D       
+#> # ℹ 14 more rows
 ```
 
 ## Other packages

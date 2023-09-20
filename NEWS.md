@@ -1,5 +1,15 @@
 # hlapro (development version)
 
+* New functions to lookup eplets/alleles in the 
+  [HLA Eplet registry](https://www.epregistry.com.br):
+  
+  - `load_eplet_registry()` scrapes the database from the website, or loads an
+    existing version from disk
+  - `lookup_alleles()` and `lookup_eplets()` return the eplets that occur on
+    an input vector of HLA alleles, or vice versa.
+  - `get_positive_eplets()` returns eplets that occur on positive (but not 
+    negative) beads for a dataframe of Luminex results.
+
 * New `upscale_typings()` function to impute high-resolution (two-field) 
   genotypes for a low resolution serological input typing, based on [haplotype
   frequencies released by the NMDP](http://frequency.nmdp.org)

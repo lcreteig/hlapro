@@ -217,6 +217,30 @@ typing_df_gl |>
   tidyr::unnest(gl_df)
 ```
 
+## Looking up eplets and alleles
+
+Grab database from the [HLA Eplet registry](https://www.epregistry.com.br) and use it to lookup which eplets occur on an HLA allele, or vice versa.
+
+```{r lookup_alleles}
+df_eplets <- load_eplet_registry()
+lookup_alleles(df_eplets, "9F")
+```
+```{r lookup_eplets}
+lookup_eplets(df_eplets, "A*01:01")
+```
+A common use case would be to lookup which eplets occur on a set of (positive) Luminex beads:
+
+```{r}
+df_eplets <- load_eplet_registry()
+luminex_df <- dplyr::tribble(
+  ~sampleID, ~allele, ~positive,
+  "001", "A*01:01", TRUE,
+  "001", "A*02:01", FALSE,
+  "002", "A*01:01", FALSE
+)
+get_positive_eplets(luminex_df, sampleID, allele, positive, df_eplets)
+```
+
 ## Other packages
 
 There's many other implementations with partly overlapping goals (some of which hlapro might depend on in the future).
