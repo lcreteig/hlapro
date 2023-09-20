@@ -177,13 +177,7 @@ load_eplet_registry <- function(folder_path = NULL,
   if (file.exists(file_path)) {
     df_eplet <- readRDS(file_path)
     if (print_version) {
-      message(
-        stringr::str_glue(
-          "Loaded Eplet Registry table ({attr(df_eplet, 'notes')}),\n",
-          "released {attr(df_eplet, 'date')}, ",
-          "downloaded from {attr(df_eplet, 'url')}"
-        )
-      )
+      message_version(df_eplet)
     }
 
     return(invisible(df_eplet))
@@ -193,7 +187,11 @@ load_eplet_registry <- function(folder_path = NULL,
     return(invisible())
   }
 
-  invisible(scrape_eplet_registry(file_path))
+  df_eplet <- scrape_eplet_registry(file_path)
+  if (print_version) {
+    message_version(df_eplet)
+  }
+  invisible(df_eplet)
 }
 
 fetch_registry_version <- function() {
@@ -213,6 +211,16 @@ fetch_registry_version <- function() {
     ),
     url = registry_url
   ))
+}
+
+message_version <- function(df_eplet) {
+  message(
+    stringr::str_glue(
+      "Loaded Eplet Registry table ({attr(df_eplet, 'notes')}),\n",
+      "released {attr(df_eplet, 'date')}, ",
+      "downloaded from {attr(df_eplet, 'url')}"
+    )
+  )
 }
 
 scrape_permission <- function() {
@@ -267,13 +275,13 @@ scrape_eplet_registry <- function(file_path) {
       .data$confirmation, "Yes"
     )) |>
     # one column for the alleles, and another for if they're luminex or not
-    tidyr::pivot_longer(c(.data$alleles_luminex, .data$alleles_all),
+    tidyr::pivot_longer(c("alleles_luminex", "alleles_all"),
       names_to = "source",
       names_prefix = "alleles_",
       values_to = "alleles"
     ) |>
     dplyr::group_by(.data$id) |> # one row per allele
-    tidyr::separate_longer_delim(.data$alleles, delim = ",") |>
+    tidyr::separate_longer_delim("alleles", delim = ",") |>
     dplyr::filter(.data$alleles != "") |> # get rid of trailing comma artefact
     # clean up whitespace at start/end
     dplyr::ungroup() |>
