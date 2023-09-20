@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# hlapro
+# hlapro <a href="https://lcreteig.github.io/hlapro/"><img src="man/figures/logo.png" align="right" height="139" alt="hlapro website" /></a>
 
 <!-- badges: start -->
 
@@ -258,3 +258,6 @@ There's many other implementations with partly overlapping goals (some of which 
 ## Why `hlapro`?
 
 This package is developed mainly for use in the [**PRO**CARE](https://doi.org/10.1111/tan.13581) project, which (among others) aims to **pro**file (HLA-)antibodies and their role in kidney transplant rejection. hlapro aims to be a one-stop shop for all the analyses in the second iteration of PROCARE.
+
+## Attribution
+Package logo made with [hexmake](https://connect.thinkr.fr/hexmake/); Icon by [Freepik](https://www.freepik.com/icon/test-tube_9583096#fromView=search&term=hla+gene&page=2&position=35).

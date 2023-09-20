@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# hlapro
+# hlapro <a href="https://lcreteig.github.io/hlapro/"><img src="man/figures/logo.png" align="right" height="139" alt="hlapro website" /></a>
 
 <!-- badges: start -->
 
@@ -265,8 +265,8 @@ typing_df_gl
 #> # A tibble: 2 × 2
 #>   id    glstring                                                                
 #>   <chr> <chr>                                                                   
-#> 1 001   hla#2023-09-20#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
-#> 2 002   hla#2023-09-20#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
+#> 1 001   hla#2023-09-21#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
+#> 2 002   hla#2023-09-21#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
 ```
 
 Use `gl_to_df()` to go the opposite way: from a dataframe of GL Strings
@@ -279,8 +279,8 @@ typing_df_gl |>
 #> # A tibble: 2 × 11
 #>   id    glstring      glstring_index namespace version_or_date A_1   A_2   B_1  
 #>   <chr> <chr>                  <int> <chr>     <chr>           <chr> <chr> <chr>
-#> 1 001   hla#2023-09-…              1 hla       2023-09-20      HLA-… HLA-… HLA-…
-#> 2 002   hla#2023-09-…              2 hla       2023-09-20      HLA-… HLA-… HLA-…
+#> 1 001   hla#2023-09-…              1 hla       2023-09-21      HLA-… HLA-… HLA-…
+#> 2 002   hla#2023-09-…              2 hla       2023-09-21      HLA-… HLA-… HLA-…
 #> # ℹ 3 more variables: B_2 <chr>, C_1 <chr>, C_2 <chr>
 ```
 
@@ -368,3 +368,9 @@ This package is developed mainly for use in the
 others) aims to **pro**file (HLA-)antibodies and their role in kidney
 transplant rejection. hlapro aims to be a one-stop shop for all the
 analyses in the second iteration of PROCARE.
+
+## Attribution
+
+Package logo made with [hexmake](https://connect.thinkr.fr/hexmake/);
+Icon by
+[Freepik](https://www.freepik.com/icon/test-tube_9583096#fromView=search&term=hla+gene&page=2&position=35).

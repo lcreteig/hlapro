@@ -6,6 +6,8 @@
 \alias{hlapro-package}
 \title{hlapro: Tools to Work with HLA Typings and Single-Antigen Bead Assays}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Provides tools for Human Leukocyte Antigen (HLA) data: genotypes as well as (Luminex) single-antigen bead-based assays. Including: standardizing HLA typings to a common format (GL Strings), reducing and increasing HLA typing resolution, determining bead positivity and assessing donor-specific antibodies (DSAs).
 }
 \seealso{
