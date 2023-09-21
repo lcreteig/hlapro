@@ -298,8 +298,8 @@
 <span><span class="co">#&gt; # A tibble: 2 × 2</span></span>
 <span><span class="co">#&gt;   id    glstring                                                                </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;                                                                   </span></span>
-<span><span class="co">#&gt; 1 001   hla#2023-09-20#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…</span></span>
-<span><span class="co">#&gt; 2 002   hla#2023-09-20#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 001   hla#2023-09-21#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…</span></span>
+<span><span class="co">#&gt; 2 002   hla#2023-09-21#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01</span></span></code></pre></div>
 <p>Use <code><a href="reference/gl_to_df.html">gl_to_df()</a></code> to go the opposite way: from a dataframe of GL Strings to one columns per allele:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">typing_df_gl</span> <span class="op">|&gt;</span></span>
@@ -308,8 +308,8 @@
 <span><span class="co">#&gt; # A tibble: 2 × 11</span></span>
 <span><span class="co">#&gt;   id    glstring      glstring_index namespace version_or_date A_1   A_2   B_1  </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;                  &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;           &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;</span></span>
-<span><span class="co">#&gt; 1 001   hla#2023-09-…              1 hla       2023-09-20      HLA-… HLA-… HLA-…</span></span>
-<span><span class="co">#&gt; 2 002   hla#2023-09-…              2 hla       2023-09-20      HLA-… HLA-… HLA-…</span></span>
+<span><span class="co">#&gt; 1 001   hla#2023-09-…              1 hla       2023-09-21      HLA-… HLA-… HLA-…</span></span>
+<span><span class="co">#&gt; 2 002   hla#2023-09-…              2 hla       2023-09-21      HLA-… HLA-… HLA-…</span></span>
 <span><span class="co">#&gt; # ℹ 3 more variables: B_2 &lt;chr&gt;, C_1 &lt;chr&gt;, C_2 &lt;chr&gt;</span></span></code></pre></div>
 </div>
 </div>
@@ -393,6 +393,11 @@
 <h2 id="why-hlapro">Why <code>hlapro</code>?<a class="anchor" aria-label="anchor" href="#why-hlapro"></a>
 </h2>
 <p>This package is developed mainly for use in the <a href="https://doi.org/10.1111/tan.13581" class="external-link"><strong>PRO</strong>CARE</a> project, which (among others) aims to <strong>pro</strong>file (HLA-)antibodies and their role in kidney transplant rejection. hlapro aims to be a one-stop shop for all the analyses in the second iteration of PROCARE.</p>
+</div>
+<div class="section level2">
+<h2 id="attribution">Attribution<a class="anchor" aria-label="anchor" href="#attribution"></a>
+</h2>
+<p>Package logo made with <a href="https://connect.thinkr.fr/hexmake/" class="external-link">hexmake</a>; Icon by <a href="https://www.freepik.com/icon/test-tube_9583096#fromView=search&amp;term=hla+gene&amp;page=2&amp;position=35" class="external-link">Freepik</a>.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
