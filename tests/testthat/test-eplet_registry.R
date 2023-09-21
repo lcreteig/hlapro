@@ -123,7 +123,7 @@ test_that("allele lookup is vectorized", {
 test_that("NAs are dealt with", {
   expect_equal(
     lookup_alleles(df_eplets, c("23L", NA)),
-    list(`23L` = "DQB1*04:01", `NA` = character(0))
+    set_names(list("DQB1*04:01", character(0)), c("23L", NA))
   )
 })
 
@@ -154,12 +154,16 @@ test_that("allele lookup is vectorized", {
 
 test_that("allele lookup is vectorized", {
   expect_equal(
-    lookup_eplets(df_eplets, c("DPA1*03:01", NA)),
-    list(
-      `DPA1*03:01` = c(
-        "11M", "28E", "31M", "50Q", "56A", "65I", "66S", "127L", "160F", "190T"
+    lookup_eplets(df_eplets, c("DPA1*03:01", NA_character_)),
+    set_names(
+      list(
+        c(
+          "11M", "28E", "31M", "50Q", "56A", "65I",
+          "66S", "127L", "160F", "190T"
+        ),
+        NA_character_
       ),
-      `NA` = NA_character_
+      c("DPA1*03:01", NA)
     )
   )
 })
