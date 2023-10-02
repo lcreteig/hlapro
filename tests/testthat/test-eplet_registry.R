@@ -190,7 +190,7 @@ test_that("column names and types are correct", {
     description = "character",
     exposition = "character",
     confirmation = "logical",
-    database = "character",
+    locus_group = "character",
     source = "character",
     alleles = "character"
   )
@@ -200,7 +200,7 @@ test_that("column names and types are correct", {
 test_that("low cardinality character columns contain expected values", {
   # exposition
   values_exposition <- df_eplets |>
-    dplyr::filter(database != "DRDQDP") |> # these are undefined
+    dplyr::filter(locus_group != "DRDQDP") |> # these are undefined
     dplyr::pull(exposition) |>
     unique()
   expect_setequal(
@@ -210,7 +210,7 @@ test_that("low cardinality character columns contain expected values", {
 
   # database
   expect_setequal(
-    unique(df_eplets$database),
+    unique(df_eplets$locus_group),
     c("ABC", "DRB", "DQ", "DP", "DRDQDP")
   )
 
@@ -224,6 +224,15 @@ test_that("low cardinality character columns contain expected values", {
 test_that("table has no empty eplets/alleles", {
   expect_true(sum(is.na(df_eplets$name) | df_eplets$name == "") == 0)
   expect_true(sum(is.na(df_eplets$alleles) | df_eplets$alleles == "") == 0)
+})
+
+test_that("table has no duplicate eplets", {
+  eplet_count <- df_eplets |>
+    dplyr::distinct(name, description, exposition, confirmation, locus_group) |>
+    dplyr::add_count(name) |>
+    dplyr::pull(n)
+
+  expect_true(all(eplet_count == 1))
 })
 
 test_that("a few randomly selected cells have same value as on the website", {

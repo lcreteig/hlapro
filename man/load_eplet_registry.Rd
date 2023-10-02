@@ -40,6 +40,21 @@ the online registry to download a fresh copy.
 \details{
 Currently incorporates only the HLA tables (A/B/C, DRB, DQ, DP and
 Interlocus), not MICA.
+
+N.B. Several eplets occur in multiple locus groups. Currently, these are:
+\itemize{
+\item 26L, 30H, 37YV, 57V, 77T (DQ, DRB)
+\item 28D, 57D (DP, DRB)
+\item 76V (DP, DQ)
+\item 30G, 77N (ABC, DRB)
+\item 56E, 9H (ABC, DP)
+\item 9F (ABC, DQ)
+\item 9Y (ABC, DP, DQ)
+}
+
+These eplet names are de-duplicated by adding the locus group in square
+brackets. For example, the returned dataframe contains 2 eplets with name
+\verb{76V}: \verb{76V[DP]} and \verb{76V[DQ]}.
 }
 \examples{
 \dontrun{

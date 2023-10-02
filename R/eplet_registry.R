@@ -120,6 +120,19 @@ lookup_alleles <- function(eplet_df, eplets, allele_set = "luminex") {
 #' Currently incorporates only the HLA tables (A/B/C, DRB, DQ, DP and
 #' Interlocus), not MICA.
 #'
+#' N.B. Several eplets occur in multiple locus groups. Currently, these are:
+#' - 26L, 30H, 37YV, 57V, 77T (DQ, DRB)
+#' - 28D, 57D (DP, DRB)
+#' - 76V (DP, DQ)
+#' - 30G, 77N (ABC, DRB)
+#' - 56E, 9H (ABC, DP)
+#' - 9F (ABC, DQ)
+#' - 9Y (ABC, DP, DQ)
+#'
+#' These eplet names are de-duplicated by adding the locus group in square
+#' brackets. For example, the returned dataframe contains 2 eplets with name
+#' `76V`: `76V[DP]` and `76V[DQ]`.
+#'
 #' @param folder_path Character path to the folder where the previously
 #'   downloaded table is stored, or where you want a new version to be stored.
 #'   Defaults to the R user cache directory.
@@ -234,7 +247,7 @@ scrape_permission <- function() {
 
 scrape_eplet_registry <- function(file_path) {
   base_url <- "https://www.epregistry.com.br/index/databases/database/"
-  databases <- c("ABC", "DRB", "DQ", "DP", "DRDQDP")
+  locus_groups <- c("ABC", "DRB", "DQ", "DP", "DRDQDP")
   # CSS selector paths to the individual columns
   # (scraping entire table with rvest::html_table resulted in misaligned rows/
   # columns)
@@ -256,15 +269,15 @@ scrape_eplet_registry <- function(file_path) {
   }
 
   # scrape all columns, add each to a list, and store the database used
-  scrape_table <- function(base_url, database, col_paths) {
+  scrape_table <- function(base_url, locus_group, col_paths) {
     Sys.sleep(0.5) # wait a little between scrapes
-    page_html <- rvest::read_html(paste0(base_url, database))
+    page_html <- rvest::read_html(paste0(base_url, locus_group))
     purrr::map(col_paths, \(x) scrape_column(page_html, x)) |>
-      purrr::list_assign(database = database)
+      purrr::list_assign(locus_group = locus_group)
   }
 
-  # for each database (i.e. page), scrape all columns, store in another list
-  df <- purrr::map(databases,
+  # for each locus group (i.e. page), scrape all columns, store in another list
+  df <- purrr::map(locus_groups,
     \(x) scrape_table(base_url, x, col_paths),
     .progress = "Collecting tables from HLA Eplet Registry website"
   ) |>
@@ -273,6 +286,12 @@ scrape_eplet_registry <- function(file_path) {
     # clean up the column: text always starts with "Yes" if eplet confirmed
     dplyr::mutate(confirmation = stringr::str_starts(
       .data$confirmation, "Yes"
+    )) |>
+    # de-duplicate duplicate eplet names by adding locus group in []
+    dplyr::add_count(.data$name, name = "n_name") |>
+    dplyr::mutate(name = dplyr::if_else(.data$n_name > 1,
+      stringr::str_c(.data$name, "[", .data$locus_group, "]"),
+      .data$name
     )) |>
     # one column for the alleles, and another for if they're luminex or not
     tidyr::pivot_longer(c("alleles_luminex", "alleles_all"),
@@ -285,6 +304,7 @@ scrape_eplet_registry <- function(file_path) {
     dplyr::filter(.data$alleles != "") |> # get rid of trailing comma artefact
     # clean up whitespace at start/end
     dplyr::ungroup() |>
+    dplyr::select(!("n_name")) |>
     dplyr::mutate(dplyr::across(
       dplyr::where(is.character),
       ~ stringr::str_trim(.x)
