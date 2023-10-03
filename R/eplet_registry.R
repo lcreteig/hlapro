@@ -1,3 +1,23 @@
+get_eplet_mismatches <- function(eplet_df, donor_typings, recipient_typings) {
+  get_eplet_mismatches1 <- function(eplet_df, donor_typing, recipient_typing) {
+    donor_eplets <- gl_to_vec(donor_typing)$allele_list |>
+      remove_hla_prefix() |>
+      lookup_eplets(eplet_df = eplet_df, alleles = _) |>
+      purrr::list_c()
+    recipient_eplets <- gl_to_vec(recipient_typing)$allele_list |>
+      remove_hla_prefix() |>
+      lookup_eplets(eplet_df = eplet_df, alleles = _) |>
+      purrr::list_c()
+
+    setdiff(donor_eplets, recipient_eplets)
+  }
+
+  purrr::map2(
+    donor_typings, recipient_typings,
+    \(don, rec) get_eplet_mismatches1(eplet_df, don, rec)
+  )
+}
+
 #' Lookup and filter eplets unique to positive beads
 #'
 #' `get_positive_eplets()` takes in results from a Luminex single antigen bead
