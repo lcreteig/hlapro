@@ -327,6 +327,10 @@ is_serology <- function(allele) {
   !stringr::str_detect(allele, r"([\*:])")
 }
 
+is_v2 <- function(allele) {
+  stringr::str_detect(allele, r"(\*\d{4}(?!:))")
+}
+
 has_suffix <- function(allele) {
   stringr::str_detect(allele, r"(\d[NLSCAQ]$)")
 }
