@@ -268,9 +268,10 @@ reorder_alleles <- function(in_order, to_order) {
     ii <- ii - 1
   }
   # use identical() to allow for NA comparisons
-  if (identical(in_order[1], to_order[2]) ||
-    identical(in_order[2], to_order[1])) {
-    return(rev(to_order_orig))
+  pair_1_identical <- identical(in_order[1], to_order[2])
+  pair_2_identical <- identical(in_order[2], to_order[1])
+  if (pair_1_identical || pair_2_identical) { # if one is in reverse order
+    return(rev(to_order_orig)) # reverse the order
   }
   to_order_orig
 }
