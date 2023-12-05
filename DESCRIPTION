@@ -28,6 +28,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Suggests: 
     covr,
+    readr,
     spelling,
     testthat (>= 3.0.0),
     usethis
