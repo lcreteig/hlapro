@@ -232,6 +232,8 @@ test_that("v2 heuristic conversion works", {
   expect_equal(convert_v2_to_v3("A*01010203"), "A*01:01:02:03")
   expect_equal(convert_v2_to_v3("B*39010102L"), "B*39:01:01:02L")
   expect_equal(convert_v2_to_v3("DRB1*14125"), "DRB1*14:125")
+  # Cw is C
+  expect_equal(convert_v2_to_v3("Cw*0202"), "C*02:02")
   # need to make an exception for DP
   expect_equal(convert_v2_to_v3("DPB1*87801N"), "DPB1*878:01N")
   expect_equal(convert_v2_to_v3("DPB1*152401"), "DPB1*1524:01")
@@ -239,13 +241,14 @@ test_that("v2 heuristic conversion works", {
   # "DRB1*1412601" --> "14:126:01" instead of "14:12:601
 })
 
-test_that("MAC and XX codes works", {
+test_that("MAC and XX codes work", {
   # exceptions
   expect_equal(convert_v2_to_v3("A*24CECH"), "A*24:CWEN")
   expect_equal(convert_v2_to_v3("DPB1*03WFR"), "DPB1*03:FNYE")
   # heuristics
   expect_equal(convert_v2_to_v3("A*01XX"), "A*01:XX")
   expect_equal(convert_v2_to_v3("A*01AB"), "A*01:AB")
+  expect_equal(convert_v2_to_v3("B*08YETY"), "B*08:YETY")
 })
 
 test_that("NAs work", {
