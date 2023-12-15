@@ -1,7 +1,5 @@
 # reduce_to_nth_field -----------------------------------------------------
 
-# TODO: handle old nomenclature like A*6603
-
 test_that("serology is returned as is", {
   expect_equal(reduce_to_nth_field("A1", 1), "A1")
 })
