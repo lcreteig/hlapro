@@ -259,7 +259,7 @@ scrape_eplet_registry <- function(file_path) {
     exposition = "(4)",
     confirmation = "(6)",
     alleles_luminex = "(9)",
-    alleles_all = "(10) > div > div:nth-of-type(2) > p:nth-of-type(2)"
+    alleles_all = "(10) > div > div:nth-of-type(2) > p"
   )
   col_paths[] <- paste0(base_path, col_paths)
 
