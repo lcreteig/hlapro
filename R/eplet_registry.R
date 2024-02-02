@@ -272,8 +272,18 @@ scrape_eplet_registry <- function(file_path) {
   scrape_table <- function(base_url, locus_group, col_paths) {
     Sys.sleep(0.5) # wait a little between scrapes
     page_html <- rvest::read_html(paste0(base_url, locus_group))
+
+    # scrape additional info box for column 3
+    descr_info <-
+      rvest::html_elements(page_html, col_paths["description"]) |>
+      rvest::html_element("i") |>
+      rvest::html_attr("title") |>
+      # extract only the complete description (followed by a ".")
+      stringr::str_extract(r"((?<=Complete description: )(.*)(?=\.))")
+
     purrr::map(col_paths, \(x) scrape_column(page_html, x)) |>
-      purrr::list_assign(locus_group = locus_group)
+      purrr::list_assign(locus_group = locus_group) |>
+      purrr::list_assign(descr_info = descr_info)
   }
 
   # for each locus group (i.e. page), scrape all columns, store in another list
@@ -283,8 +293,13 @@ scrape_eplet_registry <- function(file_path) {
   ) |>
     purrr::map(tidyr::as_tibble) |> # make a dataframe out of each scraped db
     purrr::list_rbind() |> # combine into one dataframe
+    # get full description from info if it exists
+    dplyr::mutate(description = dplyr::coalesce(
+      .data$descr_info,
+      .data$description
+    )) |>
     # exposition is empty string for reactivity patterns
-    dplyr::mutate(exposition = dplyr::na_if(exposition, " ")) |>
+    dplyr::mutate(exposition = dplyr::na_if(.data$exposition, " ")) |>
     # clean up the column: text always starts with "Yes" if eplet confirmed
     dplyr::mutate(confirmation = dplyr::case_when(
       stringr::str_starts(.data$confirmation, "Yes") ~ "Yes",
@@ -308,7 +323,7 @@ scrape_eplet_registry <- function(file_path) {
     dplyr::filter(.data$alleles != "") |> # get rid of trailing comma artefact
     # clean up whitespace at start/end
     dplyr::ungroup() |>
-    dplyr::select(!("n_name")) |>
+    dplyr::select(!c("n_name", "descr_info")) |>
     dplyr::mutate(dplyr::across(
       dplyr::where(is.character),
       ~ stringr::str_trim(.x)

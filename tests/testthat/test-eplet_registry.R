@@ -253,6 +253,10 @@ test_that("a few randomly selected cells have same value as on the website", {
     "45E46V47Y"
   )
   expect_equal(
+    dplyr::pull(df_eplets[df_eplets$name == "11AV", ], "description")[1],
+    "11A12V"
+  )
+  expect_equal(
     dplyr::pull(
       dplyr::filter(df_eplets, name == "9T", source == "luminex"),
       "alleles"
