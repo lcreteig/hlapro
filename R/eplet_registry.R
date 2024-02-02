@@ -283,9 +283,13 @@ scrape_eplet_registry <- function(file_path) {
   ) |>
     purrr::map(tidyr::as_tibble) |> # make a dataframe out of each scraped db
     purrr::list_rbind() |> # combine into one dataframe
+    # exposition is empty string for reactivity patterns
+    dplyr::mutate(exposition = dplyr::na_if(exposition, " ")) |>
     # clean up the column: text always starts with "Yes" if eplet confirmed
-    dplyr::mutate(confirmation = stringr::str_starts(
-      .data$confirmation, "Yes"
+    dplyr::mutate(confirmation = dplyr::case_when(
+      stringr::str_starts(.data$confirmation, "Yes") ~ "Yes",
+      .data$confirmation == "N/A" ~ "N/A",
+      .default = "No"
     )) |>
     # de-duplicate duplicate eplet names by adding locus group in []
     dplyr::add_count(.data$name, name = "n_name") |>

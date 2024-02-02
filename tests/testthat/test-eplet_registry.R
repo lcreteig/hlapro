@@ -184,17 +184,17 @@ test_that("table has 8 columns", {
 })
 
 test_that("column names and types are correct", {
-  etrl_hla_info <- c(
+  eplet_registry_info <- c(
     id = "character",
     name = "character",
     description = "character",
     exposition = "character",
-    confirmation = "logical",
+    confirmation = "character",
     locus_group = "character",
     source = "character",
     alleles = "character"
   )
-  expect_equal(purrr::map_chr(df_eplets, class), etrl_hla_info)
+  expect_equal(purrr::map_chr(df_eplets, class), eplet_registry_info)
 })
 
 test_that("low cardinality character columns contain expected values", {
@@ -205,7 +205,7 @@ test_that("low cardinality character columns contain expected values", {
     unique()
   expect_setequal(
     values_exposition,
-    c("Very Low", "Low", "Intermediate", "High")
+    c("Very Low", "Low", "Intermediate", "High", NA)
   )
 
   # database
@@ -242,7 +242,11 @@ test_that("a few randomly selected cells have same value as on the website", {
   )
   expect_equal(
     dplyr::pull(df_eplets[df_eplets$name == "71SA", ], "confirmation")[1],
-    TRUE
+    "Yes"
+  )
+  expect_equal(
+    dplyr::pull(df_eplets[df_eplets$name == "69AA+65QI", ], "confirmation")[1],
+    "N/A"
   )
   expect_equal(
     dplyr::pull(df_eplets[df_eplets$name == "45EV", ], "description")[1],
