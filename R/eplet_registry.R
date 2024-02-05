@@ -293,6 +293,10 @@ scrape_eplet_registry <- function(file_path) {
   ) |>
     purrr::map(tidyr::as_tibble) |> # make a dataframe out of each scraped db
     purrr::list_rbind() |> # combine into one dataframe
+    dplyr::mutate(residue_type = dplyr::case_when(
+      stringr::str_detect(.data$name, "\\+") ~ "reactivity pattern",
+      .default = "eplet"
+    ), .after = "name") |>
     # get full description from info if it exists
     dplyr::mutate(description = dplyr::coalesce(
       .data$descr_info,

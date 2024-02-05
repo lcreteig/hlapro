@@ -179,14 +179,15 @@ test_that("load_eplet_registry prints message when print_version = TRUE", {
   expect_message(load_eplet_registry(print_version = TRUE))
 })
 
-test_that("table has 8 columns", {
-  expect_equal(length(df_eplets), 8)
+test_that("table has 9 columns", {
+  expect_equal(length(df_eplets), 9)
 })
 
 test_that("column names and types are correct", {
   eplet_registry_info <- c(
     id = "character",
     name = "character",
+    residue_type = "character",
     description = "character",
     exposition = "character",
     confirmation = "character",
@@ -206,6 +207,12 @@ test_that("low cardinality character columns contain expected values", {
   expect_setequal(
     values_exposition,
     c("Very Low", "Low", "Intermediate", "High", NA)
+  )
+
+  # residue type
+  expect_setequal(
+    unique(df_eplets$residue_type),
+    c("eplet", "reactivity pattern")
   )
 
   # database
@@ -236,6 +243,16 @@ test_that("table has no duplicate eplets", {
 })
 
 test_that("a few randomly selected cells have same value as on the website", {
+  expect_equal(
+    dplyr::pull(df_eplets[df_eplets$name == "3P", ], "residue_type")[1],
+    "eplet"
+  )
+
+  expect_equal(
+    dplyr::pull(df_eplets[df_eplets$name == "77N+85VG", ], "residue_type")[1],
+    "reactivity pattern"
+  )
+
   expect_equal(
     dplyr::pull(df_eplets[df_eplets$name == "37Y", ], "exposition")[1],
     "High"
