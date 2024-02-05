@@ -223,10 +223,10 @@ Grab database from the [HLA Eplet registry](https://www.epregistry.com.br) and u
 
 ```{r lookup_alleles}
 df_eplets <- load_eplet_registry()
-lookup_alleles(df_eplets, "9F")
+lookup_alleles(df_eplets, "17S")
 ```
 ```{r lookup_eplets}
-lookup_eplets(df_eplets, "A*01:01")
+lookup_eplets(df_eplets, "A*01:02")
 ```
 A common use case would be to lookup which eplets occur on a set of (positive) Luminex beads:
 
