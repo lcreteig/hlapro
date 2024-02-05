@@ -1,7 +1,8 @@
-# hlapro (development version)
+# hlapro 0.2.0
 
 * New functions to lookup eplets/alleles in the 
-  [HLA Eplet registry](https://www.epregistry.com.br):
+  [HLA Eplet registry](https://www.epregistry.com.br). Updated for release 
+  "2024-01-22: IPD-IMGT/HLA 3.54" of the registry (#9)
   
   - `load_eplet_registry()` scrapes the database from the website, or loads an
     existing version from disk
