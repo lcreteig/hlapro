@@ -1,3 +1,5 @@
+# hlapro (development version)
+
 # hlapro 0.2.0
 
 * New functions to lookup eplets/alleles in the 
