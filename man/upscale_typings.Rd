@@ -97,7 +97,7 @@ see the following references:
 \itemize{
 \item Geffard et. al., Easy-HLA: a validated web application suite to reveal the
 full details of HLA typing, \emph{Bioinformatics, Volume 36, Issue 7}, April
-2020, Pages 2157–2164, \url{https://doi.org/10.1093/bioinformatics/btz875}
+2020, Pages 2157-2164, \url{https://doi.org/10.1093/bioinformatics/btz875}
 \item Madbouly, A., Gragert, L., Freeman, J., Leahy, N., Gourraud, P.-.-A.,
 Hollenbach, J.A., Kamoun, M., Fernandez-Vina, M. and Maiers, M. (2014),
 Validation of statistical imputation of allele-level multilocus phased
