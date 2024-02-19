@@ -1,4 +1,4 @@
-# hlapro (development version)
+# hlapro 0.2.1
 
 * Fixed check for `input_loci` argument in `upscale_typings()` (#10).
 
