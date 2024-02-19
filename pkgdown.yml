@@ -2,7 +2,7 @@ pandoc: 2.19.2
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles: {}
-last_built: 2024-02-19T18:57Z
+last_built: 2024-02-19T18:59Z
 urls:
   reference: https://lcreteig.github.io/hlapro/reference
   article: https://lcreteig.github.io/hlapro/articles
