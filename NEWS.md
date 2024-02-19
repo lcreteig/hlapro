@@ -1,5 +1,7 @@
 # hlapro (development version)
 
+* Fixed check for `input_loci` argument in `upscale_typings()` (#10).
+
 # hlapro 0.2.0
 
 * New functions to lookup eplets/alleles in the 
