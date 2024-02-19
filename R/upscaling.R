@@ -123,7 +123,10 @@ upscale_typings <- function(filepath,
                             n_haplos = NULL,
                             n_genos = 1,
                             as_list = FALSE) {
-  loci_input <- rlang::arg_match(loci_input, multiple = TRUE)
+  loci_input <- rlang::arg_match(loci_input, c(
+    "A", "B", "C",
+    "DRB1", "DRB.", "DQB1"
+  ), multiple = TRUE)
   loci_output <- rlang::arg_match(loci_output, multiple = TRUE)
   check_number_whole(n_genos)
 
