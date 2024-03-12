@@ -1,5 +1,9 @@
 # hlapro (development version)
 
+* Updated for new release of the HLA Eplet registry: incorporating papers by 
+  [Bezstarosti et al.](https://doi.org/10.3389/fimmu.2021.800946) 
+  and [Osoegawa et al.](https://doi.org/10.1111/tan.14662) (#11)
+
 # hlapro 0.2.1
 
 * Fixed check for `input_loci` argument in `upscale_typings()` (#10).

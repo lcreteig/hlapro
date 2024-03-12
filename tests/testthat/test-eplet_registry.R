@@ -180,7 +180,7 @@ test_that("load_eplet_registry prints message when print_version = TRUE", {
 })
 
 test_that("table has 9 columns", {
-  expect_equal(length(df_eplets), 9)
+  expect_equal(length(df_eplets), 10)
 })
 
 test_that("column names and types are correct", {
@@ -191,6 +191,7 @@ test_that("column names and types are correct", {
     description = "character",
     exposition = "character",
     confirmation = "character",
+    evidence = "character",
     locus_group = "character",
     source = "character",
     alleles = "character"
@@ -200,13 +201,15 @@ test_that("column names and types are correct", {
 
 test_that("low cardinality character columns contain expected values", {
   # exposition
-  values_exposition <- df_eplets |>
-    dplyr::filter(locus_group != "DRDQDP") |> # these are undefined
-    dplyr::pull(exposition) |>
-    unique()
   expect_setequal(
-    values_exposition,
+    unique(df_eplets$exposition),
     c("Very Low", "Low", "Intermediate", "High", NA)
+  )
+
+  # evidence
+  expect_setequal(
+    unique(df_eplets$evidence),
+    c("A1", "A2", "B", "C", "D", "N/A", NA)
   )
 
   # residue type
@@ -243,20 +246,23 @@ test_that("table has no duplicate eplets", {
 })
 
 test_that("a few randomly selected cells have same value as on the website", {
+  # residue_type
   expect_equal(
     dplyr::pull(df_eplets[df_eplets$name == "3P", ], "residue_type")[1],
     "eplet"
   )
-
   expect_equal(
     dplyr::pull(df_eplets[df_eplets$name == "77N+85VG", ], "residue_type")[1],
     "reactivity pattern"
   )
 
+  # exposition
   expect_equal(
     dplyr::pull(df_eplets[df_eplets$name == "37Y", ], "exposition")[1],
     "High"
   )
+
+  # confirmation
   expect_equal(
     dplyr::pull(df_eplets[df_eplets$name == "71SA", ], "confirmation")[1],
     "Yes"
@@ -265,6 +271,18 @@ test_that("a few randomly selected cells have same value as on the website", {
     dplyr::pull(df_eplets[df_eplets$name == "69AA+65QI", ], "confirmation")[1],
     "N/A"
   )
+
+  # evidence
+  expect_equal(
+    dplyr::pull(df_eplets[df_eplets$name == "70R", ], "evidence")[1],
+    "B"
+  )
+  expect_equal(
+    dplyr::pull(df_eplets[df_eplets$name == "44RT+69TNT", ], "evidence")[1],
+    "N/A"
+  )
+
+  # description
   expect_equal(
     dplyr::pull(df_eplets[df_eplets$name == "45EV", ], "description")[1],
     "45E46V47Y"
@@ -273,6 +291,8 @@ test_that("a few randomly selected cells have same value as on the website", {
     dplyr::pull(df_eplets[df_eplets$name == "11AV", ], "description")[1],
     "11A12V"
   )
+
+  # luminex alleles
   expect_equal(
     dplyr::pull(
       dplyr::filter(df_eplets, name == "9T", source == "luminex"),
@@ -280,6 +300,7 @@ test_that("a few randomly selected cells have same value as on the website", {
     ),
     c("A*29:01", "A*29:02", "A*31:01", "A*33:01", "A*33:03")
   )
+  # all alleles
   expect_equal(
     dplyr::pull(
       dplyr::filter(df_eplets, name == "3P", source == "all"),

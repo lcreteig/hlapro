@@ -258,8 +258,9 @@ scrape_eplet_registry <- function(file_path) {
     description = "(3)",
     exposition = "(4)",
     confirmation = "(6)",
-    alleles_luminex = "(9)",
-    alleles_all = "(10) > div > div:nth-of-type(2) > p"
+    evidence = "(7)",
+    alleles_luminex = "(10)",
+    alleles_all = "(11) > div > div:nth-of-type(2) > p"
   )
   col_paths[] <- paste0(base_path, col_paths)
 
@@ -304,6 +305,8 @@ scrape_eplet_registry <- function(file_path) {
     )) |>
     # exposition is empty string for reactivity patterns
     dplyr::mutate(exposition = dplyr::na_if(.data$exposition, " ")) |>
+    # evidence is empty for eplets not in paper
+    dplyr::mutate(evidence = dplyr::na_if(.data$evidence, "")) |>
     # clean up the column: text always starts with "Yes" if eplet confirmed
     dplyr::mutate(confirmation = dplyr::case_when(
       stringr::str_starts(.data$confirmation, "Yes") ~ "Yes",
