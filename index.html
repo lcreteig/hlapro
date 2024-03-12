@@ -83,6 +83,7 @@
 </div>
 <!-- badges: start -->
 
+<!-- badges: end -->
 <p>The goal of hlapro is to provide some tooling to work with <a href="https://en.wikipedia.org/wiki/Human_leukocyte_antigen" class="external-link">Human Leukocyte Antigen (HLA)</a> data, in the context of transplantation research:</p>
 <ul>
 <li>HLA typings</li>
@@ -298,8 +299,8 @@
 <span><span class="co">#&gt; # A tibble: 2 × 2</span></span>
 <span><span class="co">#&gt;   id    glstring                                                                </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;                                                                   </span></span>
-<span><span class="co">#&gt; 1 001   hla#2024-02-05#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…</span></span>
-<span><span class="co">#&gt; 2 002   hla#2024-02-05#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 001   hla#2024-03-12#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…</span></span>
+<span><span class="co">#&gt; 2 002   hla#2024-03-12#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01</span></span></code></pre></div>
 <p>Use <code><a href="reference/gl_to_df.html">gl_to_df()</a></code> to go the opposite way: from a dataframe of GL Strings to one columns per allele:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">typing_df_gl</span> <span class="op">|&gt;</span></span>
@@ -308,8 +309,8 @@
 <span><span class="co">#&gt; # A tibble: 2 × 11</span></span>
 <span><span class="co">#&gt;   id    glstring      glstring_index namespace version_or_date A_1   A_2   B_1  </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;                  &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;           &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;</span></span>
-<span><span class="co">#&gt; 1 001   hla#2024-02-…              1 hla       2024-02-05      HLA-… HLA-… HLA-…</span></span>
-<span><span class="co">#&gt; 2 002   hla#2024-02-…              2 hla       2024-02-05      HLA-… HLA-… HLA-…</span></span>
+<span><span class="co">#&gt; 1 001   hla#2024-03-…              1 hla       2024-03-12      HLA-… HLA-… HLA-…</span></span>
+<span><span class="co">#&gt; 2 002   hla#2024-03-…              2 hla       2024-03-12      HLA-… HLA-… HLA-…</span></span>
 <span><span class="co">#&gt; # ℹ 3 more variables: B_2 &lt;chr&gt;, C_1 &lt;chr&gt;, C_2 &lt;chr&gt;</span></span></code></pre></div>
 </div>
 </div>
@@ -436,7 +437,7 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/lcreteig/hlapro/actions/workflows/check-standard.yaml" class="external-link"><img src="https://github.com/lcreteig/hlapro/actions/workflows/check-standard.yaml/badge.svg" alt="check-standard"></a></li>
+<li><a href="https://github.com/lcreteig/hlapro/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/lcreteig/hlapro/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://github.com/lcreteig/hlapro/actions/workflows/pkgdown.yaml" class="external-link"><img src="https://github.com/lcreteig/hlapro/actions/workflows/pkgdown.yaml/badge.svg" alt="pkgdown"></a></li>
 <li><a href="https://app.codecov.io/gh/lcreteig/hlapro?branch=main" class="external-link"><img src="https://codecov.io/gh/lcreteig/hlapro/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://CRAN.R-project.org/package=hlapro" class="external-link"><img src="https://www.r-pkg.org/badges/version/hlapro" alt="CRAN status"></a></li>
