@@ -5,12 +5,13 @@
 
 <!-- badges: start -->
 
-[![check-standard](https://github.com/lcreteig/hlapro/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/lcreteig/hlapro/actions/workflows/check-standard.yaml)
+[![R-CMD-check](https://github.com/lcreteig/hlapro/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/lcreteig/hlapro/actions/workflows/R-CMD-check.yaml)
 [![pkgdown](https://github.com/lcreteig/hlapro/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/lcreteig/hlapro/actions/workflows/pkgdown.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/lcreteig/hlapro/branch/main/graph/badge.svg)](https://app.codecov.io/gh/lcreteig/hlapro?branch=main)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/hlapro)](https://CRAN.R-project.org/package=hlapro)
+
 <!-- badges: end -->
 
 The goal of hlapro is to provide some tooling to work with [Human
@@ -265,8 +266,8 @@ typing_df_gl
 #> # A tibble: 2 × 2
 #>   id    glstring                                                                
 #>   <chr> <chr>                                                                   
-#> 1 001   hla#2024-02-05#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
-#> 2 002   hla#2024-02-05#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
+#> 1 001   hla#2024-03-12#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
+#> 2 002   hla#2024-03-12#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
 ```
 
 Use `gl_to_df()` to go the opposite way: from a dataframe of GL Strings
@@ -279,8 +280,8 @@ typing_df_gl |>
 #> # A tibble: 2 × 11
 #>   id    glstring      glstring_index namespace version_or_date A_1   A_2   B_1  
 #>   <chr> <chr>                  <int> <chr>     <chr>           <chr> <chr> <chr>
-#> 1 001   hla#2024-02-…              1 hla       2024-02-05      HLA-… HLA-… HLA-…
-#> 2 002   hla#2024-02-…              2 hla       2024-02-05      HLA-… HLA-… HLA-…
+#> 1 001   hla#2024-03-…              1 hla       2024-03-12      HLA-… HLA-… HLA-…
+#> 2 002   hla#2024-03-…              2 hla       2024-03-12      HLA-… HLA-… HLA-…
 #> # ℹ 3 more variables: B_2 <chr>, C_1 <chr>, C_2 <chr>
 ```
 
