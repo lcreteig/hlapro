@@ -1,4 +1,4 @@
-# hlapro (development version)
+# hlapro 0.2.2
 
 * Updated for new release of the HLA Eplet registry: incorporating papers by 
   [Bezstarosti et al.](https://doi.org/10.3389/fimmu.2021.800946) 
