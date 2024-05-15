@@ -1,4 +1,6 @@
-# hlapro (development version)
+# hlapro 0.2.3
+
+* Fixed tests for new release of HLA Eplet registry (2024-03-15)
 
 # hlapro 0.2.2
 
