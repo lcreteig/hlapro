@@ -17,3 +17,21 @@ test_that("basic positivity implementation works", {
     )
   )
 })
+
+test_that("basic DSA implementation works", {
+  specificities <- c(
+    "A*01:01",
+    "B*07:01", "B*38:01",
+    "C*03:02"
+  )
+  typing <- c("A1 A2 B16 B57 Cw10")
+
+  expect_equal(
+    determine_dsa(specificities, typing),
+    c("yes", "no", "no", "yes")
+  )
+  expect_equal(
+    determine_dsa(specificities, typing, level = "broad"),
+    c("yes", "no", "yes", "yes")
+  )
+})
