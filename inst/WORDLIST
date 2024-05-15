@@ -2,6 +2,7 @@ al
 ard
 aut
 Bezstarosti
+bioconductor
 Bioinformatics
 BugReports
 Bw
@@ -60,6 +61,7 @@ LazyData
 lcreteig
 Leahy
 leonreteig
+LinkingTo
 Luminex
 Madbouly
 Maiers
@@ -69,6 +71,7 @@ ORCID
 Osoegawa
 pkgdown
 positivity
+precommit
 PROCARE
 purrr
 py
@@ -96,5 +99,6 @@ upscales
 Upscaling
 upscaling
 usethis
+vcs
 Vina
 YV

@@ -10,3 +10,5 @@
 ^docs$
 ^hlapro\.Rproj$
 ^pkgdown$
+^renv$
+^renv\.lock$
