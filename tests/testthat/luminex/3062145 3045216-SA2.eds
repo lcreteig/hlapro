@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<ev2SA2 Version="2"
+	xmlns="http://www.immucor.com">
+	<LotID>3062145 3045216-SA2</LotID>
+	<ExpirationDate>07/25/2027</ExpirationDate>
+	<AssayName>3062145 3045216-SA2</AssayName>
+	<AssayVersion>1</AssayVersion>
+	<LogicName>SA2-000</LogicName>
+	<LogicDescription>LIFECODES Single Antigen Class II</LogicDescription>
+	<LocusID>15</LocusID>
+	<Extension>SA2</Extension>
+	<IsDNA>0</IsDNA>
+	<Con1Upper>370</Con1Upper>
+	<Con1Lower>160</Con1Lower>
+	<PCUpper>16500</PCUpper>
+	<PCLower>16220</PCLower>
+	<MFIThreshold>650</MFIThreshold>
+	<AntigenIDs>
+		<AntigenID ID="NC">
+			<Bead>1</Bead>
+			<Antigens />
+			<Cutoff />
+			<RAD />
+			<BackgroundMFI />
+			<LRA />
+			<Consensus>N1</Consensus>
+			<Serology />
+		</AntigenID>
+		<AntigenID ID="PC">
+			<Bead>2</Bead>
+			<Antigens />
+			<Cutoff />
+			<RAD>4</RAD>
+			<BackgroundMFI>1500</BackgroundMFI>
+			<LRA>3</LRA>
+			<Consensus>P1</Consensus>
+			<Serology />
+		</AntigenID>
+		<AntigenID ID="203">
+			<Bead>3</Bead>
+			<Antigens>
+				<Antigen>DRB1*01:01</Antigen>
+			</Antigens>
+			<Cutoff>3.90</Cutoff>
+			<RAD>1.006</RAD>
+			<BackgroundMFI>135</BackgroundMFI>
+			<LRA>1</LRA>
+			<Consensus />
+			<Serology>DR1</Serology>
+		</AntigenID>
+		<AntigenID ID="204">
+			<Bead>4</Bead>
+			<Antigens>
+				<Antigen>DRB3*02:02</Antigen>
+			</Antigens>
+			<Cutoff>4.20</Cutoff>
+			<RAD>0.850</RAD>
+			<BackgroundMFI>140</BackgroundMFI>
+			<LRA>1</LRA>
+			<Consensus />
+			<Serology>DR52</Serology>
+		</AntigenID>
+		<AntigenID ID="205">
+			<Bead>5</Bead>
+			<Antigens>
+				<Antigen>DQA1*02:01</Antigen>
+				<Antigen>DQB1*02:01</Antigen>
+			</Antigens>
+			<Cutoff>3.95</Cutoff>
+			<RAD>0.920</RAD>
+			<BackgroundMFI>145</BackgroundMFI>
+			<LRA>3</LRA>
+			<Consensus />
+			<Serology>DQ2</Serology>
+		</AntigenID>
+		<AntigenID ID="206">
+			<Bead>6</Bead>
+			<Antigens>
+				<Antigen>DQA1*01:02</Antigen>
+				<Antigen>DQB1*06:04</Antigen>
+			</Antigens>
+			<Cutoff>5.80</Cutoff>
+			<RAD>0.875</RAD>
+			<BackgroundMFI>290</BackgroundMFI>
+			<LRA>3</LRA>
+			<Consensus />
+			<Serology>DQ6(1)</Serology>
+		</AntigenID>
+		<AntigenID ID="207">
+			<Bead>7</Bead>
+			<Antigens>
+				<Antigen>DPA1*01:03</Antigen>
+				<Antigen>DPB1*01:01</Antigen>
+			</Antigens>
+			<Cutoff>3.90</Cutoff>
+			<RAD>0.930</RAD>
+			<BackgroundMFI>150</BackgroundMFI>
+			<LRA>2</LRA>
+			<Consensus />
+			<Serology>DPw1</Serology>
+		</AntigenID>
+	</AntigenIDs>
+	<Phenotypes />
+</ev2SA2>

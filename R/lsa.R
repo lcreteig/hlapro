@@ -87,7 +87,7 @@ read_lum_csv <- function(csv_filepath, lots_path) {
       lot_id = lot_id,
       .before = "antigen_id"
     ) |>
-    dplyr::left_join(df_eds) |> # add lot info
+    dplyr::left_join(df_eds, relationship = "many-to-many") |> # add lot info
     dplyr::group_by(.data$Sample, .data$LRA) |>
     # add computed colummns
     dplyr::mutate(
@@ -111,7 +111,7 @@ read_lum_csv <- function(csv_filepath, lots_path) {
       names_from = "LRA", values_from = c("Antigens1", "Serology"),
       names_prefix = "locus"
     ) |> # separate loci
-    dplyr::arrange(dplyr::desc(.data$mfi_lra))
+    dplyr::arrange(.data$Sample, dplyr::desc(.data$mfi_lra))
 
   # Format depending on class I or II assays
   if (stringr::str_ends(lot_id, "-SA1")) {

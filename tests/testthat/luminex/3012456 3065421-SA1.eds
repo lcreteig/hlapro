@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<ev2SA1 Version="2"
+	xmlns="http://www.immucor.com">
+	<LotID>3012456 3065421-SA1</LotID>
+	<ExpirationDate>12/12/2024</ExpirationDate>
+	<AssayName>3012456 3065421-SA1</AssayName>
+	<AssayVersion>1</AssayVersion>
+	<LogicName>SA1-000</LogicName>
+	<LogicDescription>LIFECODES Single Antigen Class I</LogicDescription>
+	<LocusID>10</LocusID>
+	<Extension>SA1</Extension>
+	<IsDNA>0</IsDNA>
+	<Con1Upper>100</Con1Upper>
+	<Con1Lower>180</Con1Lower>
+	<PCUpper>15000</PCUpper>
+	<PCLower>13000</PCLower>
+	<MFIThreshold>500</MFIThreshold>
+	<AntigenIDs>
+		<AntigenID ID="NC">
+			<Bead>1</Bead>
+			<Antigens />
+			<Cutoff />
+			<RAD />
+			<BackgroundMFI />
+			<LRA />
+			<Consensus>N1</Consensus>
+			<Serology />
+		</AntigenID>
+		<AntigenID ID="PC">
+			<Bead>2</Bead>
+			<Antigens />
+			<Cutoff />
+			<RAD>4</RAD>
+			<BackgroundMFI>1500</BackgroundMFI>
+			<LRA>3</LRA>
+			<Consensus>P1</Consensus>
+			<Serology />
+		</AntigenID>
+		<AntigenID ID="103">
+			<Bead>3</Bead>
+			<Antigens>
+				<Antigen>A*01:01</Antigen>
+			</Antigens>
+			<Cutoff>3.75</Cutoff>
+			<RAD>1.192</RAD>
+			<BackgroundMFI>180</BackgroundMFI>
+			<LRA>1</LRA>
+			<Consensus />
+			<Serology>A1</Serology>
+		</AntigenID>
+		<AntigenID ID="104">
+			<Bead>4</Bead>
+			<Antigens>
+				<Antigen>A*02:01</Antigen>
+			</Antigens>
+			<Cutoff>4.01</Cutoff>
+			<RAD>1.210</RAD>
+			<BackgroundMFI>170</BackgroundMFI>
+			<LRA>1</LRA>
+			<Consensus />
+			<Serology>A2</Serology>
+		</AntigenID>
+		<AntigenID ID="105">
+			<Bead>5</Bead>
+			<Antigens>
+				<Antigen>B*14:01</Antigen>
+				<Antigen>Bw6</Antigen>
+			</Antigens>
+			<Cutoff>3.79</Cutoff>
+			<RAD>1.304</RAD>
+			<BackgroundMFI>180</BackgroundMFI>
+			<LRA>2</LRA>
+			<Consensus />
+			<Serology>B64(14)</Serology>
+		</AntigenID>
+		<AntigenID ID="106">
+			<Bead>6</Bead>
+			<Antigens>
+				<Antigen>C*07:01</Antigen>
+			</Antigens>
+			<Cutoff>3.49</Cutoff>
+			<RAD>0.790</RAD>
+			<BackgroundMFI>245</BackgroundMFI>
+			<LRA>3</LRA>
+			<Consensus />
+			<Serology>Cw7</Serology>
+		</AntigenID>
+	</AntigenIDs>
+	<Phenotypes />
+</ev2SA1>

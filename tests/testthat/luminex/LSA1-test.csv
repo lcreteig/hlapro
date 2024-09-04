@@ -1,0 +1,93 @@
+"Program","xPONENT","","LX100/LX200"
+"Build","2.5.103.2"
+"Date","03/03/2023","2:47 PM"
+
+"SN","LX100"
+"Batch","LSA1-test"
+"Version","1"
+"Operator","ADMIN"
+"ComputerName","DESKTOP"
+"Country Code","8H"
+"ProtocolName","3012456 3065421-SA1"
+"ProtocolVersion","1"
+"ProtocolDescription",""
+"ProtocolDevelopingCompany","Immucor Transplant Diag.,Inc"
+"SampleVolume","100 uL"
+"DDGate","7000 to 20000"
+"SampleTimeout","90 sec"
+"BatchStartTime","1/3/2023 2:49:57 PM"
+"BatchStopTime","1/3/2023 3:55:34 PM"
+"BatchDescription","<None>"
+"ProtocolPlate","Name","Current 96-well plate","Type","96","Plates","1"
+"ProtocolMicrosphere","Map","100 regions","Type","MicroPlex","Count","98"
+"ProtocolReporterGain","Default"
+"ProtocolAnalysis","Off"
+"NormBead","None"
+"ProtocolHeater","Off"
+
+"Most Recent Calibration and Control Results:"
+"Last CAL1 Calibration","Passed 01/03/2023 12:03:07"
+"Last CAL2 Calibration","Passed 01/03/2023 12:04:16"
+"Last CON1 Verification","Passed 01/03/2023 12:05:12"
+"Last CON2 Verification","Passed 01/03/2023 12:06:20"
+"Last Fluidics Test","Passed 01/03/2023 12:06:51"
+""
+"CALInfo:"
+"Classification Calibrator"
+"Lot","ExpirationDate","CalibrationTime","DDTemp","CL1Temp","CL2Temp","DDVolts","CL1Volts","CL2Volts","DDRVal","CL1RVal","CL2RVal","Result","MachineSerialNo"
+"B23819","11/11/2023","5/4/2023 12:03:14 PM","22.01","21.79","21.57","73.36","94.15","95.9","700","1309","1405","Pass","LX100"
+"B29188","10/14/2023","5/4/2023 12:03:39 PM","22.01","22.01","21.57","49.07","94.09","95.84","358","1299","1402","Pass","LX100"
+
+
+"Samples","2","Min Events","100","Per Bead"
+
+"Results"
+
+"DataType:","Median"
+"Location","Sample","NC","PC","103","104","105","106","Total Events"
+"33(1,A5)","S001","161","18205.5","8001.5","63","127","501","8243"
+"34(1,B5)","S002","113","17573","69","92.5","120","111.5","8576"
+
+"DataType:","Net MFI"
+"Location","Sample","NC","PC","103","104","105","106","Total Events"
+"33(1,A5)","S001","161","18205.5","8001.5","63","127","501","8243"
+"34(1,B5)","S002","113","17573","69","92.5","120","111.5","8576"
+
+"DataType:","Count"
+"Location","Sample","NC","PC","103","104","105","106","Total Events"
+"33(1,A5)","S001","87","104","67","73","89","60","8243"
+"34(1,B5)","S002","92","120","82","74","113","78","8576"
+
+"DataType:","Avg Net MFI"
+"Sample","NC","PC","103","104","105","106"
+"S001","161","18205.5","8001.5","63","120","501"
+"S002","113","17573","69","92.5","127","111.5"
+
+"DataType:","Units"
+"Analyte:","NC","PC","103","104","105","106"
+"BeadID:","1","2","3","4","5","6"
+"Units:","n","n","n","n","n","n"
+
+"DataType:","Per Bead Count"
+"Analyte:","NC","PC","103","104","105","106"
+"BeadID:","1","2","3","4","5","6"
+"Per Bead:","60","60","60","60","60","60"
+
+"DataType:","Dilution Factor"
+"Location","Sample","Dilution Factor"
+"33(1,A5)","S001","1"
+"34(1,B5)","S002","1"
+
+
+"DataType:","Analysis Types"
+"Analyte:","NC","PC","103","104","105","106"
+"AnalysisType","Qual","Qual","Qual","Qual","Qual","Qual"
+
+"DataType:","Audit Logs"
+"UserId","Date","Message"
+
+"DataType:","Warnings/Errors"
+"Location","Status","Message"
+
+-- CRC --
+CRC32: A7XX014X
