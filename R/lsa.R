@@ -1,6 +1,6 @@
 read_lum_csv <- function(csv_filepath, lots_path) {
   # read luminex csv line-by-line
-  dat_lines <- readLines(csv_filepath)
+  dat_lines <- readLines(csv_filepath, warn = FALSE)
 
   # get lot number
   lot_id <- dat_lines |>
@@ -142,7 +142,7 @@ read_lotfile <- function(filepath) {
     purrr::set_names(stringr::str_remove_all(single_nodes, "/.*/")) |>
     # convert to data frame
     tibble::as_tibble_row() |>
-    utils::type.convert()
+    utils::type.convert(as.is = TRUE)
 
   antigen_ids <- xml2::xml_find_all(xml_doc, "//AntigenID")
 
