@@ -2,7 +2,6 @@ al
 ard
 aut
 Bezstarosti
-bioconductor
 Bioinformatics
 BugReports
 Bw
@@ -12,6 +11,7 @@ Config
 covr
 cph
 cre
+csv
 de
 Downscaling
 DPA
@@ -20,7 +20,6 @@ dplyr
 DQ
 DQA
 DQB
-DRA
 DRB
 DSA
 DSAs
@@ -30,7 +29,6 @@ eplet
 eplets
 et
 ETRL
-etrl
 EuroTransplant
 fnd
 Freepik
@@ -43,7 +41,6 @@ Gourraud
 Gragert
 hexmake
 HLA
-hla
 hlapro
 hlaR
 HLAs
@@ -52,6 +49,8 @@ Hollenbach
 homozygous
 https
 IMGT
+Immucor
+Immucor's
 immunotation
 Interlocus
 io
@@ -61,7 +60,6 @@ LazyData
 lcreteig
 Leahy
 leonreteig
-LinkingTo
 Luminex
 Madbouly
 Maiers
@@ -76,7 +74,6 @@ PROCARE
 purrr
 py
 pyglstring
-RDX
 readxl
 Reteig
 rlang
@@ -99,6 +96,5 @@ upscales
 Upscaling
 upscaling
 usethis
-vcs
 Vina
 YV
