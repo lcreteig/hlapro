@@ -1,9 +1,9 @@
 test_that("mock lot files are parsed correctly", {
   # Class I
   df_sa1 <- tibble::tibble(
-    LotID = "3012456 3065421-SA1",
+    LotID = "3012456_3065421-SA1",
     ExpirationDate = "12/12/2024",
-    AssayName = "3012456 3065421-SA1",
+    AssayName = "3012456_3065421-SA1",
     AssayVersion = 1,
     LogicName = "SA1-000",
     LogicDescription = "LIFECODES Single Antigen Class I",
@@ -28,14 +28,15 @@ test_that("mock lot files are parsed correctly", {
   )
 
   expect_equal(
-    read_lotfile(test_path("luminex", "3012456 3065421-SA1.eds")),
-    df_sa1)
+    read_lotfile(test_path("luminex", "3012456_3065421-SA1.eds")),
+    df_sa1
+  )
 
   # Class II
   df_sa2 <- tibble::tibble(
-    LotID = "3062145 3045216-SA2",
+    LotID = "3062145_3045216-SA2",
     ExpirationDate = "07/25/2027",
-    AssayName = "3062145 3045216-SA2",
+    AssayName = "3062145_3045216-SA2",
     AssayVersion = 1,
     LogicName = "SA2-000",
     LogicDescription = "LIFECODES Single Antigen Class II",
@@ -49,22 +50,29 @@ test_that("mock lot files are parsed correctly", {
     MFIThreshold = 650,
     Phenotypes = NA,
     Bead = c(1, 2, 3, 4, 5, 5, 6, 6, 7, 7),
-    Antigens = c(NA, NA, "DRB1*01:01", "DRB3*02:02", "DQA1*02:01", "DQB1*02:01",
-                 "DQA1*01:02", "DQB1*06:04", "DPA1*01:03", "DPB1*01:01"),
+    Antigens = c(
+      NA, NA, "DRB1*01:01", "DRB3*02:02", "DQA1*02:01", "DQB1*02:01",
+      "DQA1*01:02", "DQB1*06:04", "DPA1*01:03", "DPB1*01:01"
+    ),
     Cutoff = c(NA, NA, 3.90, 4.20, 3.95, 3.95, 5.80, 5.80, 3.90, 3.90),
     RAD = c(NA, 4, 1.006, 0.850, 0.920, 0.920, 0.875, 0.875, 0.930, 0.930),
     BackgroundMFI = c(NA, 1500, 135, 140, 145, 145, 290, 290, 150, 150),
     LRA = c(NA, 3, 1, 1, 3, 3, 3, 3, 2, 2),
     Consensus = c("N1", "P1", NA, NA, NA, NA, NA, NA, NA, NA),
-    Serology = c(NA, NA, "DR1", "DR52", "DQ2", "DQ2", "DQ6(1)", "DQ6(1)",
-                 "DPw1", "DPw1"),
-    antigen_id = c("NC", "PC", "203", "204", "205", "205", "206", "206",
-                   "207", "207")
+    Serology = c(
+      NA, NA, "DR1", "DR52", "DQ2", "DQ2", "DQ6(1)", "DQ6(1)",
+      "DPw1", "DPw1"
+    ),
+    antigen_id = c(
+      "NC", "PC", "203", "204", "205", "205", "206", "206",
+      "207", "207"
+    )
   )
 
   expect_equal(
-    read_lotfile(test_path("luminex", "3062145 3045216-SA2.eds")),
-    df_sa2)
+    read_lotfile(test_path("luminex", "3062145_3045216-SA2.eds")),
+    df_sa2
+  )
 })
 
 test_that("mock csv files are parsed correctly", {
@@ -72,16 +80,23 @@ test_that("mock csv files are parsed correctly", {
   # version of a Luminex csv file. They were created with a version of the code
   # that produced results that were verified by hand to correspond to the result
   # from Immucor's MATCH IT!® software.
+
   # Class I
   df_sa1 <- readRDS(test_path("luminex", "LSA1-test.rds"))
   expect_equal(
-    read_lum_csv(csv_filepath = test_path("luminex", "LSA1-test.csv"),
-                 lots_path = test_path("luminex")),
-    df_sa1)
+    read_lum_csv(
+      csv_filepath = test_path("luminex", "LSA1-test.csv"),
+      lots_path = test_path("luminex")
+    ),
+    df_sa1
+  )
   # Class II
   df_sa2 <- readRDS(test_path("luminex", "LSA2-test.rds"))
   expect_equal(
-    read_lum_csv(csv_filepath = test_path("luminex", "LSA2-test.csv"),
-                 lots_path = test_path("luminex")),
-    df_sa2)
+    read_lum_csv(
+      csv_filepath = test_path("luminex", "LSA2-test.csv"),
+      lots_path = test_path("luminex")
+    ),
+    df_sa2
+  )
 })

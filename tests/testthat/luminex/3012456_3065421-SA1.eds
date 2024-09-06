@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <ev2SA1 Version="2"
 	xmlns="http://www.immucor.com">
-	<LotID>3012456 3065421-SA1</LotID>
+	<LotID>3012456_3065421-SA1</LotID>
 	<ExpirationDate>12/12/2024</ExpirationDate>
-	<AssayName>3012456 3065421-SA1</AssayName>
+	<AssayName>3012456_3065421-SA1</AssayName>
 	<AssayVersion>1</AssayVersion>
 	<LogicName>SA1-000</LogicName>
 	<LogicDescription>LIFECODES Single Antigen Class I</LogicDescription>

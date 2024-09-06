@@ -26,7 +26,7 @@ read_lum_csv <- function(csv_filepath, lots_path) {
   # get lot number
   lot_id <- dat_lines |>
     stringr::str_subset("^\"ProtocolName\",\"") |>
-    stringr::str_extract(r"(\d+\s\d+\-\w+)")
+    stringr::str_extract(r"(\d+[\s_]\d+\-\w+)")
 
   # read corresponding lotfile and extract its data
   df_eds <- read_lotfile(file.path(lots_path, paste0(lot_id, ".eds")))
