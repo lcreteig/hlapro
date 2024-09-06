@@ -89,12 +89,16 @@ read_lum_csv <- function(csv_filepath, lots_path) {
     ) |>
     dplyr::left_join(df_eds, relationship = "many-to-many") |> # add lot info
     dplyr::group_by(.data$Sample, .data$LRA) |>
-    # add computed colummns
+    # replace missing MFIs with 0 (happens when bead count is 0)
+    tidyr::replace_na(list(Median = 0, `Net MFI` = 0, `Avg Net MFI` = 0)) |>
+    # add computed columns
     dplyr::mutate(
-      mfi_lra = .data$Median / min(.data$Median),
-      assignment = dplyr::if_else(
-        (.data$mfi_lra > .data$Cutoff) & (.data$Median > .data$MFIThreshold),
-        "Positive", "Negative"
+      mfi_lra = .data$Median / max(min(.data$Median), 1), # divide by at least 1
+      assignment = dplyr::case_when(
+        .data$Count < .data$`Per Bead Count` ~ "Bead Failure",
+        (.data$mfi_lra > .data$Cutoff) & (.data$Median > .data$MFIThreshold) ~
+          "Positive",
+        .default = "Negative"
       ),
       bg_adjusted = .data$Median - .data$BackgroundMFI,
       ad_mfi = .data$Median / .data$RAD,
