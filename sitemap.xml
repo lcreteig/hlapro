@@ -1,99 +1,36 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/404.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/index.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/clean_hla.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/count_alleles.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/df_to_gl.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/etrl_hla.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/etrl_lookup.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/extract_alleles_str.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/get_broad.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/get_mismatches.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/get_positive_eplets.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/get_public.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/get_resolution.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/get_serology.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/get_split.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/gl_to_df.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/gl_to_vec.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/hlapro-package.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/load_eplet_registry.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/lookup_alleles.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/lookup_eplets.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/reduce_to_nth_field.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/reorder_alleles.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/strip_redundant.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/upscale_typings.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/validate_allele.html</loc>
-  </url>
-  <url>
-    <loc>https://lcreteig.github.io/hlapro/reference/vec_to_gl.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://lcreteig.github.io/hlapro/404.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/LICENSE-text.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/LICENSE.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/authors.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/index.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/news/index.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/clean_hla.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/count_alleles.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/df_to_gl.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/etrl_hla.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/etrl_lookup.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/extract_alleles_str.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/get_broad.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/get_mismatches.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/get_positive_eplets.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/get_public.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/get_resolution.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/get_serology.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/get_split.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/gl_to_df.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/gl_to_vec.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/hlapro-package.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/index.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/load_eplet_registry.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/lookup_alleles.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/lookup_eplets.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/read_lum_csv.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/reduce_to_nth_field.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/reorder_alleles.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/strip_redundant.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/upscale_typings.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/validate_allele.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/vec_to_gl.html</loc></url>
 </urlset>
+
