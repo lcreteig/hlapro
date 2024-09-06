@@ -1,3 +1,8 @@
+# hlapro 0.3.0
+
+* New `read_lum_csv()` function to parse raw Luminex Single-Antigen Bead assay
+  data
+
 # hlapro 0.2.3
 
 * Fixed tests for new release of HLA Eplet registry (2024-03-15)
