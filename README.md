@@ -52,7 +52,9 @@ devtools::install_github("lcreteig/hlapro")
 library(hlapro)
 ```
 
-### Mismatches
+### Typings
+
+#### Mismatches
 
 Get mismatched HLAs from donor and recipient typings
 
@@ -64,7 +66,7 @@ get_mismatches(donor_typing, recipient_typing)
 #> [1] "A2"
 ```
 
-### Extracting alleles
+#### Extracting alleles
 
 Extract HLA alleles from a typing string
 
@@ -109,7 +111,7 @@ count_alleles(typing)
 #>    3    2    1    0    0    0    0    0    0
 ```
 
-### Cleaning allele strings
+#### Cleaning allele strings
 
 Correcting some common formatting issues
 
@@ -124,7 +126,7 @@ clean_hla(allele_vec)
 #> [1] "A*01:XX"         "A25"             "C*03:01/C*03:02"
 ```
 
-### Validating alleles
+#### Validating alleles
 
 Check whether alleles are well-formed
 
@@ -133,7 +135,7 @@ validate_allele(c("A2", "A*01:AABJE", "A*24:02:01:02L", "not-an-HLA"))
 #> [1]  TRUE  TRUE  TRUE FALSE
 ```
 
-### Allele resolution
+#### Allele resolution
 
 Determine whether an allele is of low/intermediate/high resolution
 
@@ -152,7 +154,7 @@ get_resolution(c("A2", "A*24:XX", "A*01:AB", "B*42:08", "A*01:01:01:01"),
 #> [4] "high - second field" "high - fourth field"
 ```
 
-### Downscaling to serological equivalents
+#### Downscaling to serological equivalents
 
 Get the serological equivalents of an allele as defined by the [ETRL
 HLA](https://etrl.eurotransplant.org/resources/hla-tables/) conversion
@@ -185,7 +187,7 @@ get_public(b_s)
 #> [1] "Bw6" "Bw4" "Bw6" NA
 ```
 
-### Upscaling from serological equivalents to 2-field high resolution
+#### Upscaling from serological equivalents to 2-field high resolution
 
 Depends on the haplotype frequencies released by the NMDP, which must be
 downloaded from [here](https://frequency.nmdp.org) after logging in and
@@ -236,7 +238,7 @@ typing_df |>
 #> #   haplo_rank_2 <dbl>
 ```
 
-### Converting to and from GL Strings
+#### Converting to and from GL Strings
 
 Typing data often comes in a data frame like this:
 
@@ -266,8 +268,8 @@ typing_df_gl
 #> # A tibble: 2 × 2
 #>   id    glstring                                                                
 #>   <chr> <chr>                                                                   
-#> 1 001   hla#2024-03-12#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
-#> 2 002   hla#2024-03-12#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
+#> 1 001   hla#2024-09-06#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
+#> 2 002   hla#2024-09-06#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
 ```
 
 Use `gl_to_df()` to go the opposite way: from a dataframe of GL Strings
@@ -280,12 +282,12 @@ typing_df_gl |>
 #> # A tibble: 2 × 11
 #>   id    glstring      glstring_index namespace version_or_date A_1   A_2   B_1  
 #>   <chr> <chr>                  <int> <chr>     <chr>           <chr> <chr> <chr>
-#> 1 001   hla#2024-03-…              1 hla       2024-03-12      HLA-… HLA-… HLA-…
-#> 2 002   hla#2024-03-…              2 hla       2024-03-12      HLA-… HLA-… HLA-…
+#> 1 001   hla#2024-09-…              1 hla       2024-09-06      HLA-… HLA-… HLA-…
+#> 2 002   hla#2024-09-…              2 hla       2024-09-06      HLA-… HLA-… HLA-…
 #> # ℹ 3 more variables: B_2 <chr>, C_1 <chr>, C_2 <chr>
 ```
 
-## Looking up eplets and alleles
+#### Looking up eplets and alleles
 
 Grab database from the [HLA Eplet
 registry](https://www.epregistry.com.br) and use it to lookup which
@@ -293,8 +295,8 @@ eplets occur on an HLA allele, or vice versa.
 
 ``` r
 df_eplets <- load_eplet_registry()
-#> Loaded Eplet Registry table (Updated with IPD-IMGT/HLA 3.54.),
-#> released 2024-01-24, downloaded from https://www.epregistry.com.br
+#> Loaded Eplet Registry table (NA),
+#> released 2024-03-15, downloaded from https://www.epregistry.com.br
 lookup_alleles(df_eplets, "17S")
 #> $`17S`
 #> [1] "A*01:02" "A*30:01" "A*30:02"
@@ -318,8 +320,8 @@ A common use case would be to lookup which eplets occur on a set of
 
 ``` r
 df_eplets <- load_eplet_registry()
-#> Loaded Eplet Registry table (Updated with IPD-IMGT/HLA 3.54.),
-#> released 2024-01-24, downloaded from https://www.epregistry.com.br
+#> Loaded Eplet Registry table (NA),
+#> released 2024-03-15, downloaded from https://www.epregistry.com.br
 luminex_df <- dplyr::tribble(
   ~sampleID, ~allele, ~positive,
   "001", "A*01:01", TRUE,
@@ -341,6 +343,50 @@ get_positive_eplets(luminex_df, sampleID, allele, positive, df_eplets)
 #>  9 001      77N[ABC]  
 #> 10 001      77NGT     
 #> # ℹ 18 more rows
+```
+
+### Antibodies
+
+#### Parsing raw Luminex files
+
+Parse `.csv` files from Luminex Single-Antigen Bead (SAB) assays, along
+with the lot-specific `.eds` file that came with the kit, to produce
+interpreted results identical to Immucor’s MATCH IT!® Antibody Analysis
+Software:
+
+``` r
+# path to some mock data (originally for testing purposes)
+lum_path <- testthat::test_path("luminex")
+
+# parse the files
+read_lum_csv(
+  csv_filepath = file.path(lum_path, "LSA1-test.csv"),
+  lots_path = lum_path # folder with .eds file
+)
+#> Joining with `by = join_by(Location, Sample, antigen_id)`
+#> Joining with `by = join_by(Location, Sample, antigen_id)`
+#> Joining with `by = join_by(Sample, antigen_id)`
+#> Joining with `by = join_by(antigen_id)`
+#> Joining with `by = join_by(antigen_id)`
+#> Joining with `by = join_by(Location, Sample)`
+#> Joining with `by = join_by(antigen_id)`
+#> # A tibble: 12 × 18
+#>    Sample Count antigen_id Cutoff  Median mfi_lra assignment bg_adjusted ad_mfi
+#>    <chr>  <int> <chr>       <dbl>   <dbl>   <dbl> <chr>            <dbl>  <dbl>
+#>  1 S001      67 103          3.75  8002.   127.   Positive        7822.  6713. 
+#>  2 S001     104 PC          NA    18206.    36.3  <NA>           16706.  4551. 
+#>  3 S001      87 NC          NA      161      1    Negative          NA     NA  
+#>  4 S001      73 104          4.01    63      1    Negative        -107     52.1
+#>  5 S001      89 105          3.79   127      1    Negative         -53     97.4
+#>  6 S001      60 106          3.49   501      1    Negative         256    634. 
+#>  7 S002     120 PC          NA    17573    158.   <NA>           16073   4393. 
+#>  8 S002      74 104          4.01    92.5    1.34 Negative         -77.5   76.4
+#>  9 S002      92 NC          NA      113      1    Negative          NA     NA  
+#> 10 S002      82 103          3.75    69      1    Negative        -111     57.9
+#> 11 S002     113 105          3.79   120      1    Negative         -60     92.0
+#> 12 S002      78 106          3.49   112.     1    Negative        -134.   141. 
+#> # ℹ 9 more variables: ad_bg_adjusted <dbl>, A <chr>, B <chr>, C <chr>,
+#> #   Bw <chr>, A_serology <chr>, B_serology <chr>, C_serology <chr>, RAD <dbl>
 ```
 
 ## Other packages

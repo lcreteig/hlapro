@@ -55,7 +55,9 @@ devtools::install_github("lcreteig/hlapro")
 library(hlapro)
 ```
 
-### Mismatches
+### Typings
+
+#### Mismatches
 
 Get mismatched HLAs from donor and recipient typings
 
@@ -66,7 +68,7 @@ recipient_typing <- "A1 A3 B5 B12"
 get_mismatches(donor_typing, recipient_typing)
 ```
 
-### Extracting alleles
+#### Extracting alleles
 
 Extract HLA alleles from a typing string
 
@@ -90,7 +92,7 @@ Use `count_alleles()` to easily inspect the number of alleles per locus:
 count_alleles(typing)
 ```
 
-### Cleaning allele strings
+#### Cleaning allele strings
 
 Correcting some common formatting issues
 
@@ -104,7 +106,7 @@ allele_vec <- c(
 clean_hla(allele_vec)
 ```
 
-### Validating alleles
+#### Validating alleles
 
 Check whether alleles are well-formed
 
@@ -112,7 +114,7 @@ Check whether alleles are well-formed
 validate_allele(c("A2", "A*01:AABJE", "A*24:02:01:02L", "not-an-HLA"))
 ```
 
-### Allele resolution
+#### Allele resolution
 
 Determine whether an allele is of low/intermediate/high resolution
 
@@ -128,7 +130,7 @@ get_resolution(c("A2", "A*24:XX", "A*01:AB", "B*42:08", "A*01:01:01:01"),
 )
 ```
 
-### Downscaling to serological equivalents
+#### Downscaling to serological equivalents
 
 Get the serological equivalents of an allele as defined by the [ETRL HLA](https://etrl.eurotransplant.org/resources/hla-tables/) conversion tables
 
@@ -155,8 +157,7 @@ b_s <- c("B14", "B63", "B*40:05", "A*01:01")
 get_public(b_s)
 ```
 
-
-### Upscaling from serological equivalents to 2-field high resolution
+#### Upscaling from serological equivalents to 2-field high resolution
 
 Depends on the haplotype frequencies released by the NMDP, which must be downloaded from [here](https://frequency.nmdp.org) after logging in and accepting the license.
 
@@ -187,7 +188,7 @@ typing_df |>
   tidyr::unnest(geno_df)
 ```
 
-### Converting to and from GL Strings
+#### Converting to and from GL Strings
 
 Typing data often comes in a data frame like this:
 
@@ -218,7 +219,7 @@ typing_df_gl |>
   tidyr::unnest(gl_df)
 ```
 
-## Looking up eplets and alleles
+#### Looking up eplets and alleles
 
 Grab database from the [HLA Eplet registry](https://www.epregistry.com.br) and use it to lookup which eplets occur on an HLA allele, or vice versa.
 
@@ -226,6 +227,7 @@ Grab database from the [HLA Eplet registry](https://www.epregistry.com.br) and u
 df_eplets <- load_eplet_registry()
 lookup_alleles(df_eplets, "17S")
 ```
+
 ```{r lookup_eplets}
 lookup_eplets(df_eplets, "A*01:02")
 ```
@@ -240,6 +242,23 @@ luminex_df <- dplyr::tribble(
   "002", "A*01:01", FALSE
 )
 get_positive_eplets(luminex_df, sampleID, allele, positive, df_eplets)
+```
+
+### Antibodies
+
+#### Parsing raw Luminex files
+
+Parse `.csv` files from Luminex Single-Antigen Bead (SAB) assays, along with the lot-specific `.eds` file that came with the kit, to produce interpreted results identical to Immucor's MATCH IT!® Antibody Analysis Software:
+
+```{r read luminex file}
+# path to some mock data (originally for testing purposes)
+lum_path <- testthat::test_path("luminex")
+
+# parse the files
+read_lum_csv(
+  csv_filepath = file.path(lum_path, "LSA1-test.csv"),
+  lots_path = lum_path # folder with .eds file
+)
 ```
 
 ## Other packages
