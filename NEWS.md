@@ -1,3 +1,5 @@
+# hlapro (development version)
+
 # hlapro 0.3.0
 
 * New `read_lum_csv()` function to parse raw Luminex Single-Antigen Bead assay
