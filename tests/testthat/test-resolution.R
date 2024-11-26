@@ -47,6 +47,8 @@ test_that(">2 field codes is high", {
   # G/P groups
   expect_equal(get_resolution("A*01:01P"), "high")
   expect_equal(get_resolution("DQA1*02:01:01G"), "high")
+  # v2
+  expect_equal(get_resolution("A*0101"), "high")
 })
 
 test_that("extended mode works", {
@@ -55,11 +57,23 @@ test_that("extended mode works", {
     "high - second field"
   )
   expect_equal(
+    get_resolution("A*9289", extended = TRUE),
+    "high - second field"
+  )
+  expect_equal(
     get_resolution("A*02:101:01", extended = TRUE),
     "high - third field"
   )
   expect_equal(
+    get_resolution("B*150303", extended = TRUE),
+    "high - third field"
+  )
+  expect_equal(
     get_resolution("A*01:101:01:02N", extended = TRUE),
+    "high - fourth field"
+  )
+  expect_equal(
+    get_resolution("DRB1*15030101", extended = TRUE),
     "high - fourth field"
   )
   expect_equal(

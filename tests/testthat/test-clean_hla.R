@@ -101,6 +101,13 @@ test_that("missing allele groups and loci are filled in", {
   )
 })
 
+test_that("prefixing works for v2 alleles as well", {
+  expect_equal(
+    prefix_ambiguity("DRB4*0101/03/06"),
+    "DRB4*0101/DRB4*0103/DRB4*0106"
+  )
+})
+
 test_that("NA returns NA", {
   expect_equal(prefix_ambiguity(NA), NA_character_)
 })
