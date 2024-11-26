@@ -29,6 +29,8 @@ also specified). See \code{\link[=strip_redundant]{strip_redundant()}}
 \code{A*01:XX})
 \item Propagates loci and allele group fields in ambiguities (\code{A*01:01/02} -->
 \code{A*01:01/A*01:02})
+\item Converts v2 to v3 (\verb{A*01010102N} --> \verb{A*01:01:01:02N}). See
+\code{\link[=convert_v2_to_v3]{convert_v2_to_v3()}}
 }
 }
 \examples{

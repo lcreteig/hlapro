@@ -14,6 +14,8 @@
 #' `A*01:XX`)
 #' 6. Propagates loci and allele group fields in ambiguities (`A*01:01/02` -->
 #' `A*01:01/A*01:02`)
+#' 7. Converts v2 to v3 (`A*01010102N` --> `A*01:01:01:02N`). See
+#' [convert_v2_to_v3()]
 #'
 #' @inheritParams get_resolution
 #'
@@ -31,7 +33,8 @@ clean_hla <- function(allele) {
     strip_redundant() |>
     remove_punctuation() |>
     add_xx_suffix() |>
-    prefix_ambiguity()
+    prefix_ambiguity() |>
+    convert_v2_to_v3()
 }
 
 #' Strip redundant alleles from typing string if higher resolution is available
@@ -201,6 +204,37 @@ remove_punctuation <- function(allele) {
   stringr::str_remove_all(allele, pattern)
 }
 
+#' Translates HLA alleles in v2 notation to v3
+#'
+#' The pre-2010 "v2" notation does not include the field delimiters (`:`) that
+#' are now mandatory in v3. This function first tests if an allele is in v2
+#' format; if an allele is not in v2 format; it's left alone. But if it is, it
+#' looks up its v2 equivalent in the [v2_to_v3] lookup table. If it is not in
+#' the table, a v3 version is put together heuristically, by inserting `:` after
+#' every two digits.
+#'
+#' N.B. The heuristic prediction will not work in all cases. For example:
+#' - `DPB1*87801N` should be `DPB1*878:01N` (but is output as `DPB1*87:801N`)
+#' - `DPB1*152401` should be `DPB1*1524:01` (but is output as `DPB1*15:24:01`)
+#'
+#' In general it's not possible to make this work purely syntactically without
+#' imbuing knowledge on which HLA alleles exist and which do not. For example,
+#' should `DRB1*1412601` be `14:126:01` or `14:12:601`? Both are theoretically
+#' possible. However, alleles with > 2 digits per field are rare, and were not
+#' really around before 2010, so in practice one should rarely encounter them in
+#' v2 format.
+#'
+#' @param allele A string or character vector of HLA alleles
+#'
+#' @return A vector with the same length as `allele`, with all v2 alleles
+#' converted to v3
+#' @keywords internal
+#' @export
+#'
+#' @examples
+#' convert_v2_to_v3("A*01010101") # known v2 allele
+#' convert_v2_to_v3("B*0701") # not a known v2 allele, but heuristic works
+#' convert_v2_to_v3("B*9526") # known allele where heuristic would not work
 convert_v2_to_v3 <- function(allele) {
   # replace v2 with v3 from lookup table
   v3s <- ifelse(is_v2(allele), unname(lookup_v3[allele]), allele)

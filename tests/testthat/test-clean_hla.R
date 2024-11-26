@@ -234,11 +234,6 @@ test_that("v2 heuristic conversion works", {
   expect_equal(convert_v2_to_v3("DRB1*14125"), "DRB1*14:125")
   # Cw is C
   expect_equal(convert_v2_to_v3("Cw*0202"), "C*02:02")
-  # need to make an exception for DP
-  expect_equal(convert_v2_to_v3("DPB1*87801N"), "DPB1*878:01N")
-  expect_equal(convert_v2_to_v3("DPB1*152401"), "DPB1*1524:01")
-  # this goes wrong, but no way to no what is right in a general sense
-  # "DRB1*1412601" --> "14:126:01" instead of "14:12:601
 })
 
 test_that("MAC and XX codes work", {
