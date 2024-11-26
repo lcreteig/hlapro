@@ -206,3 +206,55 @@ test_that("vectors work", {
     c("A1", NA, "DPA1*01:01")
   )
 })
+
+
+# convert_v2_to_v3() ------------------------------------------------------
+
+test_that("non-v2 alleles are untouched", {
+  expect_equal(convert_v2_to_v3("A1"), "A1")
+  expect_equal(convert_v2_to_v3("A2403"), "A2403")
+  expect_equal(convert_v2_to_v3("A*01:XX"), "A*01:XX")
+  expect_equal(convert_v2_to_v3("A*01:01"), "A*01:01")
+  expect_equal(convert_v2_to_v3("DQB1*05:01:16"), "DQB1*05:01:16")
+})
+
+test_that("v2 exceptions are handled", {
+  expect_equal(convert_v2_to_v3("A*0105N"), "A*01:04:01:01")
+  expect_equal(convert_v2_to_v3("A*1150"), "A*11:50Q")
+  expect_equal(convert_v2_to_v3("B*9526"), "B*15:126")
+  expect_equal(convert_v2_to_v3("Cw*010201"), "C*01:02:01")
+  expect_equal(convert_v2_to_v3("DPB1*0802"), "DPB1*106:01")
+})
+
+test_that("v2 heuristic conversion works", {
+  expect_equal(convert_v2_to_v3("A*0101"), "A*01:01")
+  expect_equal(convert_v2_to_v3("A*010102"), "A*01:01:02")
+  expect_equal(convert_v2_to_v3("A*01010203"), "A*01:01:02:03")
+  expect_equal(convert_v2_to_v3("B*39010102L"), "B*39:01:01:02L")
+  expect_equal(convert_v2_to_v3("DRB1*14125"), "DRB1*14:125")
+  # need to make an exception for DP
+  expect_equal(convert_v2_to_v3("DPB1*87801N"), "DPB1*878:01N")
+  expect_equal(convert_v2_to_v3("DPB1*152401"), "DPB1*1524:01")
+  # this goes wrong, but no way to no what is right in a general sense
+  # "DRB1*1412601" --> "14:126:01" instead of "14:12:601
+})
+
+test_that("MAC and XX codes works", {
+  # exceptions
+  expect_equal(convert_v2_to_v3("A*24CECH"), "A*24:CWEN")
+  expect_equal(convert_v2_to_v3("DPB1*03WFR"), "DPB1*03:FNYE")
+  # heuristics
+  expect_equal(convert_v2_to_v3("A*01XX"), "A*01:XX")
+  expect_equal(convert_v2_to_v3("A*01AB"), "A*01:AB")
+})
+
+test_that("NAs work", {
+  expect_equal(convert_v2_to_v3(NA), NA_character_)
+})
+
+test_that("vectors work", {
+  expect_equal(
+    convert_v2_to_v3(c("A1", "A*9209", "A*01:01", "A*011201", NA)),
+    c("A1", "A*02:109", "A*01:01", "A*01:12:01", NA_character_)
+  )
+})

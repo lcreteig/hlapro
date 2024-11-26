@@ -200,3 +200,11 @@ remove_punctuation <- function(allele) {
   )
   stringr::str_remove_all(allele, pattern)
 }
+
+convert_v2_to_v3 <- function(allele) {
+  digits_pattern <- r"((\d{2})(?=\d{2}))" # get 2 digits followed by another 2
+  # replace v2 with v3 from lookup table
+  v3s <- ifelse(is_v2(allele), unname(lookup_v3[allele]), allele)
+  # if not in table, insert ":" after every 2 digits
+  ifelse(is.na(v3s), str_replace_all(allele, digits_pattern, "\\1:"), v3s)
+}
