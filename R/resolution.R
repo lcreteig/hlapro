@@ -62,6 +62,7 @@ get_resolution <- function(allele, extended = FALSE) {
     return(res)
   }
 
+  allele <- convert_v2_to_v3(allele) # extended mode depends on field separators
   ord_seq <- c("first", "second", "third", "fourth")
   dplyr::case_when(
     res == "low" & is_associated(allele)
