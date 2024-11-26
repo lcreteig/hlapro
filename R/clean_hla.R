@@ -121,6 +121,8 @@ add_xx_suffix <- function(allele) {
 #' ambiguities as necessary.
 #'
 #' @param allele A string or character vector of HLA alleles
+#' @param return_v3 If `TRUE` will use [convert_v2_to_v3()] to force all
+#'   ambiguities to modern nomenclature
 #'
 #' @return A vector with the same length as `allele`, with all ambiguities
 #'  written out
@@ -128,12 +130,17 @@ add_xx_suffix <- function(allele) {
 #'
 #' @examples
 #' prefix_ambiguity("C*01:02/03/04")
-prefix_ambiguity <- function(allele) {
+prefix_ambiguity <- function(allele, return_v3 = TRUE) {
   prefix_ambiguity1 <- function(string) {
+    # if not ambiguous or empty, return as is
+    if (is.na(string) || stringr::str_detect(string, r"(\/)", negate = TRUE)) {
+      return(string)
+    }
     pattern <- stringr::regex(r"(
                             (?<locus>\w+\*) # all letters/numbers and "*"
-                            (?<allele>\d{1,4}:) # 1-4 digits and ":"
-  )", comments = TRUE)
+                            # 1-4 digits & ":" (v3), or first 2 of 4 digits (v2)
+                            (?<allele>\d{1,4}:|\d{2}(?=\d{2}))
+    )", comments = TRUE)
 
     prefix <- stringr::str_match(string, pattern) # get locus, allele group
     # if allele doesn't follow this format, return as is
@@ -141,13 +148,16 @@ prefix_ambiguity <- function(allele) {
       return(string)
     }
     ambigs <- stringr::str_split_1(string, r"(\/)") # split ambiguities
+    v2_flag <- is_v2(ambigs[1])
 
     # for each ambiguity, store whether it's missing the locus or allele group
     has_no_locus <- stringr::str_detect(ambigs, "\\*", negate = TRUE)
-    has_no_allele <- stringr::str_detect(ambigs, ":", negate = TRUE)
+    has_no_group <- !v2_flag & stringr::str_detect(ambigs, ":", negate = TRUE)
+    # for v2: allele group is missing if the whole ambiguity is just 2-3 digits
+    has_no_group_v2 <- v2_flag & stringr::str_detect(ambigs, "^\\d{2,3}$")
 
     # if necessary, first prefix with allele group, then with locus
-    ambigs_fixed <- ifelse(has_no_allele,
+    ambigs_fixed <- ifelse(has_no_group | has_no_group_v2,
       stringr::str_c(prefix[1, "allele"], ambigs),
       ambigs
     )
@@ -156,6 +166,9 @@ prefix_ambiguity <- function(allele) {
       ambigs_fixed
     )
 
+    if (return_v3) {
+      ambigs_fixed <- convert_v2_to_v3(ambigs_fixed)
+    }
     # join all into one string again
     stringr::str_flatten(ambigs_fixed, collapse = "/")
   }
