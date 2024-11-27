@@ -106,6 +106,12 @@ allele_vec <- c(
 clean_hla(allele_vec)
 ```
 
+`clean_hla()` can also convert typings in the pre-2010 (v2) nomenclature to the updated (v3) nomenclature:
+
+```{r convert v2 to v3}
+clean_hla(c("Cw*030205", "A*2416", "DPB1*02BYVD", "B*35UMU"))
+```
+
 #### Validating alleles
 
 Check whether alleles are well-formed

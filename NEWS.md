@@ -1,5 +1,9 @@
 # hlapro (development version)
 
+* Update `clean_hla()` to also convert [pre-2010 
+  typings](https://hla.alleles.org/nomenclature/naming_2010.html) (v2) 
+  to the current nomenclature (v3)
+
 # hlapro 0.3.0
 
 * New `read_lum_csv()` function to parse raw Luminex Single-Antigen Bead assay

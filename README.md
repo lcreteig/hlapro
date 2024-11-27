@@ -126,6 +126,14 @@ clean_hla(allele_vec)
 #> [1] "A*01:XX"         "A25"             "C*03:01/C*03:02"
 ```
 
+`clean_hla()` can also convert typings in the pre-2010 (v2) nomenclature
+to the updated (v3) nomenclature:
+
+``` r
+clean_hla(c("Cw*030205", "A*2416", "DPB1*02BYVD", "B*35UMU"))
+#> [1] "C*03:02:05"   "A*31:08"      "DPB1*02:FNWG" "B*35:WRE"
+```
+
 #### Validating alleles
 
 Check whether alleles are well-formed
@@ -268,8 +276,8 @@ typing_df_gl
 #> # A tibble: 2 × 2
 #>   id    glstring                                                                
 #>   <chr> <chr>                                                                   
-#> 1 001   hla#2024-09-06#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
-#> 2 002   hla#2024-09-06#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
+#> 1 001   hla#2024-11-27#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
+#> 2 002   hla#2024-11-27#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
 ```
 
 Use `gl_to_df()` to go the opposite way: from a dataframe of GL Strings
@@ -282,8 +290,8 @@ typing_df_gl |>
 #> # A tibble: 2 × 11
 #>   id    glstring      glstring_index namespace version_or_date A_1   A_2   B_1  
 #>   <chr> <chr>                  <int> <chr>     <chr>           <chr> <chr> <chr>
-#> 1 001   hla#2024-09-…              1 hla       2024-09-06      HLA-… HLA-… HLA-…
-#> 2 002   hla#2024-09-…              2 hla       2024-09-06      HLA-… HLA-… HLA-…
+#> 1 001   hla#2024-11-…              1 hla       2024-11-27      HLA-… HLA-… HLA-…
+#> 2 002   hla#2024-11-…              2 hla       2024-11-27      HLA-… HLA-… HLA-…
 #> # ℹ 3 more variables: B_2 <chr>, C_1 <chr>, C_2 <chr>
 ```
 
@@ -296,7 +304,7 @@ eplets occur on an HLA allele, or vice versa.
 ``` r
 df_eplets <- load_eplet_registry()
 #> Loaded Eplet Registry table (NA),
-#> released 2024-03-15, downloaded from https://www.epregistry.com.br
+#> released 2024-08-19, downloaded from https://www.epregistry.com.br
 lookup_alleles(df_eplets, "17S")
 #> $`17S`
 #> [1] "A*01:02" "A*30:01" "A*30:02"
@@ -321,7 +329,7 @@ A common use case would be to lookup which eplets occur on a set of
 ``` r
 df_eplets <- load_eplet_registry()
 #> Loaded Eplet Registry table (NA),
-#> released 2024-03-15, downloaded from https://www.epregistry.com.br
+#> released 2024-08-19, downloaded from https://www.epregistry.com.br
 luminex_df <- dplyr::tribble(
   ~sampleID, ~allele, ~positive,
   "001", "A*01:01", TRUE,
@@ -374,12 +382,12 @@ read_lum_csv(
 #>    Sample Count antigen_id Cutoff  Median mfi_lra assignment bg_adjusted ad_mfi
 #>    <chr>  <int> <chr>       <dbl>   <dbl>   <dbl> <chr>            <dbl>  <dbl>
 #>  1 S001      67 103          3.75  8002.   127.   Positive        7822.  6713. 
-#>  2 S001     104 PC          NA    18206.    36.3  <NA>           16706.  4551. 
+#>  2 S001     104 PC          NA    18206.    36.3  Negative       16706.  4551. 
 #>  3 S001      87 NC          NA      161      1    Negative          NA     NA  
 #>  4 S001      73 104          4.01    63      1    Negative        -107     52.1
 #>  5 S001      89 105          3.79   127      1    Negative         -53     97.4
 #>  6 S001      60 106          3.49   501      1    Negative         256    634. 
-#>  7 S002     120 PC          NA    17573    158.   <NA>           16073   4393. 
+#>  7 S002     120 PC          NA    17573    158.   Negative       16073   4393. 
 #>  8 S002      74 104          4.01    92.5    1.34 Negative         -77.5   76.4
 #>  9 S002      92 NC          NA      113      1    Negative          NA     NA  
 #> 10 S002      82 103          3.75    69      1    Negative        -111     57.9
