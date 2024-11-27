@@ -107,7 +107,7 @@ strip_redundant <- function(typing) {
 #' @examples
 #' add_xx_suffix("A*01")
 add_xx_suffix <- function(allele) {
-  ifelse(!is_serology(allele) & get_n_fields(allele) == 1,
+  ifelse(!is_serology(allele) & !is_v2(allele) & get_n_fields(allele) == 1,
     make_xx(allele),
     allele
   )

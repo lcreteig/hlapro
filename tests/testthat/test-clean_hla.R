@@ -56,8 +56,13 @@ test_that("XX codes are untouched", {
   expect_equal(add_xx_suffix("A*01:XX"), "A*01:XX")
 })
 
+test_that("v2 alleles are untouched", {
+  expect_equal(add_xx_suffix("Cw*0203"), "Cw*0203")
+  expect_equal(add_xx_suffix("A*01MTN"), "A*01MTN")
+})
+
 test_that("low-res moleculars become XX", {
-  expect_equal(add_xx_suffix("A*01:XX"), "A*01:XX")
+  expect_equal(add_xx_suffix("A*01"), "A*01:XX")
 })
 
 test_that("NAs are handled", {
