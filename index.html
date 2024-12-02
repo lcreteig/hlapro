@@ -8,8 +8,8 @@
 <title>Tools to Work with HLA Typings and Single-Antigen Bead Assays • hlapro</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Tools to Work with HLA Typings and Single-Antigen Bead Assays">
 <meta name="description" content="Provides tools for Human Leukocyte Antigen (HLA) data: genotypes as well as (Luminex) single-antigen bead-based assays. Including: standardizing HLA typings to a common format (GL Strings), reducing and increasing HLA typing resolution, determining bead positivity and assessing donor-specific antibodies (DSAs).">
 <meta property="og:description" content="Provides tools for Human Leukocyte Antigen (HLA) data: genotypes as well as (Luminex) single-antigen bead-based assays. Including: standardizing HLA typings to a common format (GL Strings), reducing and increasing HLA typing resolution, determining bead positivity and assessing donor-specific antibodies (DSAs).">
@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">hlapro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -158,12 +158,16 @@
 <span></span>
 <span><span class="fu"><a href="reference/clean_hla.html">clean_hla</a></span><span class="op">(</span><span class="va">allele_vec</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "A*01:XX"         "A25"             "C*03:01/C*03:02"</span></span></code></pre></div>
+<p><code><a href="reference/clean_hla.html">clean_hla()</a></code> can also convert typings in the pre-2010 (v2) nomenclature to the updated (v3) nomenclature:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/clean_hla.html">clean_hla</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cw*030205"</span>, <span class="st">"A*2416"</span>, <span class="st">"DPB1*02BYVD"</span>, <span class="st">"B*35UMU"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "C*03:02:05"   "A*31:08"      "DPB1*02:FNWG" "B*35:WRE"</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="validating-alleles">Validating alleles<a class="anchor" aria-label="anchor" href="#validating-alleles"></a>
 </h4>
 <p>Check whether alleles are well-formed</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/validate_allele.html">validate_allele</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A2"</span>, <span class="st">"A*01:AABJE"</span>, <span class="st">"A*24:02:01:02L"</span>, <span class="st">"not-an-HLA"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1]  TRUE  TRUE  TRUE FALSE</span></span></code></pre></div>
 </div>
@@ -171,11 +175,11 @@
 <h4 id="allele-resolution">Allele resolution<a class="anchor" aria-label="anchor" href="#allele-resolution"></a>
 </h4>
 <p>Determine whether an allele is of low/intermediate/high resolution</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/get_resolution.html">get_resolution</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A2"</span>, <span class="st">"A*01:AABJE"</span>, <span class="st">"B*42:08"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "low"          "intermediate" "high"</span></span></code></pre></div>
 <p>Use the extended mode to get more information:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/get_resolution.html">get_resolution</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A2"</span>, <span class="st">"A*24:XX"</span>, <span class="st">"A*01:AB"</span>, <span class="st">"B*42:08"</span>, <span class="st">"A*01:01:01:01"</span><span class="op">)</span>,</span>
 <span>  extended <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
@@ -186,20 +190,20 @@
 <h4 id="downscaling-to-serological-equivalents">Downscaling to serological equivalents<a class="anchor" aria-label="anchor" href="#downscaling-to-serological-equivalents"></a>
 </h4>
 <p>Get the serological equivalents of an allele as defined by the <a href="https://etrl.eurotransplant.org/resources/hla-tables/" class="external-link">ETRL HLA</a> conversion tables</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/get_serology.html">get_serology</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"B*15:79N"</span>, <span class="st">"B*15:YETY"</span>, <span class="st">"B*15:01:16"</span>, <span class="st">"B*15:02"</span>, <span class="st">"B*15:85"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] NA    "B15" "B62" "B75" "B15"</span></span></code></pre></div>
 <p>Also supports lookup of broads or splits specifically:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">alleles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A*01:01"</span>, <span class="st">"A*25:76:02"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/get_split.html">get_split</a></span><span class="op">(</span><span class="va">alleles</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] NA    "A25"</span></span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">splits</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A24"</span>, <span class="st">"A*25:76:02"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/get_broad.html">get_broad</a></span><span class="op">(</span><span class="va">splits</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "A9"  "A10"</span></span></code></pre></div>
 <p>And whether an allele has the Bw4 or Bw6 epitope:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">b_s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"B14"</span>, <span class="st">"B63"</span>, <span class="st">"B*40:05"</span>, <span class="st">"A*01:01"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/get_public.html">get_public</a></span><span class="op">(</span><span class="va">b_s</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Bw6" "Bw4" "Bw6" NA</span></span></code></pre></div>
@@ -208,7 +212,7 @@
 <h4 id="upscaling-from-serological-equivalents-to-2-field-high-resolution">Upscaling from serological equivalents to 2-field high resolution<a class="anchor" aria-label="anchor" href="#upscaling-from-serological-equivalents-to-2-field-high-resolution"></a>
 </h4>
 <p>Depends on the haplotype frequencies released by the NMDP, which must be downloaded from <a href="https://frequency.nmdp.org" class="external-link">here</a> after logging in and accepting the license.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/upscale_typings.html">upscale_typings</a></span><span class="op">(</span></span>
 <span>  filepath <span class="op">=</span> <span class="st">"~/Downloads/A~C~B~DRB3-4-5~DRB1~DQB1.xlsx"</span>,</span>
 <span>  typing <span class="op">=</span> <span class="st">"A24 A28 B35 B61 DR4 DR11"</span></span>
@@ -220,7 +224,7 @@
 <span><span class="co">#&gt; 1 A*24:02g A*68:01g B*35:03…    0.000585     0.000209           240          665</span></span>
 <span><span class="co">#&gt; 2 A*24:02g A*68:01g B*35:03…    0.0000849    0.0000597         1565         2058</span></span></code></pre></div>
 <p>Also able to upscale multiple typings at once, for instance in a dataframe:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">typing_df</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"001"</span>, <span class="st">"002"</span><span class="op">)</span>,</span>
 <span>  input_typings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -252,7 +256,7 @@
 <h4 id="converting-to-and-from-gl-strings">Converting to and from GL Strings<a class="anchor" aria-label="anchor" href="#converting-to-and-from-gl-strings"></a>
 </h4>
 <p>Typing data often comes in a data frame like this:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">typing_df</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"001"</span>, <span class="st">"002"</span><span class="op">)</span>,</span>
 <span>  A_1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A*01:01"</span>, <span class="st">"A*02:01"</span><span class="op">)</span>, A_2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A*03:01"</span>, <span class="st">"A*29:02"</span><span class="op">)</span>,</span>
@@ -266,7 +270,7 @@
 <span><span class="co">#&gt; 1 001   A*01:01 A*03:01 B*08:01 B*07:02 C*07:01 C*07:02</span></span>
 <span><span class="co">#&gt; 2 002   A*02:01 A*29:02 B*07:02 &lt;NA&gt;    C*05:01 &lt;NA&gt;</span></span></code></pre></div>
 <p>Use <code><a href="reference/df_to_gl.html">df_to_gl()</a></code> to convert all the individual allele columns into a single <a href="https://glstring.org" class="external-link">GL String</a>:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">typing_df_gl</span> <span class="op">&lt;-</span> <span class="va">typing_df</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># convert each typing to its own GL String</span></span>
 <span>  <span class="fu"><a href="reference/df_to_gl.html">df_to_gl</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -274,32 +278,32 @@
 <span><span class="co">#&gt; # A tibble: 2 × 2</span></span>
 <span><span class="co">#&gt;   id    glstring                                                                </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;                                                                   </span></span>
-<span><span class="co">#&gt; 1 001   hla#2024-09-06#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…</span></span>
-<span><span class="co">#&gt; 2 002   hla#2024-09-06#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 001   hla#2024-11-27#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…</span></span>
+<span><span class="co">#&gt; 2 002   hla#2024-11-27#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01</span></span></code></pre></div>
 <p>Use <code><a href="reference/gl_to_df.html">gl_to_df()</a></code> to go the opposite way: from a dataframe of GL Strings to one columns per allele:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">typing_df_gl</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>gl_df <span class="op">=</span> <span class="fu"><a href="reference/gl_to_df.html">gl_to_df</a></span><span class="op">(</span><span class="va">glstring</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span><span class="va">gl_df</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 11</span></span>
 <span><span class="co">#&gt;   id    glstring      glstring_index namespace version_or_date A_1   A_2   B_1  </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;                  &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;           &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;</span></span>
-<span><span class="co">#&gt; 1 001   hla#2024-09-…              1 hla       2024-09-06      HLA-… HLA-… HLA-…</span></span>
-<span><span class="co">#&gt; 2 002   hla#2024-09-…              2 hla       2024-09-06      HLA-… HLA-… HLA-…</span></span>
+<span><span class="co">#&gt; 1 001   hla#2024-11-…              1 hla       2024-11-27      HLA-… HLA-… HLA-…</span></span>
+<span><span class="co">#&gt; 2 002   hla#2024-11-…              2 hla       2024-11-27      HLA-… HLA-… HLA-…</span></span>
 <span><span class="co">#&gt; # ℹ 3 more variables: B_2 &lt;chr&gt;, C_1 &lt;chr&gt;, C_2 &lt;chr&gt;</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="looking-up-eplets-and-alleles">Looking up eplets and alleles<a class="anchor" aria-label="anchor" href="#looking-up-eplets-and-alleles"></a>
 </h4>
 <p>Grab database from the <a href="https://www.epregistry.com.br" class="external-link">HLA Eplet registry</a> and use it to lookup which eplets occur on an HLA allele, or vice versa.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_eplets</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/load_eplet_registry.html">load_eplet_registry</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loaded Eplet Registry table (NA),</span></span>
-<span><span class="co">#&gt; released 2024-03-15, downloaded from https://www.epregistry.com.br</span></span>
+<span><span class="co">#&gt; released 2024-08-19, downloaded from https://www.epregistry.com.br</span></span>
 <span><span class="fu"><a href="reference/lookup_alleles.html">lookup_alleles</a></span><span class="op">(</span><span class="va">df_eplets</span>, <span class="st">"17S"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $`17S`</span></span>
 <span><span class="co">#&gt; [1] "A*01:02" "A*30:01" "A*30:02"</span></span></code></pre></div>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/lookup_eplets.html">lookup_eplets</a></span><span class="op">(</span><span class="va">df_eplets</span>, <span class="st">"A*01:02"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $`A*01:02`</span></span>
 <span><span class="co">#&gt;  [1] "9S"         "17S"        "44KM"       "62QE"       "62QE+56G"  </span></span>
@@ -311,10 +315,10 @@
 <span><span class="co">#&gt; [31] "149AH"      "151H"       "152A"       "152HA"      "156R"      </span></span>
 <span><span class="co">#&gt; [36] "163R"       "163RG"      "166DG"      "193PI"      "275EL"</span></span></code></pre></div>
 <p>A common use case would be to lookup which eplets occur on a set of (positive) Luminex beads:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_eplets</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/load_eplet_registry.html">load_eplet_registry</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loaded Eplet Registry table (NA),</span></span>
-<span><span class="co">#&gt; released 2024-03-15, downloaded from https://www.epregistry.com.br</span></span>
+<span><span class="co">#&gt; released 2024-08-19, downloaded from https://www.epregistry.com.br</span></span>
 <span><span class="va">luminex_df</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">sampleID</span>, <span class="op">~</span><span class="va">allele</span>, <span class="op">~</span><span class="va">positive</span>,</span>
 <span>  <span class="st">"001"</span>, <span class="st">"A*01:01"</span>, <span class="cn">TRUE</span>,</span>
@@ -345,7 +349,7 @@
 <h4 id="parsing-raw-luminex-files">Parsing raw Luminex files<a class="anchor" aria-label="anchor" href="#parsing-raw-luminex-files"></a>
 </h4>
 <p>Parse <code>.csv</code> files from Luminex Single-Antigen Bead (SAB) assays, along with the lot-specific <code>.eds</code> file that came with the kit, to produce interpreted results identical to Immucor’s MATCH IT!® Antibody Analysis Software:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># path to some mock data (originally for testing purposes)</span></span>
 <span><span class="va">lum_path</span> <span class="op">&lt;-</span> <span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_path.html" class="external-link">test_path</a></span><span class="op">(</span><span class="st">"luminex"</span><span class="op">)</span></span>
 <span></span>
@@ -365,12 +369,12 @@
 <span><span class="co">#&gt;    Sample Count antigen_id Cutoff  Median mfi_lra assignment bg_adjusted ad_mfi</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;  &lt;int&gt; &lt;chr&gt;       &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;            &lt;dbl&gt;  &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt;  1 S001      67 103          3.75  8002.   127.   Positive        7822.  6713. </span></span>
-<span><span class="co">#&gt;  2 S001     104 PC          NA    18206.    36.3  &lt;NA&gt;           16706.  4551. </span></span>
+<span><span class="co">#&gt;  2 S001     104 PC          NA    18206.    36.3  Negative       16706.  4551. </span></span>
 <span><span class="co">#&gt;  3 S001      87 NC          NA      161      1    Negative          NA     NA  </span></span>
 <span><span class="co">#&gt;  4 S001      73 104          4.01    63      1    Negative        -107     52.1</span></span>
 <span><span class="co">#&gt;  5 S001      89 105          3.79   127      1    Negative         -53     97.4</span></span>
 <span><span class="co">#&gt;  6 S001      60 106          3.49   501      1    Negative         256    634. </span></span>
-<span><span class="co">#&gt;  7 S002     120 PC          NA    17573    158.   &lt;NA&gt;           16073   4393. </span></span>
+<span><span class="co">#&gt;  7 S002     120 PC          NA    17573    158.   Negative       16073   4393. </span></span>
 <span><span class="co">#&gt;  8 S002      74 104          4.01    92.5    1.34 Negative         -77.5   76.4</span></span>
 <span><span class="co">#&gt;  9 S002      92 NC          NA      113      1    Negative          NA     NA  </span></span>
 <span><span class="co">#&gt; 10 S002      82 103          3.75    69      1    Negative        -111     57.9</span></span>
@@ -471,7 +475,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

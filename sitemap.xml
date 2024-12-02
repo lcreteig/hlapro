@@ -6,6 +6,7 @@
 <url><loc>https://lcreteig.github.io/hlapro/index.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/news/index.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/clean_hla.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/convert_v2_to_v3.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/count_alleles.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/df_to_gl.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/etrl_hla.html</loc></url>
@@ -30,6 +31,7 @@
 <url><loc>https://lcreteig.github.io/hlapro/reference/reorder_alleles.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/strip_redundant.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/upscale_typings.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/v2_to_v3.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/validate_allele.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/vec_to_gl.html</loc></url>
 </urlset>
