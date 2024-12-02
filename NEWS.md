@@ -3,6 +3,7 @@
 * Update `clean_hla()` to also convert [pre-2010 
   typings](https://hla.alleles.org/nomenclature/naming_2010.html) (v2) 
   to the current nomenclature (v3)
+* Fix `load_eplet_registry()` for new release of HLA Eplet registry (2024-08-30)
 
 # hlapro 0.3.0
 

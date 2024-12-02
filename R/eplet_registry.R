@@ -303,16 +303,6 @@ scrape_eplet_registry <- function(file_path) {
       .data$descr_info,
       .data$description
     )) |>
-    # exposition is empty string for reactivity patterns
-    dplyr::mutate(exposition = dplyr::na_if(.data$exposition, " ")) |>
-    # evidence is empty for eplets not in paper
-    dplyr::mutate(evidence = dplyr::na_if(.data$evidence, "")) |>
-    # clean up the column: text always starts with "Yes" if eplet confirmed
-    dplyr::mutate(confirmation = dplyr::case_when(
-      stringr::str_starts(.data$confirmation, "Yes") ~ "Yes",
-      .data$confirmation == "N/A" ~ "N/A",
-      .default = "No"
-    )) |>
     # de-duplicate duplicate eplet names by adding locus group in []
     dplyr::add_count(.data$name, name = "n_name") |>
     dplyr::mutate(name = dplyr::if_else(.data$n_name > 1,
@@ -334,6 +324,16 @@ scrape_eplet_registry <- function(file_path) {
     dplyr::mutate(dplyr::across(
       dplyr::where(is.character),
       ~ stringr::str_trim(.x)
+    )) |>
+    # exposition is empty string for reactivity patterns
+    dplyr::mutate(exposition = dplyr::na_if(.data$exposition, "")) |>
+    # evidence is empty for eplets not in paper
+    dplyr::mutate(evidence = dplyr::na_if(.data$evidence, "")) |>
+    # clean up the column: text always starts with "Yes" if eplet confirmed
+    dplyr::mutate(confirmation = dplyr::case_when(
+      stringr::str_starts(.data$confirmation, "Yes") ~ "Yes",
+      .data$confirmation == "N/A" ~ "N/A",
+      .default = "No"
     ))
 
   registry_info <- fetch_registry_version()
