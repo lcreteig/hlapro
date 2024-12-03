@@ -86,10 +86,10 @@ reduce_to_serology <- function(ard, allele) {
 #'
 #' @inherit reduce_to_serology details
 #' @inheritParams reduce_to_serology
-#' @param mode Reduction mode. `"lgx"` (default) reduces to the first allele in
-#'   the group of alleles (often indicated with `"g"` notation) that is
-#'   identical to the input allele in the antigen recognition domain (ARD).
-#'   `"U2"` performs an unambiguous reduction.
+#' @param mode Reduction mode. `"U2"` (default) performs an unambiguous
+#'   reduction to the equivalent two-field allele. `"lgx"` reduces to the first
+#'   allele in the group of alleles (often indicated with `"g"` notation) that
+#'   is identical to the input allele in the antigen recognition domain (ARD).
 #'
 #' @return A string or character vector of the same length as `allele`,
 #'   with the corresponding two-field alleles.
@@ -100,10 +100,10 @@ reduce_to_serology <- function(ard, allele) {
 #' @examples
 #' \dontrun{
 #' ard <- db_initialize(data_dir = "~/ipd_db/")
+#' reduce_to_field2(ard, "DQB1*02:02:01")
+#' #> "DQB1*02:02"
 #' reduce_to_field2(ard, "A*01:04:01:01N")
 #' #> "A*01:04N"
-#' reduce_to_field2(ard, "B*44:270:01")
-#' #> "B*44:270"
 #' # Some alleles return a different result depending on the reduction mode:
 #' reduce_to_field2(ard, "C*07:06", mode = "U2")
 #' #> "C*07:06"
@@ -113,10 +113,10 @@ reduce_to_serology <- function(ard, allele) {
 #' reduce_to_field2(ard, "Cw10")
 #' #> "C*03:02/C*03:04Q/C*03:04/C*03:06/C*03:26/C*03:28/C*03:46"
 #' # Also works for vectors:
-#' reduce_to_field2(ard, c("B*44:270:01", "B*44:66"))
-#' #> "B*44:270" "B*44:66"
+#' reduce_to_field2(ard, c("A*01:01:01:01", "A*24:02:01:01"))
+#' #> "A*01:01" "A*24:02"
 #' }
-reduce_to_field2 <- function(ard, allele, mode = c("lgx", "U2")) {
+reduce_to_field2 <- function(ard, allele, mode = c("U2", "lgx")) {
   mode <- rlang::arg_match(mode)
   purrr::map_chr(allele, \(x) ifelse(!is.na(x), ard$redux(x, mode), x))
 }

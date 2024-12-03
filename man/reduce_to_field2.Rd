@@ -4,17 +4,17 @@
 \alias{reduce_to_field2}
 \title{Scale down HLA-alleles to two-field resolution}
 \usage{
-reduce_to_field2(ard, allele, mode = c("lgx", "U2"))
+reduce_to_field2(ard, allele, mode = c("U2", "lgx"))
 }
 \arguments{
 \item{ard}{The Python database connection object created by \code{\link[=db_initialize]{db_initialize()}}}
 
 \item{allele}{A string or character vector with (an) HLA allele(s).}
 
-\item{mode}{Reduction mode. \code{"lgx"} (default) reduces to the first allele in
-the group of alleles (often indicated with \code{"g"} notation) that is
-identical to the input allele in the antigen recognition domain (ARD).
-\code{"U2"} performs an unambiguous reduction.}
+\item{mode}{Reduction mode. \code{"U2"} (default) performs an unambiguous
+reduction to the equivalent two-field allele. \code{"lgx"} reduces to the first
+allele in the group of alleles (often indicated with \code{"g"} notation) that
+is identical to the input allele in the antigen recognition domain (ARD).}
 }
 \value{
 A string or character vector of the same length as \code{allele},
@@ -34,10 +34,10 @@ of the alleles in the input do not exist in the database. Use
 \examples{
 \dontrun{
 ard <- db_initialize(data_dir = "~/ipd_db/")
+reduce_to_field2(ard, "DQB1*02:02:01")
+#> "DQB1*02:02"
 reduce_to_field2(ard, "A*01:04:01:01N")
 #> "A*01:04N"
-reduce_to_field2(ard, "B*44:270:01")
-#> "B*44:270"
 # Some alleles return a different result depending on the reduction mode:
 reduce_to_field2(ard, "C*07:06", mode = "U2")
 #> "C*07:06"
@@ -47,8 +47,8 @@ reduce_to_field2(ard, "C*07:06", mode = "lgx")
 reduce_to_field2(ard, "Cw10")
 #> "C*03:02/C*03:04Q/C*03:04/C*03:06/C*03:26/C*03:28/C*03:46"
 # Also works for vectors:
-reduce_to_field2(ard, c("B*44:270:01", "B*44:66"))
-#> "B*44:270" "B*44:66"
+reduce_to_field2(ard, c("A*01:01:01:01", "A*24:02:01:01"))
+#> "A*01:01" "A*24:02"
 }
 }
 \seealso{
