@@ -33,7 +33,7 @@ of the alleles in the input do not exist in the database. Use
 }
 \examples{
 \dontrun{
-ard <- db_initialize(data_dir = "~/ipd_db/")
+ard <- db_initialize(data_dir = path.expand("~/ipd_db"))
 reduce_to_field2(ard, "DQB1*02:02:01")
 #> "DQB1*02:02"
 reduce_to_field2(ard, "A*01:04:01:01N")

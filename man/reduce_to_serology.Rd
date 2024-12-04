@@ -29,7 +29,7 @@ of the alleles in the input do not exist in the database. Use
 }
 \examples{
 \dontrun{
-ard <- db_initialize(data_dir = "~/ipd_db/")
+ard <- db_initialize(data_dir = path.expand("~/ipd_db"))
 reduce_to_serology(ard, "B*13:03")
 #> "B13"
 reduce_to_serology(ard, "B*13:04")

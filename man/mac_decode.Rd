@@ -29,7 +29,7 @@ of the alleles in the input do not exist in the database. Use
 }
 \examples{
 \dontrun{
-ard <- db_initialize(data_dir = "~/ipd_db/")
+ard <- db_initialize(data_dir = path.expand("~/ipd_db"))
 mac_decode(ard, "A*01:AB")
 #> "A*01:01/A*01:02"
 mac_decode(ard, "HLA-A*25:BYHR")

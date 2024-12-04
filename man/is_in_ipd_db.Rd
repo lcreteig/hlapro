@@ -24,7 +24,7 @@ the \code{ard.validate()} method of the
 }
 \examples{
 \dontrun{
-ard <- db_initialize(data_dir = "~/ipd_db/")
+ard <- db_initialize(data_dir = path.expand("~/ipd_db"))
 is_in_ipd_db(ard, "A*01:01")
 #> TRUE
 is_in_ipd_db(ard, "A1")

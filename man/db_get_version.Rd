@@ -15,7 +15,7 @@ Thin wrapper around the \code{ard.db_get_version()} method of the
 }
 \examples{
 \dontrun{
-ard <- db_initialize(data_dir = "~/ipd_db/")
+ard <- db_initialize(data_dir = path.expand("~/ipd_db"))
 db_get_version(ard)
 }
 }

@@ -16,7 +16,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' ard <- db_initialize(data_dir = "~/ipd_db", imgt_version = "3510")
+#' ard <- db_initialize(path.expand("~/ipd_db"), imgt_version = "3510")
 #' }
 db_initialize <- function(data_dir, imgt_version = "Latest") {
   pyard <- reticulate::import("pyard")
@@ -35,7 +35,7 @@ db_initialize <- function(data_dir, imgt_version = "Latest") {
 #'
 #' @examples
 #' \dontrun{
-#' ard <- db_initialize(data_dir = "~/ipd_db/")
+#' ard <- db_initialize(data_dir = path.expand("~/ipd_db"))
 #' db_get_version(ard)
 #' }
 db_get_version <- function(ard) {
@@ -65,7 +65,7 @@ db_get_version <- function(ard) {
 #'
 #' @examples
 #' \dontrun{
-#' ard <- db_initialize(data_dir = "~/ipd_db/")
+#' ard <- db_initialize(data_dir = path.expand("~/ipd_db"))
 #' reduce_to_serology(ard, "B*13:03")
 #' #> "B13"
 #' reduce_to_serology(ard, "B*13:04")
@@ -99,7 +99,7 @@ reduce_to_serology <- function(ard, allele) {
 #'
 #' @examples
 #' \dontrun{
-#' ard <- db_initialize(data_dir = "~/ipd_db/")
+#' ard <- db_initialize(data_dir = path.expand("~/ipd_db"))
 #' reduce_to_field2(ard, "DQB1*02:02:01")
 #' #> "DQB1*02:02"
 #' reduce_to_field2(ard, "A*01:04:01:01N")
@@ -139,7 +139,7 @@ reduce_to_field2 <- function(ard, allele, mode = c("U2", "lgx")) {
 #'
 #' @examples
 #' \dontrun{
-#' ard <- db_initialize(data_dir = "~/ipd_db/")
+#' ard <- db_initialize(data_dir = path.expand("~/ipd_db"))
 #' mac_lookup(ard, "A*01:01/A*01:02")
 #' #> "A*01:AB"
 #' mac_lookup(ard, "HLA-A*25:01/HLA-A*26:01")
@@ -170,7 +170,7 @@ mac_lookup <- function(ard, allele) {
 #'
 #' @examples
 #' \dontrun{
-#' ard <- db_initialize(data_dir = "~/ipd_db/")
+#' ard <- db_initialize(data_dir = path.expand("~/ipd_db"))
 #' mac_decode(ard, "A*01:AB")
 #' #> "A*01:01/A*01:02"
 #' mac_decode(ard, "HLA-A*25:BYHR")
@@ -199,7 +199,7 @@ mac_decode <- function(ard, allele) {
 #'
 #' @examples
 #' \dontrun{
-#' ard <- db_initialize(data_dir = "~/ipd_db/")
+#' ard <- db_initialize(data_dir = path.expand("~/ipd_db"))
 #' is_in_ipd_db(ard, "A*01:01")
 #' #> TRUE
 #' is_in_ipd_db(ard, "A1")
