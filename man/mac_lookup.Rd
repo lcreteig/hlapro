@@ -40,5 +40,5 @@ mac_lookup(ard, c("A*01:01/A*01:02", "A*25:01/A*26:01"))
 }
 }
 \seealso{
-\code{\link[=mac_expand]{mac_expand()}} for the reverse operation
+\code{\link[=mac_decode]{mac_decode()}} for the reverse operation
 }

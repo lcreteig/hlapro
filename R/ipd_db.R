@@ -135,7 +135,7 @@ reduce_to_field2 <- function(ard, allele, mode = c("U2", "lgx")) {
 #' @return A string or character vector of the same length as `allele`,
 #'   with the corresponding MACs.
 #' @export
-#' @seealso [mac_expand()] for the reverse operation
+#' @seealso [mac_decode()] for the reverse operation
 #'
 #' @examples
 #' \dontrun{
@@ -155,7 +155,7 @@ mac_lookup <- function(ard, allele) {
 #' Decode a Multiple Allele Code (MAC) into an ambiguous HLA typing
 #'
 #' @description
-#' `mac_expand()` is a thin wrapper around the `ard.expand_mac()` method of the
+#' `mac_decode()` is a thin wrapper around the `ard.expand_mac()` method of the
 #' [`py-ard`](https://github.com/nmdp-bioinformatics/py-ard) Python package.
 #'
 #' See the [NMDP website](https://hml.nmdp.org/MacUI/) for more on MACs.
@@ -171,15 +171,15 @@ mac_lookup <- function(ard, allele) {
 #' @examples
 #' \dontrun{
 #' ard <- db_initialize(data_dir = "~/ipd_db/")
-#' mac_expand(ard, "A*01:AB")
+#' mac_decode(ard, "A*01:AB")
 #' #> "A*01:01/A*01:02"
-#' mac_expand(ard, "HLA-A*25:BYHR")
+#' mac_decode(ard, "HLA-A*25:BYHR")
 #' #> "HLA-A*25:01/HLA-A*26:01"
 #' # Also works for vectors:
-#' mac_expand(ard, c("A*01:AB", "A*25:BYHR"))
+#' mac_decode(ard, c("A*01:AB", "A*25:BYHR"))
 #' #> "A*01:01/A*01:02" "A*25:01/A*26:01"
 #' }
-mac_expand <- function(ard, allele) {
+mac_decode <- function(ard, allele) {
   purrr::map_chr(allele, \(x) ifelse(!is.na(x), ard$expand_mac(x), x))
 }
 
