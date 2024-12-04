@@ -138,13 +138,25 @@ get_resolution(c("A2", "A*24:XX", "A*01:AB", "B*42:08", "A*01:01:01:01"),
 
 #### Downscaling to serological equivalents
 
-Get the serological equivalents of an allele as defined by the [ETRL HLA](https://etrl.eurotransplant.org/resources/hla-tables/) conversion tables
+There's two ways to do this:
 
-```{r downscaling}
-get_serology(c("B*15:79N", "B*15:YETY", "B*15:01:16", "B*15:02", "B*15:85"))
+1. Using the [IPD-IMGT/HLA database](https://www.ebi.ac.uk/ipd/imgt/hla/) as implemented by the [NMDP](https://network.nmdp.org/services-support/bioinformatics-immunobiology/tools) in [py-ard](https://github.com/nmdp-bioinformatics/py-ard):
+
+```{r downscaling py-ard}
+ard <- db_initialize(path.expand("~/ipd_db")) # (download &) initialize database
+reduce_to_serology(
+  ard,
+  c("B*15:79N", "B*15:25/B*15:61", "B*15:02", "B*15:01:16")
+)
 ```
 
-Also supports lookup of broads or splits specifically:
+2. Get the serological equivalents of an allele as defined by the [ETRL HLA](https://etrl.eurotransplant.org/resources/hla-tables/) conversion tables. This is less extensive and precise, but is nonetheless relevant for the Eurotransplant region.
+
+```{r downscaling}
+get_serology(c("B*15:79N", "B*15:25/B*15:61", "B*15:02", "B*15:01:16"))
+```
+
+The latter also supports lookup of broads or splits specifically:
 
 ```{r split}
 alleles <- c("A*01:01", "A*25:76:02")
@@ -161,6 +173,22 @@ And whether an allele has the Bw4 or Bw6 epitope:
 ```{r public}
 b_s <- c("B14", "B63", "B*40:05", "A*01:01")
 get_public(b_s)
+```
+
+#### "Reducing" to two-field resolution
+
+For many applications it suffices to work with HLA alleles at the protein-level. `py-ard` can also leverage the IPD-IMGT/HLA database to accomplish this:
+
+```{r reduce to two fields}
+reduce_to_field2(ard, c("A*01:01:01:01"))
+```
+
+The above case is arguably trivial, but many others are not:
+
+```{r more two-field reductions}
+reduce_to_field2(ard, "A*01:04:01:01N") # shortnull
+reduce_to_field2(ard, "B*15:AH") # MACs
+reduce_to_field2(ard, "Cw10") # serology
 ```
 
 #### Upscaling from serological equivalents to 2-field high resolution
@@ -192,6 +220,18 @@ typing_df |>
     as_list = TRUE
   )) |>
   tidyr::unnest(geno_df)
+```
+
+#### Working with multiple allele codes
+
+py-ard can once again be used to lookup and decode [Multiple Allele Codes (MACs)](https://hml.nmdp.org/MacUI/)
+
+```{r encode mac}
+mac_lookup(ard, "B*08:01/B*08:19N/B*08:109")
+```
+
+```{r lookup mac}
+mac_decode(ard, "B*08:YETY")
 ```
 
 #### Converting to and from GL Strings
@@ -269,7 +309,7 @@ read_lum_csv(
 
 ## Other packages
 
-There's many other implementations with partly overlapping goals (some of which hlapro might depend on in the future).
+There's many other implementations with partly overlapping goals.
 
 - R:
   - [hlatools](https://github.com/gschofl/hlatools) provides access to the [IPD-IMGT/HLA database](https://www.ebi.ac.uk/ipd/imgt/hla/)
@@ -277,7 +317,7 @@ There's many other implementations with partly overlapping goals (some of which 
   - [immunotation](http://bioconductor.org/packages/release/bioc/html/immunotation.html) formats HLA typings and can work with haplotype/allele frequencies
 
 - Python:
-  - [py-ard](https://github.com/nmdp-bioinformatics/py-ard) reduces HLA typing resolution
+  - [py-ard](https://github.com/nmdp-bioinformatics/py-ard) reduces HLA typing resolution. hlapro actually depends on `py-ard` for some of this functionality.
   - [pyglstring](https://github.com/nmdp-bioinformatics/pyglstring) checks whether GL Strings are well formatted
   - [ALLAN](https://github.com/lgragert/hla-who-to-unos) converts between serological and molecular HLA notation
 

@@ -4,7 +4,12 @@
   typings](https://hla.alleles.org/nomenclature/naming_2010.html) (v2) 
   to the current nomenclature (v3)
 * Fix `load_eplet_registry()` for new release of HLA Eplet registry (2024-08-30)
-
+* Wrap the [`py-ard`](https://github.com/nmdp-bioinformatics/py-ard) python
+  package to:
+    - Encode/lookup Multiple Allele Codes (`mac_lookup()`, `mac_expand()`)
+    - Reduce alleles to serological equivalents (`reduce_to_serology()`)
+    - Reduce alleles to 2-field (ARD) level (`reduce_to_field2()`)
+    
 # hlapro 0.3.0
 
 * New `read_lum_csv()` function to parse raw Luminex Single-Antigen Bead assay

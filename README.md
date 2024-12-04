@@ -164,16 +164,33 @@ get_resolution(c("A2", "A*24:XX", "A*01:AB", "B*42:08", "A*01:01:01:01"),
 
 #### Downscaling to serological equivalents
 
-Get the serological equivalents of an allele as defined by the [ETRL
-HLA](https://etrl.eurotransplant.org/resources/hla-tables/) conversion
-tables
+There’s two ways to do this:
+
+1.  Using the [IPD-IMGT/HLA
+    database](https://www.ebi.ac.uk/ipd/imgt/hla/) as implemented by the
+    [NMDP](https://network.nmdp.org/services-support/bioinformatics-immunobiology/tools)
+    in [py-ard](https://github.com/nmdp-bioinformatics/py-ard):
 
 ``` r
-get_serology(c("B*15:79N", "B*15:YETY", "B*15:01:16", "B*15:02", "B*15:85"))
-#> [1] NA    "B15" "B62" "B75" "B15"
+ard <- db_initialize(path.expand("~/ipd_db")) # (download &) initialize database
+reduce_to_serology(
+  ard,
+  c("B*15:79N", "B*15:25/B*15:61", "B*15:02", "B*15:01:16")
+)
+#> [1] ""            "B15/B62/B70" "B15/B70/B75" "B15/B62"
 ```
 
-Also supports lookup of broads or splits specifically:
+2.  Get the serological equivalents of an allele as defined by the [ETRL
+    HLA](https://etrl.eurotransplant.org/resources/hla-tables/)
+    conversion tables. This is less extensive and precise, but is
+    nonetheless relevant for the Eurotransplant region.
+
+``` r
+get_serology(c("B*15:79N", "B*15:25/B*15:61", "B*15:02", "B*15:01:16"))
+#> [1] NA    "B15" "B75" "B62"
+```
+
+The latter also supports lookup of broads or splits specifically:
 
 ``` r
 alleles <- c("A*01:01", "A*25:76:02")
@@ -193,6 +210,28 @@ And whether an allele has the Bw4 or Bw6 epitope:
 b_s <- c("B14", "B63", "B*40:05", "A*01:01")
 get_public(b_s)
 #> [1] "Bw6" "Bw4" "Bw6" NA
+```
+
+#### “Reducing” to two-field resolution
+
+For many applications it suffices to work with HLA alleles at the
+protein-level. `py-ard` can also leverage the IPD-IMGT/HLA database to
+accomplish this:
+
+``` r
+reduce_to_field2(ard, c("A*01:01:01:01"))
+#> [1] "A*01:01"
+```
+
+The above case is arguably trivial, but many others are not:
+
+``` r
+reduce_to_field2(ard, "A*01:04:01:01N") # shortnull
+#> [1] "A*01:04N"
+reduce_to_field2(ard, "B*15:AH") # MACs
+#> [1] "B*15:01/B*15:07"
+reduce_to_field2(ard, "Cw10") # serology
+#> [1] "C*03:02/C*03:04/C*03:04Q/C*03:06/C*03:26/C*03:28/C*03:46"
 ```
 
 #### Upscaling from serological equivalents to 2-field high resolution
@@ -246,6 +285,21 @@ typing_df |>
 #> #   haplo_rank_2 <dbl>
 ```
 
+#### Working with multiple allele codes
+
+py-ard can once again be used to lookup and decode [Multiple Allele
+Codes (MACs)](https://hml.nmdp.org/MacUI/)
+
+``` r
+mac_lookup(ard, "B*08:01/B*08:19N/B*08:109")
+#> [1] "B*08:YETY"
+```
+
+``` r
+mac_decode(ard, "B*08:YETY")
+#> [1] "B*08:01/B*08:19N/B*08:109"
+```
+
 #### Converting to and from GL Strings
 
 Typing data often comes in a data frame like this:
@@ -276,8 +330,8 @@ typing_df_gl
 #> # A tibble: 2 × 2
 #>   id    glstring                                                                
 #>   <chr> <chr>                                                                   
-#> 1 001   hla#2024-11-27#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
-#> 2 002   hla#2024-11-27#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
+#> 1 001   hla#2024-12-04#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
+#> 2 002   hla#2024-12-04#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
 ```
 
 Use `gl_to_df()` to go the opposite way: from a dataframe of GL Strings
@@ -290,8 +344,8 @@ typing_df_gl |>
 #> # A tibble: 2 × 11
 #>   id    glstring      glstring_index namespace version_or_date A_1   A_2   B_1  
 #>   <chr> <chr>                  <int> <chr>     <chr>           <chr> <chr> <chr>
-#> 1 001   hla#2024-11-…              1 hla       2024-11-27      HLA-… HLA-… HLA-…
-#> 2 002   hla#2024-11-…              2 hla       2024-11-27      HLA-… HLA-… HLA-…
+#> 1 001   hla#2024-12-…              1 hla       2024-12-04      HLA-… HLA-… HLA-…
+#> 2 002   hla#2024-12-…              2 hla       2024-12-04      HLA-… HLA-… HLA-…
 #> # ℹ 3 more variables: B_2 <chr>, C_1 <chr>, C_2 <chr>
 ```
 
@@ -303,7 +357,7 @@ eplets occur on an HLA allele, or vice versa.
 
 ``` r
 df_eplets <- load_eplet_registry()
-#> Loaded Eplet Registry table (NA),
+#> Loaded Eplet Registry table ( ),
 #> released 2024-08-19, downloaded from https://www.epregistry.com.br
 lookup_alleles(df_eplets, "17S")
 #> $`17S`
@@ -328,7 +382,7 @@ A common use case would be to lookup which eplets occur on a set of
 
 ``` r
 df_eplets <- load_eplet_registry()
-#> Loaded Eplet Registry table (NA),
+#> Loaded Eplet Registry table ( ),
 #> released 2024-08-19, downloaded from https://www.epregistry.com.br
 luminex_df <- dplyr::tribble(
   ~sampleID, ~allele, ~positive,
@@ -399,8 +453,7 @@ read_lum_csv(
 
 ## Other packages
 
-There’s many other implementations with partly overlapping goals (some
-of which hlapro might depend on in the future).
+There’s many other implementations with partly overlapping goals.
 
 - R:
   - [hlatools](https://github.com/gschofl/hlatools) provides access to
@@ -411,7 +464,8 @@ of which hlapro might depend on in the future).
     formats HLA typings and can work with haplotype/allele frequencies
 - Python:
   - [py-ard](https://github.com/nmdp-bioinformatics/py-ard) reduces HLA
-    typing resolution
+    typing resolution. hlapro actually depends on `py-ard` for some of
+    this functionality.
   - [pyglstring](https://github.com/nmdp-bioinformatics/pyglstring)
     checks whether GL Strings are well formatted
   - [ALLAN](https://github.com/lgragert/hla-who-to-unos) converts

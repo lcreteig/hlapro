@@ -54,6 +54,7 @@ eplets
 et
 ETRL
 EuroTransplant
+Eurotransplant
 ev
 ExpirationDate
 Fluidics
@@ -106,9 +107,9 @@ MACs
 Madbouly
 Maiers
 MCJ
-MICB
 MFI
 MFIThreshold
+MICB
 MicroPlex
 nd
 NMDP
@@ -122,8 +123,8 @@ PCUpper
 Phenotypes
 pkgdown
 positivity
-precommit
 pre
+precommit
 PROCARE
 ProtocolAnalysis
 ProtocolDescription
@@ -175,9 +176,9 @@ utf
 UTH
 UTT
 Vina
+WFR
 www
 xmlns
-xPONENT
-WFR
 XNC
+xPONENT
 YV
