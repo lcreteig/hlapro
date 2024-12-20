@@ -106,6 +106,13 @@ test_that("missing allele groups and loci are filled in", {
   )
 })
 
+test_that("prefixing works for suffixes", {
+  expect_equal(
+    prefix_ambiguity("A*02:01/01L/04/07/09/15N"),
+    "A*02:01/A*02:01L/A*02:04/A*02:07/A*02:09/A*02:15N"
+  )
+})
+
 test_that("prefixing works for v2 alleles as well", {
   expect_equal(
     prefix_ambiguity("DRB4*0101/03/06", return_v3 = FALSE),
@@ -118,6 +125,11 @@ test_that("prefixing works for v2 alleles as well", {
   expect_equal(
     prefix_ambiguity("A*0101/0103"),
     "A*01:01/A*01:03"
+  )
+  # alleles with suffixes
+  expect_equal(
+    prefix_ambiguity("A*0201/01L/04/07/09/15N"),
+    "A*02:01/A*02:01L/A*02:04/A*02:07/A*02:09/A*02:15N"
   )
 })
 
