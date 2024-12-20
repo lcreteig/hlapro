@@ -8,6 +8,8 @@
 <url><loc>https://lcreteig.github.io/hlapro/reference/clean_hla.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/convert_v2_to_v3.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/count_alleles.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/db_get_version.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/db_initialize.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/df_to_gl.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/etrl_hla.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/etrl_lookup.html</loc></url>
@@ -23,11 +25,16 @@
 <url><loc>https://lcreteig.github.io/hlapro/reference/gl_to_vec.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/hlapro-package.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/index.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/is_in_ipd_db.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/load_eplet_registry.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/lookup_alleles.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/lookup_eplets.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/mac_decode.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/mac_lookup.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/read_lum_csv.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/reduce_to_field2.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/reduce_to_nth_field.html</loc></url>
+<url><loc>https://lcreteig.github.io/hlapro/reference/reduce_to_serology.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/reorder_alleles.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/strip_redundant.html</loc></url>
 <url><loc>https://lcreteig.github.io/hlapro/reference/upscale_typings.html</loc></url>
