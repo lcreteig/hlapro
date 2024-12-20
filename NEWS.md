@@ -1,4 +1,4 @@
-# hlapro (development version)
+# hlapro 0.4.0
 
 * Update `clean_hla()` to also convert [pre-2010 
   typings](https://hla.alleles.org/nomenclature/naming_2010.html) (v2) 
