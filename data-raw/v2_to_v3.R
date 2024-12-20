@@ -23,10 +23,10 @@ if (dl_permission() == 1) {
 
   ### Download files
 
-  # Obsolete allele-specific codes
+  # Obsolete allele-specific codes. N.B. unfortunately no longer online
   macs_obsolete <- dl_and_del(paste0(url_nmdp, "DownloadAsset.aspx?id=6551")) |>
     dplyr::select(v2 = `Version 2 type`, v3 = `Version 3 type`)
-  # Obsolete DPB1-specific codes
+  # Obsolete DPB1-specific codes N.B. unfortunately no longer online
   macs_dpb1 <- dl_and_del(paste0(url_nmdp, "DownloadAsset.aspx?id=6550")) |>
     dplyr::select(v2 = `Version 2 type`, v3 = `Version 3 type`)
   # v2 to v3 exceptions

@@ -22,6 +22,7 @@ A data frame with 5,151 rows and 2 columns:
 \url{https://github.com/ANHIG/IMGTHLA/blob/Latest/Deleted_alleles.txt}
 \item Allele-specific & DPB1-specific multiple-allele codes (see 4. and 5. under
 "Allele Code Update to Version 3 WHO Nomenclature")
+N.B. Unfortunately this link no longer works
 \url{https://bioinformatics.bethematchclinical.org/hla-resources/allele-codes/}
 }
 }

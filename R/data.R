@@ -38,5 +38,6 @@
 #' <https://github.com/ANHIG/IMGTHLA/blob/Latest/Deleted_alleles.txt>
 #' - Allele-specific & DPB1-specific multiple-allele codes (see 4. and 5. under
 #' "Allele Code Update to Version 3 WHO Nomenclature")
+#' N.B. Unfortunately this link no longer works
 #' <https://bioinformatics.bethematchclinical.org/hla-resources/allele-codes/>
 "v2_to_v3"
