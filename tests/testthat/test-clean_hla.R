@@ -106,6 +106,13 @@ test_that("missing allele groups and loci are filled in", {
   )
 })
 
+test_that("prefixing works for suffixes", {
+  expect_equal(
+    prefix_ambiguity("A*02:01/01L/04/07/09/15N"),
+    "A*02:01/A*02:01L/A*02:04/A*02:07/A*02:09/A*02:15N"
+  )
+})
+
 test_that("prefixing works for v2 alleles as well", {
   expect_equal(
     prefix_ambiguity("DRB4*0101/03/06", return_v3 = FALSE),
@@ -118,6 +125,11 @@ test_that("prefixing works for v2 alleles as well", {
   expect_equal(
     prefix_ambiguity("A*0101/0103"),
     "A*01:01/A*01:03"
+  )
+  # alleles with suffixes
+  expect_equal(
+    prefix_ambiguity("A*0201/01L/04/07/09/15N"),
+    "A*02:01/A*02:01L/A*02:04/A*02:07/A*02:09/A*02:15N"
   )
 })
 
@@ -242,9 +254,11 @@ test_that("v2 exceptions are handled", {
 test_that("v2 heuristic conversion works", {
   expect_equal(convert_v2_to_v3("A*0101"), "A*01:01")
   expect_equal(convert_v2_to_v3("A*010102"), "A*01:01:02")
+  expect_equal(convert_v2_to_v3("DRB1*14125"), "DRB1*14:125") # odd # digits
   expect_equal(convert_v2_to_v3("A*01010203"), "A*01:01:02:03")
+  # suffixes work
   expect_equal(convert_v2_to_v3("B*39010102L"), "B*39:01:01:02L")
-  expect_equal(convert_v2_to_v3("DRB1*14125"), "DRB1*14:125")
+  expect_equal(convert_v2_to_v3("A*02113N"), "A*02:113N")
   # Cw is C
   expect_equal(convert_v2_to_v3("Cw*0202"), "C*02:02")
 })
@@ -256,6 +270,7 @@ test_that("MAC and XX codes work", {
   # heuristics
   expect_equal(convert_v2_to_v3("A*01XX"), "A*01:XX")
   expect_equal(convert_v2_to_v3("A*01AB"), "A*01:AB")
+  expect_equal(convert_v2_to_v3("Cw*01BJZ"), "C*01:BJZ")
   expect_equal(convert_v2_to_v3("B*08YETY"), "B*08:YETY")
 })
 

@@ -153,8 +153,10 @@ prefix_ambiguity <- function(allele, return_v3 = TRUE) {
     # for each ambiguity, store whether it's missing the locus or allele group
     has_no_locus <- stringr::str_detect(ambigs, "\\*", negate = TRUE)
     has_no_group <- !v2_flag & stringr::str_detect(ambigs, ":", negate = TRUE)
-    # for v2: allele group is missing if the whole ambiguity is just 2-3 digits
-    has_no_group_v2 <- v2_flag & stringr::str_detect(ambigs, "^\\d{2,3}$")
+    # for v2: allele group is missing if the whole ambiguity is just 2-3 digits,
+    # (and an optional suffix)
+    pattern_v2 <- "^\\d{2,3}[NLSCAQPG]?$"
+    has_no_group_v2 <- v2_flag & stringr::str_detect(ambigs, pattern_v2)
 
     # if necessary, first prefix with allele group, then with locus
     ambigs_fixed <- ifelse(has_no_group | has_no_group_v2,
@@ -257,7 +259,8 @@ convert_v2_to_v3 <- function(allele) {
       allele,
       c(
         "Cw" = "C", # replace Cw with C
-        r"((\d{2})(?=[\dA-Z]{2}))" = "\\1:" # insert ":" after every 2 digits
+        # insert ":" after every 2 digits if followed by 2 digits/letters
+        r"((\d{2})(?=\d{2}|[A-Z]{2}))" = "\\1:"
       )
     ),
     v3s
