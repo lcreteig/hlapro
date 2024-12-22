@@ -44,7 +44,7 @@ developed by the NMDP to initialize the
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">db_initialize</span><span class="op">(</span><span class="va">data_dir</span>, imgt_version <span class="op">=</span> <span class="st">"Latest"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">db_initialize</span><span class="op">(</span><span class="va">data_dir</span>, imgt_version <span class="op">=</span> <span class="st">"Latest"</span>, strict_mode <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -60,6 +60,13 @@ should be stored. If no database exists on disk, it will be downloaded.</p></dd>
 <dd><p>Four-digit version number of the
 <a href="https://github.com/ANHIG/IMGTHLA/releases" class="external-link">database release</a> that should
 be used. Defaults to the most recent release ("Latest").</p></dd>
+
+
+<dt id="arg-strict-mode">strict_mode<a class="anchor" aria-label="anchor" href="#arg-strict-mode"></a></dt>
+<dd><p>Defaults to <code>TRUE</code>; if <code>FALSE</code>, functions like
+<code><a href="is_in_ipd_db.html">is_in_ipd_db()</a></code> will perform a less strict validation of alleles in the
+database (e.g. some alleles that were deleted or renamed in a newer version
+of the database will still pass).</p></dd>
 
 </dl></div>
     <div class="section level2">
