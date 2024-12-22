@@ -4,7 +4,7 @@
 \alias{db_initialize}
 \title{Load IPD-IMGT/HLA database}
 \usage{
-db_initialize(data_dir, imgt_version = "Latest")
+db_initialize(data_dir, imgt_version = "Latest", strict_mode = TRUE)
 }
 \arguments{
 \item{data_dir}{Path to the folder where the SQLite database (~600MB) is or
@@ -13,6 +13,11 @@ should be stored. If no database exists on disk, it will be downloaded.}
 \item{imgt_version}{Four-digit version number of the
 \href{https://github.com/ANHIG/IMGTHLA/releases}{database release} that should
 be used. Defaults to the most recent release ("Latest").}
+
+\item{strict_mode}{Defaults to \code{TRUE}; if \code{FALSE}, functions like
+\code{\link[=is_in_ipd_db]{is_in_ipd_db()}} will perform a less strict validation of alleles in the
+database (e.g. some alleles that were deleted or renamed in a newer version
+of the database will still pass).}
 }
 \value{
 A Python database connection object, which should be passed to other

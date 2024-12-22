@@ -9,6 +9,10 @@
 #' @param imgt_version Four-digit version number of the
 #'  [database release](https://github.com/ANHIG/IMGTHLA/releases) that should
 #'  be used. Defaults to the most recent release ("Latest").
+#' @param strict_mode Defaults to `TRUE`; if `FALSE`, functions like
+#'  [is_in_ipd_db()] will perform a less strict validation of alleles in the
+#'  database (e.g. some alleles that were deleted or renamed in a newer version
+#'  of the database will still pass).
 #'
 #' @return A Python database connection object, which should be passed to other
 #'  functions that make use of the database.
@@ -18,9 +22,12 @@
 #' \dontrun{
 #' ard <- db_initialize(path.expand("~/ipd_db"), imgt_version = "3510")
 #' }
-db_initialize <- function(data_dir, imgt_version = "Latest") {
+db_initialize <- function(data_dir,
+                          imgt_version = "Latest",
+                          strict_mode = TRUE) {
   pyard <- reticulate::import("pyard")
-  pyard$init(imgt_version = imgt_version, data_dir = data_dir)
+  config <- list(strict = strict_mode)
+  pyard$init(imgt_version = imgt_version, data_dir = data_dir, config = config)
 }
 
 #' Print version of initialized IPD-IMGT/HLA database
