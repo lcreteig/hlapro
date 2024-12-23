@@ -261,6 +261,7 @@ test_that("v2 heuristic conversion works", {
   expect_equal(convert_v2_to_v3("A*02113N"), "A*02:113N")
   # Cw is C
   expect_equal(convert_v2_to_v3("Cw*0202"), "C*02:02")
+  expect_equal(convert_v2_to_v3("Cw*02:02"), "C*02:02")
 })
 
 test_that("MAC and XX codes work", {

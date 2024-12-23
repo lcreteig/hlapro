@@ -254,15 +254,14 @@ convert_v2_to_v3 <- function(allele) {
   # replace v2 with v3 from lookup table
   v3s <- ifelse(is_v2(allele), unname(lookup_v3[allele]), allele)
   # if not in table
-  ifelse(is.na(v3s),
-    stringr::str_replace_all(
-      allele,
-      c(
-        "Cw" = "C", # replace Cw with C
-        # insert ":" after every 2 digits if followed by 2 digits/letters
-        r"((\d{2})(?=\d{2}|[A-Z]{2}))" = "\\1:"
-      )
-    ),
+  v3s <- ifelse(is.na(v3s),
+    # insert ":" after every 2 digits if followed by 2 digits/letters
+    stringr::str_replace_all(allele, r"((\d{2})(?=\d{2}|[A-Z]{2}))", "\\1:"),
+    v3s
+  )
+  # replace all remaining "Cw" with "C", unless it's a serological typing
+  ifelse(!is.na(v3s) & stringr::str_detect(v3s, "Cw") & !is_serology(v3s),
+    stringr::str_replace_all(v3s, "Cw", "C"),
     v3s
   )
 }
