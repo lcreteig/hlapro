@@ -139,13 +139,12 @@ upscale_typings <- function(filepath,
   )
 
   upscale_typing <- function(haplo_df, typing, loci_input) {
-    # get alleles in input genotyping into a vector; only loci we want
-    # consider for upscaling
-    alleles <- extract_alleles_str(typing,
-      strip_locus = FALSE,
-      loci = loci_input
-    )
-    alleles <- alleles[!is.na(alleles)]
+    # get alleles in input genotyping into a vector
+    alleles <- gl_to_vec(typing, split_ambiguities = TRUE)$allele_list |>
+      remove_hla_prefix()
+
+    # keep only loci we want to consider for upscaling
+    alleles <- alleles[get_loci(alleles) %in% loci_input]
 
     haplo_df |>
       select_compatible_haplos(alleles) |>
@@ -185,37 +184,32 @@ translate_top_haplos <- function(filepath, loci_input, loci_output,
 
   haplo_df |>
     dplyr::slice_min(.data$haplo_rank, n = n_haplos) |>
-    # translate alleles to serological equivalents
     dplyr::mutate(
-      dplyr::across(dplyr::all_of(loci_input), # new columns for broads
-        ~ get_broad(stringr::str_remove(.x, "g")),
-        .names = "{.col}_broad"
-      ),
-      dplyr::across(dplyr::all_of(loci_input), # new columns for splits
-        ~ get_split(stringr::str_remove(.x, "g")),
-        .names = "{.col}_split"
+      dplyr::across(dplyr::all_of(loci_input), ~ stringr::str_remove(.x, "g"),
+        .names = "{.col}_input"
       )
     )
 }
 
 select_compatible_haplos <- function(df, alleles) {
-  loci_present <- unique(stringr::str_extract(names(alleles), r"(^.*(?=_))"))
+  loci_present <- unique(get_loci(alleles))
 
   df |>
     tidyr::pivot_longer(
-      cols = tidyr::ends_with(c("_broad", "_split")),
-      names_to = c("locus", ".value"),
-      names_sep = "_"
+      cols = tidyr::ends_with(c("_input")),
+      names_to = c("locus", NA),
+      names_sep = "_",
+      values_to = "haplo_allele"
     ) |>
     dplyr::filter(.data$locus %in% loci_present) |>
     dplyr::group_by(.data$haplo_rank) |>
     # keep only downscaled haplos where *all* alleles occur in input genotype,
     # to prevent having to evaluate all haplos
-    dplyr::filter(all(.data$broad %in% alleles | .data$split %in% alleles)) |>
+    dplyr::filter(all(.data$haplo_allele %in% alleles)) |>
     dplyr::ungroup() |>
     tidyr::pivot_wider( # one row per haplotype pair ()
       names_from = "locus",
-      values_from = tidyr::all_of(c("broad", "split")),
+      values_from = tidyr::all_of("haplo_allele"),
       names_glue = "{locus}_{.value}"
     )
 }
