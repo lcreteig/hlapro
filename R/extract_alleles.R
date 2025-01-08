@@ -362,6 +362,9 @@ gl_to_df <- function(glstrings) {
 #' character vector of the individual HLA alleles.
 #'
 #' @param glstring Any valid GL String.
+#' @param split_ambiguities Boolean that determines whether ambiguous typings
+#'   will be retained as one allele (`FALSE`; default), or also split into the
+#'   separate alleles that make up the ambiguity (`TRUE`).
 #'
 #' @return A named list of length three containing the:
 #'    1. `namespace` (e.g. `"hla"`)
@@ -379,9 +382,20 @@ gl_to_df <- function(glstrings) {
 #' gl_to_vec("hla#2018-06#HLA-A*02:69+HLA-A*23:30")
 #' # access the allele list directly to keep just the vector of HLAs
 #' gl_to_vec("hla#2018-06#HLA-A*02:69+HLA-A*23:30")$allele_list
-gl_to_vec <- function(glstring) {
+#' # this will be one allele (a vector of length one)
+#' gl_to_vec("hla#2018-06#C*03:02/C*03:04/C*03:06")$allele_list
+#' # this will be three alleles (a vector of length three)
+#' gl_to_vec("hla#2018-06#C*03:02/C*03:04/C*03:06",
+#'   split_ambiguities = TRUE
+#' )$allele_list
+gl_to_vec <- function(glstring, split_ambiguities = FALSE) {
   if (is.na(glstring)) {
     return(NA)
+  }
+
+  split_pattern <- r"([\+\^"])"
+  if (split_ambiguities) {
+    split_pattern <- r"([\+\^/"])"
   }
 
   glsc <- stringr::str_split_1(glstring, "#")
@@ -389,7 +403,7 @@ gl_to_vec <- function(glstring) {
   list(
     namespace = glsc[1],
     version_or_date = glsc[2],
-    allele_list = stringr::str_split_1(glsc[3], r"([\+\^"])")
+    allele_list = stringr::str_split_1(glsc[3], split_pattern)
   )
 }
 
