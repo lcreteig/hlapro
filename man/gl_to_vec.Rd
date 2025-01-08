@@ -4,10 +4,14 @@
 \alias{gl_to_vec}
 \title{Split a GL String into metadata and a vector of alleles}
 \usage{
-gl_to_vec(glstring)
+gl_to_vec(glstring, split_ambiguities = FALSE)
 }
 \arguments{
 \item{glstring}{Any valid GL String.}
+
+\item{split_ambiguities}{Boolean that determines whether ambiguous typings
+will be retained as one allele (\code{FALSE}; default), or also split into the
+separate alleles that make up the ambiguity (\code{TRUE}).}
 }
 \value{
 A named list of length three containing the:
@@ -27,6 +31,12 @@ character vector of the individual HLA alleles.
 gl_to_vec("hla#2018-06#HLA-A*02:69+HLA-A*23:30")
 # access the allele list directly to keep just the vector of HLAs
 gl_to_vec("hla#2018-06#HLA-A*02:69+HLA-A*23:30")$allele_list
+# this will be one allele (a vector of length one)
+gl_to_vec("hla#2018-06#C*03:02/C*03:04/C*03:06")$allele_list
+# this will be three alleles (a vector of length three)
+gl_to_vec("hla#2018-06#C*03:02/C*03:04/C*03:06",
+  split_ambiguities = TRUE
+)$allele_list
 }
 \seealso{
 \itemize{
