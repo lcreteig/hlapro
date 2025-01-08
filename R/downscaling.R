@@ -364,7 +364,7 @@ add_hla_prefix <- function(allele) {
 }
 
 remove_hla_prefix <- function(allele) {
-  stringr::str_remove(allele, "^HLA-")
+  stringr::str_remove_all(allele, "HLA-")
 }
 
 is_split <- function(allele) {
