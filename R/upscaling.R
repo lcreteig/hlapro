@@ -148,7 +148,7 @@ upscale_typings <- function(filepath,
 
     haplo_df |>
       select_compatible_haplos(alleles) |>
-      make_phased_genotypes(alleles) |>
+      make_phased_genotypes(typing) |>
       make_unphased_genotypes(loci_output) |>
       dplyr::slice_max(.data$unphased_prob, n = n_genos) # select top n_genos
   }
@@ -214,23 +214,44 @@ select_compatible_haplos <- function(df, alleles) {
     )
 }
 
-make_phased_genotypes <- function(df, alleles) {
+make_phased_genotypes <- function(df, typing) {
+  # Make candidate input genotypes: possible, complete, 2-field genos
+  gldf <- gl_to_df(remove_hla_prefix(typing))
+  # Separate ambiguities into own row, to get all possible combinations
+  input_genos <- purrr::reduce(
+    colnames(gldf),
+    # separate multiple times, each time woking with last time's result
+    \(x, y) tidyr::separate_longer_delim(x, cols = y, delim = "/"),
+    .init = gldf
+  ) |>
+    dplyr::select(!dplyr::any_of(
+      c("glstring_index", "namespace", "version_or_date")
+    )) |>
+    dplyr::rowwise() |>
+    # make a list, where each element is vector with possible genotype
+    dplyr::mutate(lst = list(dplyr::c_across(dplyr::everything()))) |>
+    dplyr::pull(.data$lst)
+
   df |>
     dplyr::cross_join(df, suffix = c("_1", "_2")) |> # combine all permutations
     # make phased genotypes: keep only unique haplo combinations
     dplyr::filter(.data$haplo_rank_1 <= .data$haplo_rank_2) |>
     tibble::rowid_to_column(var = "id_phased_geno") |>
-    # make genotype out of serological equivalents  in phased genotypes
+    # make genotype out of compatible phased genotypes
     tidyr::pivot_longer(
-      cols = tidyr::contains(c("_broad_", "_split_")),
-      names_to = "locus_res_allele",
-      values_to = "ser_typing"
+      cols = tidyr::contains(c("_haplo_allele_")),
+      names_to = "locus_allele",
+      values_to = "cand_typing"
     ) |>
     dplyr::group_by(.data$id_phased_geno) |>
     # keep only phased genotypes where *all* alleles occur in input genotype
-    dplyr::filter(all(alleles %in% .data$ser_typing)) |>
+    dplyr::filter(any(
+      unlist(
+        purrr::map(input_genos, \(x) all(is.na(x) | (x %in% .data$cand_typing)))
+      )
+    )) |>
     dplyr::ungroup() |>
-    dplyr::select(!dplyr::all_of(c("locus_res_allele", "ser_typing"))) |>
+    dplyr::select(!dplyr::all_of(c("locus_allele", "cand_typing"))) |>
     dplyr::distinct(.data$id_phased_geno, .keep_all = TRUE) |>
     dplyr::mutate( # calculate phased genotype frequency / probability
       # for phased frequency calculation, change multiplier if homo/hetero
@@ -254,9 +275,7 @@ make_unphased_genotypes <- function(df, loci_output) {
     ) |>
     dplyr::group_by(.data$id_phased_geno) |>
     # for each phased genotype: sort alleles and combine into unphased genotype
-    dplyr::mutate(unphased_geno = stringr::str_flatten(
-      stringr::str_sort(.data$typing), " "
-    )) |>
+    dplyr::mutate(unphased_geno = vec_to_gl(stringr::str_sort(.data$typing))) |>
     dplyr::select(!dplyr::all_of(c("locus", "typing"))) |>
     dplyr::distinct(.data$id_phased_geno, .data$haplo_rank, .keep_all = TRUE) |>
     tidyr::pivot_wider( # one row with both haplotypes
