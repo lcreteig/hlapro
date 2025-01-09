@@ -215,8 +215,32 @@ select_compatible_haplos <- function(df, alleles) {
 }
 
 make_phased_genotypes <- function(df, typing) {
+  # TODO Abstract (some) blocks above main pipe into own function
+  haplo_alleles <- df |>
+    tidyr::pivot_longer(contains("haplo_allele")) |>
+    dplyr::pull(value) |>
+    unique()
+
+  # FIXME should be done more cleanly somewhere else
+  loci <- df |>
+    colnames() |>
+    stringr::str_subset("haplo_allele") |>
+    stringr::str_remove("haplo_allele")
+
+  filter_haplo_alleles <- function(x) {
+    stringr::str_split_1(x, "/") |>
+      intersect(haplo_alleles) |>
+      stringr::str_flatten(collapse = "/")
+  }
+
   # Make candidate input genotypes: possible, complete, 2-field genos
-  gldf <- gl_to_df(remove_hla_prefix(typing))
+
+  gldf <- gl_to_df(remove_hla_prefix(typing)) |>
+    dplyr::select(!dplyr::any_of(
+      c("glstring_index", "namespace", "version_or_date")
+    )) |>
+    dplyr::mutate(dplyr::across(dplyr::everything(), filter_haplo_alleles)) |>
+    dplyr::select(dplyr::starts_with(loci))
   # Separate ambiguities into own row, to get all possible combinations
   input_genos <- purrr::reduce(
     colnames(gldf),
@@ -224,9 +248,6 @@ make_phased_genotypes <- function(df, typing) {
     \(x, y) tidyr::separate_longer_delim(x, cols = y, delim = "/"),
     .init = gldf
   ) |>
-    dplyr::select(!dplyr::any_of(
-      c("glstring_index", "namespace", "version_or_date")
-    )) |>
     dplyr::rowwise() |>
     # make a list, where each element is vector with possible genotype
     dplyr::mutate(lst = list(dplyr::c_across(dplyr::everything()))) |>
