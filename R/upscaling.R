@@ -228,52 +228,38 @@ make_phased_genotypes <- function(df, typing) {
     stringr::str_remove("haplo_allele")
 
   filter_haplo_alleles <- function(x) {
-    stringr::str_split_1(x, "/") |>
-      intersect(haplo_alleles) |>
-      stringr::str_flatten(collapse = "/")
+    if (!is.na(x)) {
+      stringr::str_split_1(x, "/") |>
+        intersect(haplo_alleles) |>
+        stringr::str_flatten(collapse = "/")
+    }
   }
 
   # Make candidate input genotypes: possible, complete, 2-field genos
-
   gldf <- gl_to_df(remove_hla_prefix(typing)) |>
     dplyr::select(!dplyr::any_of(
       c("glstring_index", "namespace", "version_or_date")
     )) |>
     dplyr::mutate(dplyr::across(dplyr::everything(), filter_haplo_alleles)) |>
-    dplyr::select(dplyr::starts_with(loci))
-  # Separate ambiguities into own row, to get all possible combinations
-  input_genos <- purrr::reduce(
+    dplyr::select(dplyr::starts_with(loci)) |>
+    # TODO get rid of haplo_allele columns? Might be a remnant of
+    # having splits and broads (other than preserving "g")
+    dplyr::rename_with(\(x) stringr::str_replace(x, "_", "_haplo_allele_"))
+
+  input_genos_df <- purrr::reduce(
     colnames(gldf),
-    # separate multiple times, each time woking with last time's result
+    # separate multiple times, each time working with last time's result
     \(x, y) tidyr::separate_longer_delim(x, cols = y, delim = "/"),
     .init = gldf
-  ) |>
-    dplyr::rowwise() |>
-    # make a list, where each element is vector with possible genotype
-    dplyr::mutate(lst = list(dplyr::c_across(dplyr::everything()))) |>
-    dplyr::pull(.data$lst)
+  )
 
   df |>
-    dplyr::cross_join(df, suffix = c("_1", "_2")) |> # combine all permutations
-    # make phased genotypes: keep only unique haplo combinations
-    dplyr::filter(.data$haplo_rank_1 <= .data$haplo_rank_2) |>
+    # combine all permutations to make phased genotypes
+    dplyr::cross_join(df, suffix = c("_1", "_2")) |>
     tibble::rowid_to_column(var = "id_phased_geno") |>
-    # make genotype out of compatible phased genotypes
-    tidyr::pivot_longer(
-      cols = tidyr::contains(c("_haplo_allele_")),
-      names_to = "locus_allele",
-      values_to = "cand_typing"
-    ) |>
-    dplyr::group_by(.data$id_phased_geno) |>
-    # keep only phased genotypes where *all* alleles occur in input genotype
-    dplyr::filter(any(
-      unlist(
-        purrr::map(input_genos, \(x) all(is.na(x) | (x %in% .data$cand_typing)))
-      )
-    )) |>
-    dplyr::ungroup() |>
-    dplyr::select(!dplyr::all_of(c("locus_allele", "cand_typing"))) |>
-    dplyr::distinct(.data$id_phased_geno, .keep_all = TRUE) |>
+    # keep only those containg all alleles in input genotype
+    dplyr::semi_join(input_genos_df, by = colnames(input_genos_df)) |>
+    dplyr::select(!dplyr::contains("haplo_allele")) |>
     dplyr::mutate( # calculate phased genotype frequency / probability
       # for phased frequency calculation, change multiplier if homo/hetero
       multiplier = ifelse(.data$haplo_rank_1 == .data$haplo_rank_2, 1, 2),
