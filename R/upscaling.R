@@ -150,7 +150,15 @@ upscale_typings <- function(filepath,
       select_compatible_haplos(alleles) |>
       make_phased_genotypes(typing) |>
       make_unphased_genotypes(loci_output) |>
-      dplyr::slice_max(.data$unphased_prob, n = n_genos) # select top n_genos
+      dplyr::group_by(.data$id_unphased_geno) |>
+      # sort by unphased prob, then phased prob
+      dplyr::arrange(dplyr::desc(.data$unphased_prob),
+        dplyr::desc(.data$phased_prob),
+        .by_group = TRUE
+      ) |>
+      dplyr::ungroup() |>
+      # select top n_genos; highest phased prob if there's a tie
+      dplyr::slice_max(.data$unphased_prob, n = n_genos, with_ties = FALSE)
   }
 
   # Perform upscaling for each typing
@@ -217,8 +225,8 @@ select_compatible_haplos <- function(df, alleles) {
 make_phased_genotypes <- function(df, typing) {
   # TODO Abstract (some) blocks above main pipe into own function
   haplo_alleles <- df |>
-    tidyr::pivot_longer(contains("haplo_allele")) |>
-    dplyr::pull(value) |>
+    tidyr::pivot_longer(dplyr::contains("haplo_allele")) |>
+    dplyr::pull(.data$value) |>
     unique()
 
   # FIXME should be done more cleanly somewhere else
@@ -244,18 +252,38 @@ make_phased_genotypes <- function(df, typing) {
     dplyr::select(dplyr::starts_with(loci)) |>
     # TODO get rid of haplo_allele columns? Might be a remnant of
     # having splits and broads (other than preserving "g")
-    dplyr::rename_with(\(x) stringr::str_replace(x, "_", "_haplo_allele_"))
+    dplyr::rename_with(\(x) stringr::str_replace(x, "_", "_haplo_allele_")) |>
+    # Generate all possible combinations of allele order to prevent that haplos
+    # that would lead to compatible genotypes but with swapped alleles are
+    # incorrectly excluded
+    tidyr::pivot_longer(
+      cols = dplyr::everything(),
+      names_pattern = "(.*)_(\\d)",
+      names_to = c("locus", "allele"),
+      values_to = "typing"
+    ) |>
+    dplyr::group_by(.data$locus) |>
+    dplyr::summarise(dfs = list(
+      set_names(
+        data.frame(c(typing), rev(c(typing))),
+        paste0(.data$locus, c("_1", "_2"))
+      )
+    )) |>
+    dplyr::pull(.data$dfs)
 
+  gldf <- tidyr::expand_grid(!!!gldf)
   input_genos_df <- purrr::reduce(
     colnames(gldf),
     # separate multiple times, each time working with last time's result
-    \(x, y) tidyr::separate_longer_delim(x, cols = y, delim = "/"),
+    \(x, y) tidyr::separate_longer_delim(x, dplyr::all_of(y), delim = "/"),
     .init = gldf
   )
 
   df |>
     # combine all permutations to make phased genotypes
     dplyr::cross_join(df, suffix = c("_1", "_2")) |>
+    # make phased genotypes: keep only unique haplo combinations
+    dplyr::filter(.data$haplo_rank_1 <= .data$haplo_rank_2) |>
     tibble::rowid_to_column(var = "id_phased_geno") |>
     # keep only those containg all alleles in input genotype
     dplyr::semi_join(input_genos_df, by = colnames(input_genos_df)) |>
