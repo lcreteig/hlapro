@@ -31,7 +31,7 @@ etrl_split_to_broad <- make_broad_split_lookup(etrl_hla)
 etrl_public <- make_public_lookup(etrl_hla)
 
 lookup_v3 <- tibble::deframe(v2_to_v3)
-lookup_del_chg <- tibble::deframe(deleted_changed)
+lookup_del_chg <- tibble::deframe(dplyr::select(deleted_changed, -date_changed))
 
 usethis::use_data(etrl_hla, etrl_split_to_broad, etrl_public,
   lookup_v3, lookup_del_chg,

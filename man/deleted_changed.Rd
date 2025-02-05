@@ -7,10 +7,11 @@
 \format{
 \subsection{\code{deleted_changed}}{
 
-A data frame with 275 rows and 2 columns:
+A data frame with 275 rows and 3 columns:
 \describe{
 \item{allele_old}{allele name that was deleted/changed}
 \item{allele_new}{current allele name}
+\item{date_changed}{date change was made}
 }
 }
 }
@@ -32,10 +33,10 @@ renamed). This conversion table lists all the old alleles and their new
 equivalents.
 }
 \details{
-The new names have been parsed from a description of the change contained in
-the IPD-IMGT/HLA allele list. This makes it easier to programmatically
-convert deleted/changed alleles without having to manually look up the new
-designation.
+The new names (and dates of change) have been parsed from a description of
+the change contained in the IPD-IMGT/HLA allele list. This makes it easier to
+programmatically convert deleted/changed alleles without having to manually
+look up the new designation.
 
 N.B. The deleted alleles list is updated from time to time with new releases
 of the IPD-IMGT/HLA database (though relatively infrequently; definitely

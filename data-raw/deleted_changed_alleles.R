@@ -17,7 +17,13 @@ if (dl_permission(q_title) == 1) {
     dplyr::mutate(allele_new = stringr::str_extract(
       Description, r"(\w+\*\d{2,}:[\d:]+[NLSCAQ]?)"
     )) |>
-    dplyr::select(allele_old, allele_new)
+    dplyr::mutate(date_changed = as.Date(
+      paste("1", stringr::str_extract( # assume first of the month
+        Description, r"(\w+\s\d+(?=\)))" # date is "Month Year)"
+      )),
+      format = "%d %B %Y"
+    )) |>
+    dplyr::select(allele_old, allele_new, date_changed)
 
   rlang::check_installed("usethis", reason = "to save the data")
   usethis::use_data(deleted_changed, overwrite = TRUE) # save dataframe
