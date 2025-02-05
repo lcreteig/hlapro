@@ -15,7 +15,6 @@ if (dl_permission(q_title) == 1) {
   rlang::check_installed("readr", reason = "to read the data")
 
   url_nmdp <- "https://bioinformatics.bethematchclinical.org/WorkArea/"
-  url_ipd <- "https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/"
 
   ### Download files
 
@@ -29,22 +28,15 @@ if (dl_permission(q_title) == 1) {
   nomencl <- readr::read_table(paste0(url_ipd, "Nomenclature_2009.txt"),
     skip = 2, col_names = c("v2", "v3")
   )
-  # deleted alleles (not contained in v2 to v3 exceptions list)
-  deleted <- readr::read_csv(paste0(url_ipd, "Deleted_alleles.txt"),
-    skip = 7, col_names = c("id", "deleted", "new")
-  )
 
   ### Join
 
-  v2_to_v3 <- dplyr::left_join(nomencl, deleted,
-    by = dplyr::join_by(v2 == deleted)
+  v2_to_v3 <- dplyr::left_join(nomencl, deleted_changed,
+    by = dplyr::join_by(v2 == allele_old)
   ) |>
     # if no v3 assigned, look it up in deleted alleles list
-    dplyr::mutate(v3 = dplyr::if_else(v3 == "None",
-      stringr::str_extract(new, r"(\w+\*[\d:]+)"),
-      v3
-    )) |>
-    dplyr::select(!c(new, id)) |>
+    dplyr::mutate(v3 = dplyr::if_else(v3 == "None", allele_new, v3)) |>
+    dplyr::select(!c(allele_new, date_changed)) |>
     # Cw*0422 is corrected to Cw*0421 (still v2), which is "C*04:15:02" in v3
     dplyr::mutate(v3 = dplyr::if_else(v3 == "Cw*0421", "C*04:15:02", v3)) |>
     dplyr::bind_rows(macs_obsolete, macs_dpb1)
