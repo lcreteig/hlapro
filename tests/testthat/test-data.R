@@ -1,3 +1,5 @@
+# ETRL tables -------------------------------------------------------------
+
 test_that("etrl_version matches site", {
   expect_equal(attr(etrl_hla, "version"), "2.1")
 })
@@ -36,4 +38,24 @@ test_that("alleles span all loci", {
   expect_true(any(stringr::str_detect(etrl_hla$Allele, r"(DQA1*\\*)")))
   expect_true(any(stringr::str_detect(etrl_hla$Allele, r"(DPB1*\\*)")))
   expect_true(any(stringr::str_detect(etrl_hla$Allele, r"(DPA1*\\*)")))
+})
+
+
+# Deleted/changed alleles -------------------------------------------------
+
+test_that("table has 3 columns, 257 rows", {
+  expect_equal(dim(deleted_changed), c(275, 3))
+})
+
+test_that("column names and types are correct", {
+  del_chg_info <- c(
+    allele_old = "character",
+    allele_new = "character",
+    date_changed = "Date"
+  )
+  expect_equal(purrr::map_chr(deleted_changed, class), del_chg_info)
+})
+
+test_that("allele column is not empty", {
+  expect_equal(sum(!is.na(deleted_changed$allele_old)), nrow(deleted_changed))
 })
