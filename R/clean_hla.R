@@ -34,7 +34,8 @@ clean_hla <- function(allele) {
     remove_punctuation() |>
     add_xx_suffix() |>
     prefix_ambiguity() |>
-    convert_v2_to_v3()
+    convert_v2_to_v3() |>
+    convert_deleted()
 }
 
 #' Strip redundant alleles from typing string if higher resolution is available
@@ -264,4 +265,23 @@ convert_v2_to_v3 <- function(allele) {
     stringr::str_replace_all(v3s, "Cw", "C"),
     v3s
   )
+}
+
+convert_deleted <- function(allele) {
+  conv <- function(x) {
+    in_list <- x %in% names(lookup_del_chg)
+    ifelse(in_list, unname(lookup_del_chg[x]), x)
+  }
+
+  conv_vec <- function(x) {
+    if (is.na(x)) {
+      return(x)
+    }
+    x |>
+      stringr::str_split_1(r"(\/)") |>
+      conv() |>
+      stringr::str_flatten(collapse = "/")
+  }
+
+  ifelse(is_ambiguous(allele), purrr::map_chr(allele, conv_vec), conv(allele))
 }

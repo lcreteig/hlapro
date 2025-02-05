@@ -339,6 +339,10 @@ is_group <- function(allele) {
   stringr::str_detect(allele, r"(\d[PG]$)")
 }
 
+is_ambiguous <- function(allele) {
+  stringr::str_detect(allele, c("\\/")) & stringr::str_detect(allele, c("\\*"))
+}
+
 remove_suffixes_groups <- function(allele) {
   stringr::str_remove(allele, "[NLSCAQPG]$")
 }

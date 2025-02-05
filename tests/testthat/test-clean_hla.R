@@ -285,3 +285,40 @@ test_that("vectors work", {
     c("A1", "A*02:109", "A*01:01", "A*01:12:01", NA_character_)
   )
 })
+
+
+# convert_deleted() -------------------------------------------------------
+
+test_that("conversion works with known gotchas", {
+  expect_equal(convert_deleted("A*0105N"), "A*01:04:01:01N") # suffix
+  expect_equal(convert_deleted("A*02:100"), NA_character_) # unassigned
+  expect_equal(convert_deleted("C*03:99:01"), "C*01:169:01") # 2nd allele
+  expect_equal(convert_deleted("C*03:12"), "C*03:19") # 1st allele
+  expect_equal(convert_deleted("DPB1*35:01:02"), "DPB1*621:01") # not with date
+})
+
+test_that("conversion works with ambiguities", {
+  expect_equal(convert_deleted("A*33:37/A*33:38"), "A*33:37/A*33:44")
+})
+
+test_that("not deleted is not converted", {
+  expect_equal(convert_deleted("A1"), "A1")
+  expect_equal(convert_deleted("B*08:01"), "B*08:01")
+  expect_equal(convert_deleted("C*01:BJZ"), "C*01:BJZ")
+  expect_equal(convert_deleted("A*0101"), "A*0101")
+})
+
+test_that("NAs work", {
+  expect_equal(convert_deleted(NA), NA)
+})
+
+test_that("vectors work", {
+  expect_equal(
+    convert_deleted(c("A1", "C*12:139", "B*44:246N", "DQB1*02:01:14", NA)),
+    c("A1", "C*12:139Q", NA_character_, "DQB1*02:02:17", NA_character_)
+  )
+  expect_equal(
+    convert_deleted(c("A*24:22/A*24:329/A*24:378", NA, "DPB1*0701")),
+    c("A*24:22/A*24:329Q/A*24:378Q", NA_character_, NA_character_)
+  )
+})
