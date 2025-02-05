@@ -41,3 +41,33 @@
 #' N.B. Unfortunately this link no longer works
 #' <https://bioinformatics.bethematchclinical.org/hla-resources/allele-codes/>
 "v2_to_v3"
+
+#' Table of changed/deleted HLA alleles
+#'
+#' The IPD-IMGT/HLA database contains a list of alleles in the database that
+#' were once deleted (because, for example, they were later discovered to be
+#' identical to an existing allele) or changed (for example, their sequence was
+#' renamed). This conversion table lists all the old alleles and their new
+#' equivalents.
+#'
+#' The new names have been parsed from a description of the change contained in
+#' the IPD-IMGT/HLA allele list. This makes it easier to programmatically
+#' convert deleted/changed alleles without having to manually look up the new
+#' designation.
+#'
+#' N.B. The deleted alleles list is updated from time to time with new releases
+#' of the IPD-IMGT/HLA database (though relatively infrequently; definitely
+#' not every release). It's possible the conversion table in this package is
+#' based on an older version.
+#'
+#' @format ## `deleted_changed`
+#' A data frame with 275 rows and 2 columns:
+#' \describe{
+#'   \item{allele_old}{allele name that was deleted/changed}
+#'   \item{allele_new}{current allele name}
+#' }
+#' @source
+#' - <https://hla.alleles.org/alleles/deleted.html>
+#' - csv version of this data (used as the source)
+#'   <https://github.com/ANHIG/IMGTHLA/blob/Latest/Nomenclature_2009.txt>
+"deleted_changed"
