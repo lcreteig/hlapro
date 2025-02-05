@@ -43,17 +43,13 @@ download_etrl <- function() {
   df_etrl
 }
 
-dl_permission <- function() {
-  q_title <- paste(
-    "Do you want to download the EuroTransplant Reference",
-    "Laboratory (ETRL) HLA tables (to convert allele-level",
-    "HLA typings to serological equivalents)?"
-  )
+q_title <- paste(
+  "Do you want to download the EuroTransplant Reference",
+  "Laboratory (ETRL) HLA tables (to convert allele-level",
+  "HLA typings to serological equivalents)?"
+)
 
-  utils::menu(choices = c("Yes", "No"), title = q_title)
-}
-
-if (dl_permission() == 1) {
+if (dl_permission(q_title) == 1) {
   rlang::check_installed("rvest", reason = "to scrape the ETRL HLA tables")
   etrl_hla <- download_etrl()
 

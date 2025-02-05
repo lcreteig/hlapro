@@ -6,16 +6,12 @@ dl_and_del <- function(url) {
   return(df_xls)
 }
 
-dl_permission <- function() {
-  q_title <- paste(
-    "Do you want to download some files from GitHub and the NMDP website",
-    "that contain the modern (v3) nomenclature equivalents of v2 HLA alleles?"
-  )
+q_title <- paste(
+  "Do you want to download some files from GitHub and the NMDP website",
+  "that contain the modern (v3) nomenclature equivalents of v2 HLA alleles?"
+)
 
-  utils::menu(choices = c("Yes", "No"), title = q_title)
-}
-
-if (dl_permission() == 1) {
+if (dl_permission(q_title) == 1) {
   rlang::check_installed("readr", reason = "to read the data")
 
   url_nmdp <- "https://bioinformatics.bethematchclinical.org/WorkArea/"
