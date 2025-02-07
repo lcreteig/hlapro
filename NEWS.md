@@ -1,5 +1,9 @@
 # hlapro (development version)
 
+* Update `clean_hla()` to also convert 
+  [deleted/changed](https://hla.alleles.org/alleles/deleted.html) alleles
+* Minor fixes to `clean_hla()` conversion of v2 alleles
+
 # hlapro 0.4.0
 
 * Update `clean_hla()` to also convert [pre-2010 

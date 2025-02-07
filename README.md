@@ -127,11 +127,18 @@ clean_hla(allele_vec)
 ```
 
 `clean_hla()` can also convert typings in the pre-2010 (v2) nomenclature
-to the updated (v3) nomenclature:
+to the updated (v3) nomenclature:…
 
 ``` r
 clean_hla(c("Cw*030205", "A*2416", "DPB1*02BYVD", "B*35UMU"))
 #> [1] "C*03:02:05"   "A*31:08"      "DPB1*02:FNWG" "B*35:WRE"
+```
+
+…and convert deleted/changed alleles to their new assignments
+
+``` r
+clean_hla(c("C*03:12", "C*12:139", "A*02:100"))
+#> [1] "C*03:12"  "C*12:139" "A*02:100"
 ```
 
 #### Validating alleles
@@ -330,8 +337,8 @@ typing_df_gl
 #> # A tibble: 2 × 2
 #>   id    glstring                                                                
 #>   <chr> <chr>                                                                   
-#> 1 001   hla#2024-12-04#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
-#> 2 002   hla#2024-12-04#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
+#> 1 001   hla#2025-02-07#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
+#> 2 002   hla#2025-02-07#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
 ```
 
 Use `gl_to_df()` to go the opposite way: from a dataframe of GL Strings
@@ -344,8 +351,8 @@ typing_df_gl |>
 #> # A tibble: 2 × 11
 #>   id    glstring      glstring_index namespace version_or_date A_1   A_2   B_1  
 #>   <chr> <chr>                  <int> <chr>     <chr>           <chr> <chr> <chr>
-#> 1 001   hla#2024-12-…              1 hla       2024-12-04      HLA-… HLA-… HLA-…
-#> 2 002   hla#2024-12-…              2 hla       2024-12-04      HLA-… HLA-… HLA-…
+#> 1 001   hla#2025-02-…              1 hla       2025-02-07      HLA-… HLA-… HLA-…
+#> 2 002   hla#2025-02-…              2 hla       2025-02-07      HLA-… HLA-… HLA-…
 #> # ℹ 3 more variables: B_2 <chr>, C_1 <chr>, C_2 <chr>
 ```
 
