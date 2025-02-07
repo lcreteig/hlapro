@@ -16,6 +16,8 @@
 #' `A*01:01/A*01:02`)
 #' 7. Converts v2 to v3 (`A*01010102N` --> `A*01:01:01:02N`). See
 #' [convert_v2_to_v3()]
+#' 8. Converts deleted/changed alleles (`C*03:99:01` --> `C*01:169:01`). See
+#' [convert_deleted()]
 #'
 #' @inheritParams get_resolution
 #'
@@ -240,6 +242,8 @@ remove_punctuation <- function(allele) {
 #' @return A vector with the same length as `allele`, with all v2 alleles
 #' converted to v3
 #' @keywords internal
+#' @seealso [convert_deleted()] to lookup new designations for deleted/changed
+#'  alleles
 #' @export
 #'
 #' @examples
@@ -276,6 +280,31 @@ convert_v2_to_v3 <- function(allele) {
   ifelse(is_ambiguous(allele), purrr::map_chr(allele, conv_iter), conv(allele))
 }
 
+#' Lookup the new designation for deleted or changed HLA alleles
+#' @description
+#' Some HLA alleles were assigned in the past, but this assignment later turned
+#' out to be wrong. For example, the allele was *deleted* because it turned out
+#' to be identical to an existing allele. Or, the allele was *changed* by having
+#' its sequence renamed (most commonly, a suffix is added).
+#'
+#' `convert_deleted()` returns the new assignment of an HLA allele in the
+#' [deleted_changed] lookup table. If the allele does not occur in the table
+#' (i.e., it was never re-assigned), it simply returns the input allele. N.B. in
+#' some cases, it was decided to remove the allele entirely, in which case `NA`
+#' is returned.
+#'
+#' @param allele A string or character vector of HLA alleles
+#'
+#' @return A vector with the same length as `allele`, with all deleted/changed
+#' alleles converted to their new equivalent
+#' @keywords internal
+#' @seealso [convert_v2_to_v3()] to lookup the v3 equivalent of v2 alleles
+#' @export
+#'
+#' @examples
+#' convert_deleted("B*08:06") # sequence identical to existing allele
+#' convert_deleted("C*07:226") # sequence renamed (Q suffix added)
+#' convert_deleted("C*07:295") # sequence never assigned (returns NA)
 convert_deleted <- function(allele) {
   conv <- function(x) {
     in_list <- x %in% names(lookup_del_chg)

@@ -40,4 +40,8 @@ convert_v2_to_v3("A*01010101") # known v2 allele
 convert_v2_to_v3("B*0701") # not a known v2 allele, but heuristic works
 convert_v2_to_v3("B*9526") # known allele where heuristic would not work
 }
+\seealso{
+\code{\link[=convert_deleted]{convert_deleted()}} to lookup new designations for deleted/changed
+alleles
+}
 \keyword{internal}
