@@ -122,8 +122,6 @@ add_xx_suffix <- function(allele) {
 #' ambiguities as necessary.
 #'
 #' @param allele A string or character vector of HLA alleles
-#' @param return_v3 If `TRUE` will use [convert_v2_to_v3()] to force all
-#'   ambiguities to modern nomenclature
 #'
 #' @return A vector with the same length as `allele`, with all ambiguities
 #'  written out
@@ -131,10 +129,10 @@ add_xx_suffix <- function(allele) {
 #'
 #' @examples
 #' prefix_ambiguity("C*01:02/03/04")
-prefix_ambiguity <- function(allele, return_v3 = TRUE) {
+prefix_ambiguity <- function(allele) {
   prefix_ambiguity1 <- function(string) {
     # if not ambiguous or empty, return as is
-    if (is.na(string) || stringr::str_detect(string, r"(\/)", negate = TRUE)) {
+    if (is.na(string) || !is_ambiguous(string)) {
       return(string)
     }
     pattern <- stringr::regex(r"(
@@ -169,9 +167,6 @@ prefix_ambiguity <- function(allele, return_v3 = TRUE) {
       ambigs_fixed
     )
 
-    if (return_v3) {
-      ambigs_fixed <- convert_v2_to_v3(ambigs_fixed)
-    }
     # join all into one string again
     stringr::str_flatten(ambigs_fixed, collapse = "/")
   }
@@ -252,28 +247,23 @@ remove_punctuation <- function(allele) {
 #' convert_v2_to_v3("B*0701") # not a known v2 allele, but heuristic works
 #' convert_v2_to_v3("B*9526") # known allele where heuristic would not work
 convert_v2_to_v3 <- function(allele) {
-  # replace v2 with v3 from lookup table
-  v3s <- ifelse(is_v2(allele), unname(lookup_v3[allele]), allele)
-  # if not in table
-  v3s <- ifelse(is.na(v3s),
-    # insert ":" after every 2 digits if followed by 2 digits/letters
-    stringr::str_replace_all(allele, r"((\d{2})(?=\d{2}|[A-Z]{2}))", "\\1:"),
-    v3s
-  )
-  # replace all remaining "Cw" with "C", unless it's a serological typing
-  ifelse(!is.na(v3s) & stringr::str_detect(v3s, "Cw") & !is_serology(v3s),
-    stringr::str_replace_all(v3s, "Cw", "C"),
-    v3s
-  )
-}
-
-convert_deleted <- function(allele) {
   conv <- function(x) {
-    in_list <- x %in% names(lookup_del_chg)
-    ifelse(in_list, unname(lookup_del_chg[x]), x)
+    # replace v2 with v3 from lookup table
+    v3s <- ifelse(is_v2(x), unname(lookup_v3[x]), x)
+    # if not in table
+    v3s <- ifelse(is.na(v3s),
+      # insert ":" after every 2 digits if followed by 2 digits/letters
+      stringr::str_replace_all(x, r"((\d{2})(?=\d{2}|[A-Z]{2}))", "\\1:"),
+      v3s
+    )
+    # replace all remaining "Cw" with "C", unless it's a serological typing
+    ifelse(!is.na(v3s) & stringr::str_detect(v3s, "Cw") & !is_serology(v3s),
+      stringr::str_replace_all(v3s, "Cw", "C"),
+      v3s
+    )
   }
 
-  conv_vec <- function(x) {
+  conv_iter <- function(x) {
     if (is.na(x)) {
       return(x)
     }
@@ -283,5 +273,24 @@ convert_deleted <- function(allele) {
       stringr::str_flatten(collapse = "/")
   }
 
-  ifelse(is_ambiguous(allele), purrr::map_chr(allele, conv_vec), conv(allele))
+  ifelse(is_ambiguous(allele), purrr::map_chr(allele, conv_iter), conv(allele))
+}
+
+convert_deleted <- function(allele) {
+  conv <- function(x) {
+    in_list <- x %in% names(lookup_del_chg)
+    ifelse(in_list, unname(lookup_del_chg[x]), x)
+  }
+
+  conv_iter <- function(x) {
+    if (is.na(x)) {
+      return(x)
+    }
+    x |>
+      stringr::str_split_1(r"(\/)") |>
+      conv() |>
+      stringr::str_flatten(collapse = "/")
+  }
+
+  ifelse(is_ambiguous(allele), purrr::map_chr(allele, conv_iter), conv(allele))
 }

@@ -115,21 +115,17 @@ test_that("prefixing works for suffixes", {
 
 test_that("prefixing works for v2 alleles as well", {
   expect_equal(
-    prefix_ambiguity("DRB4*0101/03/06", return_v3 = FALSE),
+    prefix_ambiguity("DRB4*0101/03/06"),
     "DRB4*0101/DRB4*0103/DRB4*0106"
   )
   expect_equal(
-    prefix_ambiguity("DRB4*0101/03/06", return_v3 = TRUE),
-    "DRB4*01:01/DRB4*01:03/DRB4*01:06"
-  )
-  expect_equal(
     prefix_ambiguity("A*0101/0103"),
-    "A*01:01/A*01:03"
+    "A*0101/A*0103"
   )
   # alleles with suffixes
   expect_equal(
     prefix_ambiguity("A*0201/01L/04/07/09/15N"),
-    "A*02:01/A*02:01L/A*02:04/A*02:07/A*02:09/A*02:15N"
+    "A*0201/A*0201L/A*0204/A*0207/A*0209/A*0215N"
   )
 })
 
@@ -275,14 +271,25 @@ test_that("MAC and XX codes work", {
   expect_equal(convert_v2_to_v3("B*08YETY"), "B*08:YETY")
 })
 
+test_that("ambiguities work", {
+  expect_equal(
+    convert_v2_to_v3("DRB4*0101/DRB4*0103/DRB4*0106"),
+    "DRB4*01:01/DRB4*01:03/DRB4*01:06"
+  )
+  expect_equal(
+    convert_v2_to_v3("B*3919/B*3920/B*3921"),
+    "B*39:19/B*39:20/B*39:24:01:01"
+  )
+})
+
 test_that("NAs work", {
-  expect_equal(convert_v2_to_v3(NA), NA_character_)
+  expect_equal(convert_v2_to_v3(NA), NA)
 })
 
 test_that("vectors work", {
   expect_equal(
-    convert_v2_to_v3(c("A1", "A*9209", "A*01:01", "A*011201", NA)),
-    c("A1", "A*02:109", "A*01:01", "A*01:12:01", NA_character_)
+    convert_v2_to_v3(c("A*9209", "A*01:01", "A*011201", "A*0101/A*0102", NA)),
+    c("A*02:109", "A*01:01", "A*01:12:01", "A*01:01/A*01:02", NA_character_)
   )
 })
 
