@@ -4,16 +4,13 @@
 \alias{lookup_alleles}
 \title{Lookup alleles corresponding to eplets in HLA Eplet Registry}
 \usage{
-lookup_alleles(eplet_df, eplets, allele_set = "luminex")
+lookup_alleles(eplet_df, eplets)
 }
 \arguments{
 \item{eplet_df}{Data frame containing the Eplet Registry; from output of
 \code{\link[=load_eplet_registry]{load_eplet_registry()}}.}
 
 \item{eplets}{String or character vector of Eplet names.}
-
-\item{allele_set}{Whether to return only Luminex alleles (\code{"luminex"};
-default) or all alleles (\code{"all"}).}
 }
 \value{
 Named list, where each each element is a character vector of alleles
@@ -27,7 +24,6 @@ HLA alleles from the Eplet Registry table.
 \dontrun{
 df_eplets <- load_eplet_registry()
 lookup_alleles(df_eplets, "9F")
-lookup_alleles(df_eplets, "3P", allele_set = "all")
 # Also works for vectors:
 lookup_alleles(df_eplets, c("9F", "3S"))
 }

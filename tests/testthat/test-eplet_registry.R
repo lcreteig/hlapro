@@ -92,19 +92,8 @@ df_eplets <- load_eplet_registry()
 test_that("right alleles are returned", {
   expect_equal(lookup_alleles(df_eplets, "23L"), list(`23L` = "DQB1*04:01"))
   expect_equal(
-    lookup_alleles(df_eplets, "4Q", allele_set = "all"),
-    list(
-      `4Q` = c(
-        "DRB1*01:144", "DRB1*07:01", "DRB1*07:03", "DRB1*07:04", "DRB1*07:07",
-        "DRB1*07:09", "DRB1*07:34", "DRB1*07:121", "DRB1*07:136", "DRB1*07:139",
-        "DRB1*07:151", "DRB1*07:152", "DRB1*07:153", "DRB1*07:159",
-        "DRB1*09:01", "DRB1*09:20", "DRB1*09:21", "DRB1*09:31", "DRB1*09:32",
-        "DRB1*09:57", "DRB1*09:58", "DRB1*09:59", "DRB4*01:01", "DRB4*01:02",
-        "DRB4*01:03", "DRB4*01:07", "DRB4*01:151", "DRB4*01:152",
-        "DRB4*01:155", "DRB4*01:156", "DRB4*01:168", "DRB4*01:173",
-        "DRB4*01:176"
-      )
-    )
+    lookup_alleles(df_eplets, "4Q"),
+    list(`4Q` = c("DRB1*07:01", "DRB1*09:01", "DRB4*01:01", "DRB4*01:03"))
   )
 })
 
@@ -137,7 +126,7 @@ test_that("right eplets are returned", {
   expect_equal(
     lookup_eplets(df_eplets, "DPA1*03:01"),
     list(`DPA1*03:01` = c(
-      "11M", "28E", "31M", "50Q", "56A", "65I", "66S", "127L", "160F", "190T"
+      "11M", "28E", "31M", "50Q", "65I", "66S", "127L", "160F", "190T"
     ))
   )
 })
@@ -147,10 +136,10 @@ test_that("allele lookup is vectorized", {
     lookup_eplets(df_eplets, c("DPA1*03:01", "DQA1*01:04")),
     list(
       `DPA1*03:01` = c(
-        "11M", "28E", "31M", "50Q", "56A", "65I", "66S", "127L", "160F", "190T"
+        "11M", "28E", "31M", "50Q", "65I", "66S", "127L", "160F", "190T"
       ),
       `DQA1*01:04` = c(
-        "2G", "25YT", "40E", "52SK", "75I", "129QS", "160A", "160AD", "185I"
+        "2G", "25YT", "40E", "52SK", "75I", "129QS", "160A", "160AD"
       )
     )
   )
@@ -161,10 +150,7 @@ test_that("allele lookup is vectorized", {
     lookup_eplets(df_eplets, c("DPA1*03:01", NA_character_)),
     set_names(
       list(
-        c(
-          "11M", "28E", "31M", "50Q", "56A", "65I",
-          "66S", "127L", "160F", "190T"
-        ),
+        c("11M", "28E", "31M", "50Q", "65I", "66S", "127L", "160F", "190T"),
         NA_character_
       ),
       c("DPA1*03:01", NA)
@@ -225,12 +211,6 @@ test_that("low cardinality character columns contain expected values", {
   expect_setequal(
     unique(df_eplets$locus_group),
     c("ABC", "DRB", "DQ", "DP", "DRDQDP")
-  )
-
-  # source
-  expect_setequal(
-    unique(df_eplets$source),
-    c("luminex", "all")
   )
 })
 
@@ -298,20 +278,16 @@ test_that("a few randomly selected cells have same value as on the website", {
   # luminex alleles
   expect_equal(
     dplyr::pull(
-      dplyr::filter(df_eplets, name == "9T", source == "luminex"),
+      dplyr::filter(df_eplets, name == "9T"),
       "alleles"
     ),
     c("A*29:01", "A*29:02", "A*31:01", "A*33:01", "A*33:03")
   )
-  # all alleles
   expect_equal(
     dplyr::pull(
-      dplyr::filter(df_eplets, name == "3P", source == "all"),
+      dplyr::filter(df_eplets, name == "3P"),
       "alleles"
     ),
-    c(
-      "DQB1*06:01", "DQB1*06:103", "DQB1*06:205", "DQB1*06:243", "DQB1*06:359",
-      "DQB1*06:382", "DQB1*06:415", "DQB1*06:472", "DQB1*06:482"
-    )
+    "DQB1*06:01"
   )
 })

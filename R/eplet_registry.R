@@ -86,8 +86,6 @@ lookup_eplets <- function(eplet_df, alleles) {
 #' @param eplet_df Data frame containing the Eplet Registry; from output of
 #'   [load_eplet_registry()].
 #' @param eplets String or character vector of Eplet names.
-#' @param allele_set Whether to return only Luminex alleles (`"luminex"`;
-#'   default) or all alleles (`"all"`).
 #'
 #' @return Named list, where each each element is a character vector of alleles
 #'   for each eplet in the input.
@@ -98,14 +96,10 @@ lookup_eplets <- function(eplet_df, alleles) {
 #' \dontrun{
 #' df_eplets <- load_eplet_registry()
 #' lookup_alleles(df_eplets, "9F")
-#' lookup_alleles(df_eplets, "3P", allele_set = "all")
 #' # Also works for vectors:
 #' lookup_alleles(df_eplets, c("9F", "3S"))
 #' }
-lookup_alleles <- function(eplet_df, eplets, allele_set = "luminex") {
-  rlang::arg_match(allele_set, c("luminex", "all"))
-
-  eplet_df <- dplyr::filter(eplet_df, .data$source == allele_set)
+lookup_alleles <- function(eplet_df, eplets) {
   purrr::map(eplets, \(x) eplet_df$alleles[eplet_df$name %in% x]) |>
     purrr::set_names(eplets)
 }
@@ -214,10 +208,14 @@ fetch_registry_version <- function() {
     rvest::html_text2()
 
   invisible(c(
-    date = stringr::str_extract(version_text,
-                                r"((?<=Software version: )[\d-]+)"),
-    db = stringr::str_extract(version_text,
-                              r"((?<=IPD-IMGT/HLA: )[\d.]+)"),
+    date = stringr::str_extract(
+      version_text,
+      r"((?<=Software version: )[\d-]+)"
+    ),
+    db = stringr::str_extract(
+      version_text,
+      r"((?<=IPD-IMGT/HLA: )[\d.]+)"
+    ),
     url = registry_url
   ))
 }
@@ -290,15 +288,9 @@ scrape_eplet_registry <- function(file_path) {
       stringr::str_c(.data$name, "[", .data$locus_group, "]"),
       .data$name
     )) |>
-    # one column for the alleles, and another for if they're luminex or not
-    tidyr::pivot_longer(c("alleles_luminex", "alleles_all"),
-      names_to = "source",
-      names_prefix = "alleles_",
-      values_to = "alleles"
-    ) |>
     dplyr::group_by(.data$id) |> # one row per allele
     tidyr::separate_longer_delim("alleles", delim = ",") |>
-    dplyr::filter(.data$alleles != "") |> # get rid of trailing comma artefact
+    dplyr::filter(.data$alleles != "") |> # get rid of trailing comma
     # clean up whitespace at start/end
     dplyr::ungroup() |>
     dplyr::select(!c("n_name")) |>
