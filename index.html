@@ -162,10 +162,10 @@
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/clean_hla.html">clean_hla</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cw*030205"</span>, <span class="st">"A*2416"</span>, <span class="st">"DPB1*02BYVD"</span>, <span class="st">"B*35UMU"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "C*03:02:05"   "A*31:08"      "DPB1*02:FNWG" "B*35:WRE"</span></span></code></pre></div>
-<p>…and convert deleted/changed alleles to their new assignments</p>
+<p>…and convert deleted/changed alleles to their new assignments:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/clean_hla.html">clean_hla</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C*03:12"</span>, <span class="st">"C*12:139"</span>, <span class="st">"A*02:100"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "C*03:12"  "C*12:139" "A*02:100"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "C*03:19"   "C*12:139Q" NA</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="validating-alleles">Validating alleles<a class="anchor" aria-label="anchor" href="#validating-alleles"></a>
@@ -322,8 +322,8 @@
 <span><span class="co">#&gt; # A tibble: 2 × 2</span></span>
 <span><span class="co">#&gt;   id    glstring                                                                </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;                                                                   </span></span>
-<span><span class="co">#&gt; 1 001   hla#2025-02-07#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…</span></span>
-<span><span class="co">#&gt; 2 002   hla#2025-02-07#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 001   hla#2025-02-10#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…</span></span>
+<span><span class="co">#&gt; 2 002   hla#2025-02-10#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01</span></span></code></pre></div>
 <p>Use <code><a href="reference/gl_to_df.html">gl_to_df()</a></code> to go the opposite way: from a dataframe of GL Strings to one columns per allele:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">typing_df_gl</span> <span class="op">|&gt;</span></span>
@@ -332,8 +332,8 @@
 <span><span class="co">#&gt; # A tibble: 2 × 11</span></span>
 <span><span class="co">#&gt;   id    glstring      glstring_index namespace version_or_date A_1   A_2   B_1  </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;                  &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;           &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;</span></span>
-<span><span class="co">#&gt; 1 001   hla#2025-02-…              1 hla       2025-02-07      HLA-… HLA-… HLA-…</span></span>
-<span><span class="co">#&gt; 2 002   hla#2025-02-…              2 hla       2025-02-07      HLA-… HLA-… HLA-…</span></span>
+<span><span class="co">#&gt; 1 001   hla#2025-02-…              1 hla       2025-02-10      HLA-… HLA-… HLA-…</span></span>
+<span><span class="co">#&gt; 2 002   hla#2025-02-…              2 hla       2025-02-10      HLA-… HLA-… HLA-…</span></span>
 <span><span class="co">#&gt; # ℹ 3 more variables: B_2 &lt;chr&gt;, C_1 &lt;chr&gt;, C_2 &lt;chr&gt;</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -342,27 +342,29 @@
 <p>Grab database from the <a href="https://www.epregistry.com.br" class="external-link">HLA Eplet registry</a> and use it to lookup which eplets occur on an HLA allele, or vice versa.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_eplets</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/load_eplet_registry.html">load_eplet_registry</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Loaded Eplet Registry table ( ),</span></span>
-<span><span class="co">#&gt; released 2024-08-19, downloaded from https://www.epregistry.com.br</span></span>
+<span><span class="co">#&gt; Loaded Eplet Registry table</span></span>
+<span><span class="co">#&gt; IPD-IMGT/HLA version 3.58 (2025-02-01),</span></span>
+<span><span class="co">#&gt; downloaded from https://www.epregistry.com.br</span></span>
 <span><span class="fu"><a href="reference/lookup_alleles.html">lookup_alleles</a></span><span class="op">(</span><span class="va">df_eplets</span>, <span class="st">"17S"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $`17S`</span></span>
 <span><span class="co">#&gt; [1] "A*01:02" "A*30:01" "A*30:02"</span></span></code></pre></div>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/lookup_eplets.html">lookup_eplets</a></span><span class="op">(</span><span class="va">df_eplets</span>, <span class="st">"A*01:02"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $`A*01:02`</span></span>
-<span><span class="co">#&gt;  [1] "9S"         "17S"        "44KM"       "62QE"       "62QE+56G"  </span></span>
-<span><span class="co">#&gt;  [6] "65RA"       "65RNA"      "66N"        "66NH"       "66NM"      </span></span>
-<span><span class="co">#&gt; [11] "71HS"       "76ANT"      "77N[ABC]"   "77NGT"      "79GT"      </span></span>
-<span><span class="co">#&gt; [16] "79GT+90D"   "80T"        "80TL"       "90D"        "95I"       </span></span>
-<span><span class="co">#&gt; [21] "97I"        "99Y"        "109F"       "114R"       "116D"      </span></span>
-<span><span class="co">#&gt; [26] "138MI"      "138MI+79GT" "144K"       "144KR"      "144KR+151H"</span></span>
-<span><span class="co">#&gt; [31] "149AH"      "151H"       "152A"       "152HA"      "156R"      </span></span>
-<span><span class="co">#&gt; [36] "163R"       "163RG"      "166DG"      "193PI"      "275EL"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "9S"         "17S"        "44KM"       "62QE"       "65RA"      </span></span>
+<span><span class="co">#&gt;  [6] "65RNA"      "66N"        "66NH"       "66NM"       "71HS"      </span></span>
+<span><span class="co">#&gt; [11] "76ANT"      "77N[ABC]"   "77NGT"      "79GT"       "80T"       </span></span>
+<span><span class="co">#&gt; [16] "80TL"       "90D"        "95I"        "97I"        "99Y"       </span></span>
+<span><span class="co">#&gt; [21] "109F"       "114R"       "116D"       "138MI"      "144K"      </span></span>
+<span><span class="co">#&gt; [26] "144KR"      "149AH"      "151H"       "152A"       "152HA"     </span></span>
+<span><span class="co">#&gt; [31] "156R"       "163R"       "163RG"      "166DG"      "193PI"     </span></span>
+<span><span class="co">#&gt; [36] "275EL"      "62QE+56G"   "79GT+90D"   "138MI+79GT" "144KR+151H"</span></span></code></pre></div>
 <p>A common use case would be to lookup which eplets occur on a set of (positive) Luminex beads:</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_eplets</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/load_eplet_registry.html">load_eplet_registry</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Loaded Eplet Registry table ( ),</span></span>
-<span><span class="co">#&gt; released 2024-08-19, downloaded from https://www.epregistry.com.br</span></span>
+<span><span class="co">#&gt; Loaded Eplet Registry table</span></span>
+<span><span class="co">#&gt; IPD-IMGT/HLA version 3.58 (2025-02-01),</span></span>
+<span><span class="co">#&gt; downloaded from https://www.epregistry.com.br</span></span>
 <span><span class="va">luminex_df</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">sampleID</span>, <span class="op">~</span><span class="va">allele</span>, <span class="op">~</span><span class="va">positive</span>,</span>
 <span>  <span class="st">"001"</span>, <span class="st">"A*01:01"</span>, <span class="cn">TRUE</span>,</span>
@@ -375,14 +377,14 @@
 <span><span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;     </span></span>
 <span><span class="co">#&gt;  1 001      44KM      </span></span>
 <span><span class="co">#&gt;  2 001      62QE      </span></span>
-<span><span class="co">#&gt;  3 001      62QE+56G  </span></span>
-<span><span class="co">#&gt;  4 001      65RNA     </span></span>
-<span><span class="co">#&gt;  5 001      66N       </span></span>
-<span><span class="co">#&gt;  6 001      66NH      </span></span>
-<span><span class="co">#&gt;  7 001      66NM      </span></span>
-<span><span class="co">#&gt;  8 001      76ANT     </span></span>
-<span><span class="co">#&gt;  9 001      77N[ABC]  </span></span>
-<span><span class="co">#&gt; 10 001      77NGT     </span></span>
+<span><span class="co">#&gt;  3 001      65RNA     </span></span>
+<span><span class="co">#&gt;  4 001      66N       </span></span>
+<span><span class="co">#&gt;  5 001      66NH      </span></span>
+<span><span class="co">#&gt;  6 001      66NM      </span></span>
+<span><span class="co">#&gt;  7 001      76ANT     </span></span>
+<span><span class="co">#&gt;  8 001      77N[ABC]  </span></span>
+<span><span class="co">#&gt;  9 001      77NGT     </span></span>
+<span><span class="co">#&gt; 10 001      90D       </span></span>
 <span><span class="co">#&gt; # ℹ 18 more rows</span></span></code></pre></div>
 </div>
 </div>
