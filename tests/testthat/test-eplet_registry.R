@@ -184,7 +184,7 @@ test_that("load_eplet_registry prints message when print_version = TRUE", {
 })
 
 test_that("table has 9 columns", {
-  expect_equal(length(df_eplets), 10)
+  expect_equal(length(df_eplets), 9)
 })
 
 test_that("column names and types are correct", {
@@ -206,13 +206,13 @@ test_that("low cardinality character columns contain expected values", {
   # exposition
   expect_setequal(
     unique(df_eplets$exposition),
-    c("Very Low", "Low", "Intermediate", "High", NA)
+    c("Very low", "Low", "Intermediate", "High", NA)
   )
 
   # evidence
   expect_setequal(
     unique(df_eplets$evidence),
-    c("A1", "A2", "B", "C", "D", "N/A", NA)
+    c("A1", "A2", "B", "C", "D", NA)
   )
 
   # residue type

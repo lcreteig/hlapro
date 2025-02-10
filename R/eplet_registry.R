@@ -269,17 +269,8 @@ scrape_eplet_registry <- function(file_path) {
     Sys.sleep(0.5) # wait a little between scrapes
     page_html <- rvest::read_html(paste0(base_url, locus_group))
 
-    # scrape additional info box for column 3
-    descr_info <-
-      rvest::html_elements(page_html, col_paths["description"]) |>
-      rvest::html_element("i") |>
-      rvest::html_attr("title") |>
-      # extract only the complete description (followed by a ".")
-      stringr::str_extract(r"((?<=Complete description: )(.*)(?=\.))")
-
     purrr::map(col_paths, \(x) scrape_column(page_html, x)) |>
-      purrr::list_assign(locus_group = locus_group) |>
-      purrr::list_assign(descr_info = descr_info)
+      purrr::list_assign(locus_group = locus_group)
   }
 
   # for each locus group (i.e. page), scrape all columns, store in another list
@@ -293,11 +284,6 @@ scrape_eplet_registry <- function(file_path) {
       stringr::str_detect(.data$name, "\\+") ~ "reactivity pattern",
       .default = "eplet"
     ), .after = "name") |>
-    # get full description from info if it exists
-    dplyr::mutate(description = dplyr::coalesce(
-      .data$descr_info,
-      .data$description
-    )) |>
     # de-duplicate duplicate eplet names by adding locus group in []
     dplyr::add_count(.data$name, name = "n_name") |>
     dplyr::mutate(name = dplyr::if_else(.data$n_name > 1,
@@ -315,7 +301,7 @@ scrape_eplet_registry <- function(file_path) {
     dplyr::filter(.data$alleles != "") |> # get rid of trailing comma artefact
     # clean up whitespace at start/end
     dplyr::ungroup() |>
-    dplyr::select(!c("n_name", "descr_info")) |>
+    dplyr::select(!c("n_name")) |>
     dplyr::mutate(dplyr::across(
       dplyr::where(is.character),
       ~ stringr::str_trim(.x)
@@ -323,13 +309,7 @@ scrape_eplet_registry <- function(file_path) {
     # exposition is empty string for reactivity patterns
     dplyr::mutate(exposition = dplyr::na_if(.data$exposition, "")) |>
     # evidence is empty for eplets not in paper
-    dplyr::mutate(evidence = dplyr::na_if(.data$evidence, "")) |>
-    # clean up the column: text always starts with "Yes" if eplet confirmed
-    dplyr::mutate(confirmation = dplyr::case_when(
-      stringr::str_starts(.data$confirmation, "Yes") ~ "Yes",
-      .data$confirmation == "N/A" ~ "N/A",
-      .default = "No"
-    ))
+    dplyr::mutate(evidence = dplyr::na_if(.data$evidence, ""))
 
   registry_info <- fetch_registry_version()
   attr(df, "date") <- registry_info[["date"]]
