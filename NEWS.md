@@ -1,5 +1,9 @@
 # hlapro (development version)
 
+* Fix `load_eplet_registry()` for new release of HLA Eplet registry (2025-02-01)
+  - Version information is now communicated differently
+  - Small updates to column/content order
+  - "All alleles" column is no longer included (7112cde5)
 * Update `clean_hla()` to also convert 
   [deleted/changed](https://hla.alleles.org/alleles/deleted.html) alleles
 * Minor fixes to `clean_hla()` conversion of v2 alleles

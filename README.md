@@ -134,11 +134,11 @@ clean_hla(c("Cw*030205", "A*2416", "DPB1*02BYVD", "B*35UMU"))
 #> [1] "C*03:02:05"   "A*31:08"      "DPB1*02:FNWG" "B*35:WRE"
 ```
 
-…and convert deleted/changed alleles to their new assignments
+…and convert deleted/changed alleles to their new assignments:
 
 ``` r
 clean_hla(c("C*03:12", "C*12:139", "A*02:100"))
-#> [1] "C*03:12"  "C*12:139" "A*02:100"
+#> [1] "C*03:19"   "C*12:139Q" NA
 ```
 
 #### Validating alleles
@@ -337,8 +337,8 @@ typing_df_gl
 #> # A tibble: 2 × 2
 #>   id    glstring                                                                
 #>   <chr> <chr>                                                                   
-#> 1 001   hla#2025-02-07#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
-#> 2 002   hla#2025-02-07#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
+#> 1 001   hla#2025-02-10#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
+#> 2 002   hla#2025-02-10#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
 ```
 
 Use `gl_to_df()` to go the opposite way: from a dataframe of GL Strings
@@ -351,8 +351,8 @@ typing_df_gl |>
 #> # A tibble: 2 × 11
 #>   id    glstring      glstring_index namespace version_or_date A_1   A_2   B_1  
 #>   <chr> <chr>                  <int> <chr>     <chr>           <chr> <chr> <chr>
-#> 1 001   hla#2025-02-…              1 hla       2025-02-07      HLA-… HLA-… HLA-…
-#> 2 002   hla#2025-02-…              2 hla       2025-02-07      HLA-… HLA-… HLA-…
+#> 1 001   hla#2025-02-…              1 hla       2025-02-10      HLA-… HLA-… HLA-…
+#> 2 002   hla#2025-02-…              2 hla       2025-02-10      HLA-… HLA-… HLA-…
 #> # ℹ 3 more variables: B_2 <chr>, C_1 <chr>, C_2 <chr>
 ```
 
@@ -364,8 +364,9 @@ eplets occur on an HLA allele, or vice versa.
 
 ``` r
 df_eplets <- load_eplet_registry()
-#> Loaded Eplet Registry table ( ),
-#> released 2024-08-19, downloaded from https://www.epregistry.com.br
+#> Loaded Eplet Registry table
+#> IPD-IMGT/HLA version 3.58 (2025-02-01),
+#> downloaded from https://www.epregistry.com.br
 lookup_alleles(df_eplets, "17S")
 #> $`17S`
 #> [1] "A*01:02" "A*30:01" "A*30:02"
@@ -374,14 +375,14 @@ lookup_alleles(df_eplets, "17S")
 ``` r
 lookup_eplets(df_eplets, "A*01:02")
 #> $`A*01:02`
-#>  [1] "9S"         "17S"        "44KM"       "62QE"       "62QE+56G"  
-#>  [6] "65RA"       "65RNA"      "66N"        "66NH"       "66NM"      
-#> [11] "71HS"       "76ANT"      "77N[ABC]"   "77NGT"      "79GT"      
-#> [16] "79GT+90D"   "80T"        "80TL"       "90D"        "95I"       
-#> [21] "97I"        "99Y"        "109F"       "114R"       "116D"      
-#> [26] "138MI"      "138MI+79GT" "144K"       "144KR"      "144KR+151H"
-#> [31] "149AH"      "151H"       "152A"       "152HA"      "156R"      
-#> [36] "163R"       "163RG"      "166DG"      "193PI"      "275EL"
+#>  [1] "9S"         "17S"        "44KM"       "62QE"       "65RA"      
+#>  [6] "65RNA"      "66N"        "66NH"       "66NM"       "71HS"      
+#> [11] "76ANT"      "77N[ABC]"   "77NGT"      "79GT"       "80T"       
+#> [16] "80TL"       "90D"        "95I"        "97I"        "99Y"       
+#> [21] "109F"       "114R"       "116D"       "138MI"      "144K"      
+#> [26] "144KR"      "149AH"      "151H"       "152A"       "152HA"     
+#> [31] "156R"       "163R"       "163RG"      "166DG"      "193PI"     
+#> [36] "275EL"      "62QE+56G"   "79GT+90D"   "138MI+79GT" "144KR+151H"
 ```
 
 A common use case would be to lookup which eplets occur on a set of
@@ -389,8 +390,9 @@ A common use case would be to lookup which eplets occur on a set of
 
 ``` r
 df_eplets <- load_eplet_registry()
-#> Loaded Eplet Registry table ( ),
-#> released 2024-08-19, downloaded from https://www.epregistry.com.br
+#> Loaded Eplet Registry table
+#> IPD-IMGT/HLA version 3.58 (2025-02-01),
+#> downloaded from https://www.epregistry.com.br
 luminex_df <- dplyr::tribble(
   ~sampleID, ~allele, ~positive,
   "001", "A*01:01", TRUE,
@@ -403,14 +405,14 @@ get_positive_eplets(luminex_df, sampleID, allele, positive, df_eplets)
 #>    <chr>    <chr>     
 #>  1 001      44KM      
 #>  2 001      62QE      
-#>  3 001      62QE+56G  
-#>  4 001      65RNA     
-#>  5 001      66N       
-#>  6 001      66NH      
-#>  7 001      66NM      
-#>  8 001      76ANT     
-#>  9 001      77N[ABC]  
-#> 10 001      77NGT     
+#>  3 001      65RNA     
+#>  4 001      66N       
+#>  5 001      66NH      
+#>  6 001      66NM      
+#>  7 001      76ANT     
+#>  8 001      77N[ABC]  
+#>  9 001      77NGT     
+#> 10 001      90D       
 #> # ℹ 18 more rows
 ```
 
