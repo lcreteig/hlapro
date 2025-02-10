@@ -193,12 +193,11 @@ test_that("column names and types are correct", {
     name = "character",
     residue_type = "character",
     description = "character",
-    exposition = "character",
-    confirmation = "character",
     evidence = "character",
-    locus_group = "character",
-    source = "character",
-    alleles = "character"
+    exposition = "character",
+    status = "character",
+    alleles = "character",
+    locus_group = "character"
   )
   expect_equal(purrr::map_chr(df_eplets, class), eplet_registry_info)
 })
@@ -242,7 +241,7 @@ test_that("table has no empty eplets/alleles", {
 
 test_that("table has no duplicate eplets", {
   eplet_count <- df_eplets |>
-    dplyr::distinct(name, description, exposition, confirmation, locus_group) |>
+    dplyr::distinct(name, description, exposition, status, locus_group) |>
     dplyr::add_count(name) |>
     dplyr::pull(n)
 
@@ -266,13 +265,13 @@ test_that("a few randomly selected cells have same value as on the website", {
     "High"
   )
 
-  # confirmation
+  # status
   expect_equal(
-    dplyr::pull(df_eplets[df_eplets$name == "71SA", ], "confirmation")[1],
-    "Yes"
+    dplyr::pull(df_eplets[df_eplets$name == "71SA", ], "status")[1],
+    "Confirmed"
   )
   expect_equal(
-    dplyr::pull(df_eplets[df_eplets$name == "69AA+65QI", ], "confirmation")[1],
+    dplyr::pull(df_eplets[df_eplets$name == "69AA+65QI", ], "status")[1],
     "N/A"
   )
 
@@ -283,7 +282,7 @@ test_that("a few randomly selected cells have same value as on the website", {
   )
   expect_equal(
     dplyr::pull(df_eplets[df_eplets$name == "44RT+69TNT", ], "evidence")[1],
-    "N/A"
+    NA_character_
   )
 
   # description

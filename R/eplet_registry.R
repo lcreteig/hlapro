@@ -242,7 +242,7 @@ scrape_permission <- function() {
 }
 
 scrape_eplet_registry <- function(file_path) {
-  base_url <- "https://www.epregistry.com.br/index/databases/database/"
+  base_url <- "https://www.epregistry.com.br/databases/"
   locus_groups <- c("ABC", "DRB", "DQ", "DP", "DRDQDP")
   # CSS selector paths to the individual columns
   # (scraping entire table with rvest::html_table resulted in misaligned rows/
@@ -252,11 +252,10 @@ scrape_eplet_registry <- function(file_path) {
     id = "(1)",
     name = "(2)",
     description = "(3)",
-    exposition = "(4)",
-    confirmation = "(6)",
-    evidence = "(7)",
-    alleles_luminex = "(10)",
-    alleles_all = "(11) > div > div:nth-of-type(2) > p"
+    evidence = "(4)",
+    exposition = "(5)",
+    status = "(6)",
+    alleles = "(9)"
   )
   col_paths[] <- paste0(base_path, col_paths)
 
