@@ -210,18 +210,14 @@ load_eplet_registry <- function(folder_path = NULL,
 fetch_registry_version <- function() {
   registry_url <- "https://www.epregistry.com.br"
   version_text <- rvest::read_html(registry_url) |>
-    rvest::html_elements("body > footer > div.container > p:nth-child(2)") |>
+    rvest::html_elements("#description > h2 > div > h4") |>
     rvest::html_text2()
 
-  version_date <- stringr::str_extract(version_text, r"(\d{4}-\d{2}-\d{2})")
-
   invisible(c(
-    date = version_date,
-    # extract text following version date
-    notes = stringr::str_extract(version_text,
-      stringr::str_glue(r"((?:{version_date}\.\s)(.*))"),
-      group = 1
-    ),
+    date = stringr::str_extract(version_text,
+                                r"((?<=Software version: )[\d-]+)"),
+    db = stringr::str_extract(version_text,
+                              r"((?<=IPD-IMGT/HLA: )[\d.]+)"),
     url = registry_url
   ))
 }
@@ -229,9 +225,9 @@ fetch_registry_version <- function() {
 message_version <- function(df_eplet) {
   message(
     stringr::str_glue(
-      "Loaded Eplet Registry table ({attr(df_eplet, 'notes')}),\n",
-      "released {attr(df_eplet, 'date')}, ",
-      "downloaded from {attr(df_eplet, 'url')}"
+      "Loaded Eplet Registry table\n",
+      "IPD-IMGT/HLA version {attr(df_eplet, 'db')} ({attr(df_eplet, 'date')}),",
+      "\ndownloaded from {attr(df_eplet, 'url')}"
     )
   )
 }
@@ -338,7 +334,7 @@ scrape_eplet_registry <- function(file_path) {
 
   registry_info <- fetch_registry_version()
   attr(df, "date") <- registry_info[["date"]]
-  attr(df, "notes") <- registry_info[["notes"]]
+  attr(df, "db") <- registry_info[["db"]]
   attr(df, "url") <- registry_info[["url"]]
 
   saveRDS(df, file_path)
