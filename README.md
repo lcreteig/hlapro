@@ -7,11 +7,10 @@
 
 [![R-CMD-check](https://github.com/lcreteig/hlapro/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/lcreteig/hlapro/actions/workflows/R-CMD-check.yaml)
 [![pkgdown](https://github.com/lcreteig/hlapro/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/lcreteig/hlapro/actions/workflows/pkgdown.yaml)
-[![Codecov test
-coverage](https://codecov.io/gh/lcreteig/hlapro/branch/main/graph/badge.svg)](https://app.codecov.io/gh/lcreteig/hlapro?branch=main)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/hlapro)](https://CRAN.R-project.org/package=hlapro)
-
+[![Codecov test
+coverage](https://codecov.io/gh/lcreteig/hlapro/graph/badge.svg)](https://app.codecov.io/gh/lcreteig/hlapro)
 <!-- badges: end -->
 
 The goal of hlapro is to provide some tooling to work with [Human
@@ -238,7 +237,7 @@ reduce_to_field2(ard, "A*01:04:01:01N") # shortnull
 reduce_to_field2(ard, "B*15:AH") # MACs
 #> [1] "B*15:01/B*15:07"
 reduce_to_field2(ard, "Cw10") # serology
-#> [1] "C*03:02/C*03:04/C*03:04Q/C*03:06/C*03:26/C*03:28/C*03:46"
+#> [1] "C*03:02/C*03:04Q/C*03:04/C*03:06/C*03:26/C*03:28/C*03:46"
 ```
 
 #### Upscaling from serological equivalents to 2-field high resolution
@@ -337,8 +336,8 @@ typing_df_gl
 #> # A tibble: 2 × 2
 #>   id    glstring                                                                
 #>   <chr> <chr>                                                                   
-#> 1 001   hla#2025-02-10#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
-#> 2 002   hla#2025-02-10#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
+#> 1 001   hla#2025-02-20#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…
+#> 2 002   hla#2025-02-20#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01
 ```
 
 Use `gl_to_df()` to go the opposite way: from a dataframe of GL Strings
@@ -351,8 +350,8 @@ typing_df_gl |>
 #> # A tibble: 2 × 11
 #>   id    glstring      glstring_index namespace version_or_date A_1   A_2   B_1  
 #>   <chr> <chr>                  <int> <chr>     <chr>           <chr> <chr> <chr>
-#> 1 001   hla#2025-02-…              1 hla       2025-02-10      HLA-… HLA-… HLA-…
-#> 2 002   hla#2025-02-…              2 hla       2025-02-10      HLA-… HLA-… HLA-…
+#> 1 001   hla#2025-02-…              1 hla       2025-02-20      HLA-… HLA-… HLA-…
+#> 2 002   hla#2025-02-…              2 hla       2025-02-20      HLA-… HLA-… HLA-…
 #> # ℹ 3 more variables: B_2 <chr>, C_1 <chr>, C_2 <chr>
 ```
 
@@ -365,11 +364,11 @@ eplets occur on an HLA allele, or vice versa.
 ``` r
 df_eplets <- load_eplet_registry()
 #> Loaded Eplet Registry table
-#> IPD-IMGT/HLA version 3.58 (2025-02-01),
+#> IPD-IMGT/HLA version 3.59 (2025-02-01),
 #> downloaded from https://www.epregistry.com.br
 lookup_alleles(df_eplets, "17S")
 #> $`17S`
-#> [1] "A*01:02" "A*30:01" "A*30:02"
+#> [1] "A*30:01" "A*30:02" "A*01:02"
 ```
 
 ``` r
@@ -391,7 +390,7 @@ A common use case would be to lookup which eplets occur on a set of
 ``` r
 df_eplets <- load_eplet_registry()
 #> Loaded Eplet Registry table
-#> IPD-IMGT/HLA version 3.58 (2025-02-01),
+#> IPD-IMGT/HLA version 3.59 (2025-02-01),
 #> downloaded from https://www.epregistry.com.br
 luminex_df <- dplyr::tribble(
   ~sampleID, ~allele, ~positive,
