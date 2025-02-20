@@ -55,7 +55,6 @@
 </div>
 <!-- badges: start -->
 
-<!-- badges: end -->
 <p>The goal of hlapro is to provide some tooling to work with <a href="https://en.wikipedia.org/wiki/Human_leukocyte_antigen" class="external-link">Human Leukocyte Antigen (HLA)</a> data, in the context of transplantation research:</p>
 <ul>
 <li>HLA typings</li>
@@ -239,7 +238,7 @@
 <span><span class="fu"><a href="reference/reduce_to_field2.html">reduce_to_field2</a></span><span class="op">(</span><span class="va">ard</span>, <span class="st">"B*15:AH"</span><span class="op">)</span> <span class="co"># MACs</span></span>
 <span><span class="co">#&gt; [1] "B*15:01/B*15:07"</span></span>
 <span><span class="fu"><a href="reference/reduce_to_field2.html">reduce_to_field2</a></span><span class="op">(</span><span class="va">ard</span>, <span class="st">"Cw10"</span><span class="op">)</span> <span class="co"># serology</span></span>
-<span><span class="co">#&gt; [1] "C*03:02/C*03:04/C*03:04Q/C*03:06/C*03:26/C*03:28/C*03:46"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "C*03:02/C*03:04Q/C*03:04/C*03:06/C*03:26/C*03:28/C*03:46"</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="upscaling-from-serological-equivalents-to-2-field-high-resolution">Upscaling from serological equivalents to 2-field high resolution<a class="anchor" aria-label="anchor" href="#upscaling-from-serological-equivalents-to-2-field-high-resolution"></a>
@@ -322,8 +321,8 @@
 <span><span class="co">#&gt; # A tibble: 2 × 2</span></span>
 <span><span class="co">#&gt;   id    glstring                                                                </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;                                                                   </span></span>
-<span><span class="co">#&gt; 1 001   hla#2025-02-10#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…</span></span>
-<span><span class="co">#&gt; 2 002   hla#2025-02-10#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 001   hla#2025-02-20#HLA-A*01:01+HLA-A*03:01^HLA-B*07:02+HLA-B*08:01^HLA-C*07…</span></span>
+<span><span class="co">#&gt; 2 002   hla#2025-02-20#HLA-A*02:01+HLA-A*29:02^HLA-B*07:02^HLA-C*05:01</span></span></code></pre></div>
 <p>Use <code><a href="reference/gl_to_df.html">gl_to_df()</a></code> to go the opposite way: from a dataframe of GL Strings to one columns per allele:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">typing_df_gl</span> <span class="op">|&gt;</span></span>
@@ -332,8 +331,8 @@
 <span><span class="co">#&gt; # A tibble: 2 × 11</span></span>
 <span><span class="co">#&gt;   id    glstring      glstring_index namespace version_or_date A_1   A_2   B_1  </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;                  &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;           &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;</span></span>
-<span><span class="co">#&gt; 1 001   hla#2025-02-…              1 hla       2025-02-10      HLA-… HLA-… HLA-…</span></span>
-<span><span class="co">#&gt; 2 002   hla#2025-02-…              2 hla       2025-02-10      HLA-… HLA-… HLA-…</span></span>
+<span><span class="co">#&gt; 1 001   hla#2025-02-…              1 hla       2025-02-20      HLA-… HLA-… HLA-…</span></span>
+<span><span class="co">#&gt; 2 002   hla#2025-02-…              2 hla       2025-02-20      HLA-… HLA-… HLA-…</span></span>
 <span><span class="co">#&gt; # ℹ 3 more variables: B_2 &lt;chr&gt;, C_1 &lt;chr&gt;, C_2 &lt;chr&gt;</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -343,11 +342,11 @@
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_eplets</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/load_eplet_registry.html">load_eplet_registry</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loaded Eplet Registry table</span></span>
-<span><span class="co">#&gt; IPD-IMGT/HLA version 3.58 (2025-02-01),</span></span>
+<span><span class="co">#&gt; IPD-IMGT/HLA version 3.59 (2025-02-01),</span></span>
 <span><span class="co">#&gt; downloaded from https://www.epregistry.com.br</span></span>
 <span><span class="fu"><a href="reference/lookup_alleles.html">lookup_alleles</a></span><span class="op">(</span><span class="va">df_eplets</span>, <span class="st">"17S"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $`17S`</span></span>
-<span><span class="co">#&gt; [1] "A*01:02" "A*30:01" "A*30:02"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "A*30:01" "A*30:02" "A*01:02"</span></span></code></pre></div>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/lookup_eplets.html">lookup_eplets</a></span><span class="op">(</span><span class="va">df_eplets</span>, <span class="st">"A*01:02"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $`A*01:02`</span></span>
@@ -363,7 +362,7 @@
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_eplets</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/load_eplet_registry.html">load_eplet_registry</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loaded Eplet Registry table</span></span>
-<span><span class="co">#&gt; IPD-IMGT/HLA version 3.58 (2025-02-01),</span></span>
+<span><span class="co">#&gt; IPD-IMGT/HLA version 3.59 (2025-02-01),</span></span>
 <span><span class="co">#&gt; downloaded from https://www.epregistry.com.br</span></span>
 <span><span class="va">luminex_df</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">sampleID</span>, <span class="op">~</span><span class="va">allele</span>, <span class="op">~</span><span class="va">positive</span>,</span>
@@ -507,8 +506,8 @@
 <ul class="list-unstyled">
 <li><a href="https://github.com/lcreteig/hlapro/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/lcreteig/hlapro/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://github.com/lcreteig/hlapro/actions/workflows/pkgdown.yaml" class="external-link"><img src="https://github.com/lcreteig/hlapro/actions/workflows/pkgdown.yaml/badge.svg" alt="pkgdown"></a></li>
-<li><a href="https://app.codecov.io/gh/lcreteig/hlapro?branch=main" class="external-link"><img src="https://codecov.io/gh/lcreteig/hlapro/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://CRAN.R-project.org/package=hlapro" class="external-link"><img src="https://www.r-pkg.org/badges/version/hlapro" alt="CRAN status"></a></li>
+<li><a href="https://app.codecov.io/gh/lcreteig/hlapro" class="external-link"><img src="https://codecov.io/gh/lcreteig/hlapro/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
 
