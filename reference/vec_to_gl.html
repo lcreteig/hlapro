@@ -9,7 +9,7 @@ vector of HLAs, as well as some metadata (namespace, version/data)."><meta prope
 
     <a class="navbar-brand me-2" href="../index.html">hlapro</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@ a GL String</p></li>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">vec_to_gl</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A*02:302"</span>, <span class="st">"A*23:26/A*23:39"</span>, <span class="st">"B*44:02:13"</span>, <span class="st">"B*49:08"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "hla#2025-02-20#HLA-A*02:302+HLA-A*23:26/A*23:39^HLA-B*44:02:13+HLA-B*49:08"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "hla#2025-02-21#HLA-A*02:302+HLA-A*23:26/A*23:39^HLA-B*44:02:13+HLA-B*49:08"</span>
 <span class="r-in"><span><span class="fu">vec_to_gl</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  allele_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HLA-A*02:69"</span>, <span class="st">"HLA-A*23:30"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  namespace <span class="op">=</span> <span class="st">"hla"</span>, version_or_date <span class="op">=</span> <span class="st">"2018-06"</span></span></span>
