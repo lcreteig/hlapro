@@ -328,7 +328,10 @@ is_serology <- function(allele) {
 }
 
 is_v2 <- function(allele) {
-  stringr::str_detect(allele, r"(\*\d{2}([A-Z0-9]{2,}))")
+  # 2 digits directly followed by 2 or more letters/numbers
+  v2_pattern <- r"(\*\d{2}([A-Z0-9]{2,}))"
+  # and v2s have no colons anywhere
+  stringr::str_detect(allele, v2_pattern) & !stringr::str_detect(allele, ":")
 }
 
 has_suffix <- function(allele) {

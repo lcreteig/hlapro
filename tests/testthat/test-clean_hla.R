@@ -237,6 +237,7 @@ test_that("non-v2 alleles are untouched", {
   expect_equal(convert_v2_to_v3("A*01:XX"), "A*01:XX")
   expect_equal(convert_v2_to_v3("A*01:01"), "A*01:01")
   expect_equal(convert_v2_to_v3("DQB1*05:01:16"), "DQB1*05:01:16")
+  expect_equal(convert_v2_to_v3("DPB1*1082:01"), "DPB1*1082:01")
 })
 
 test_that("v2 exceptions are handled", {
