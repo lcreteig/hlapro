@@ -1,3 +1,5 @@
+# hlapro (development version)
+
 # hlapro 0.4.1
 
 * Fix `load_eplet_registry()` for new release of HLA Eplet registry (2025-02-01)
