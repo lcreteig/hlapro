@@ -254,6 +254,10 @@ reduce_to_nth_field <- function(allele, n) {
 reorder_alleles <- function(in_order, to_order) {
   to_order_orig <- to_order
 
+  if (all(is.na(in_order)) || all(is.na(to_order))) {
+    return(to_order_orig) # nothing to do
+  }
+
   # scale down further and further if necessary
   downscaling_levels <- c(
     get_broad,
@@ -267,6 +271,7 @@ reorder_alleles <- function(in_order, to_order) {
     to_order <- downscaling_levels[[ii]](to_order)
     ii <- ii - 1
   }
+
   # use identical() to allow for NA comparisons
   pair_1_identical <- identical(in_order[1], to_order[2])
   pair_2_identical <- identical(in_order[2], to_order[1])
