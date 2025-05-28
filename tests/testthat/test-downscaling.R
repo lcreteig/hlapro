@@ -330,6 +330,15 @@ test_that("missings in in-order vector are respected", {
   expect_equal(reorder_alleles(in_order, to_order), c("DQ7", "DQ2"))
 })
 
+test_that("missings in both vectors are respected", {
+  in_order <- c(NA, NA) # logical NAs
+  to_order <- c("A1", NA) # NA_character
+  expect_equal(reorder_alleles(in_order, to_order), c("A1", NA))
+  in_order <- c(NA, "A1")
+  to_order <- c("A1", NA)
+  expect_equal(reorder_alleles(in_order, to_order), c(NA, "A1"))
+})
+
 test_that("alleles with no serological equivalent are handled", {
   in_order <- c("C*04:09N", "C*01:02")
   to_order <- c("Cw1", NA)
