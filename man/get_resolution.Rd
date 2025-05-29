@@ -13,6 +13,8 @@ get_resolution(allele, extended = FALSE)
 \itemize{
 \item for high resolution: the number of fields ("second field", "third field",
 "fourth field")
+\item for intermediate resolution: whether the allele is a list ("CAL") or a
+multiple allele code ("MAC")
 \item for low resolution: whether the allele is a serological/molecular
 split/broad or
 \href{https://hla.alleles.org/antigens/broads_splits.html}{associated antigen}
@@ -36,8 +38,9 @@ Resolution is defined as follows:
 }
 \item \strong{Intermediate}: any typing with ambiguities, such as
 \itemize{
-\item a list using the forward slash notation, e.g. \code{HLA-A*23:26/HLA-A*23:39}
-\item a typing with multiple allele codes, e.g. \code{A*01:AABJE}
+\item a typing with multiple allele codes (MAC), e.g. \code{A*01:AABJE}
+\item an allele list using the forward slash notation (CAL),
+e.g. \code{HLA-A*23:26/HLA-A*23:39}
 }
 \item \strong{High}: any typing with more than 2 field codes, e.g.
 \itemize{
@@ -50,6 +53,7 @@ Resolution is defined as follows:
 get_resolution("A2") # low
 get_resolution("A2", extended = TRUE) # low - broad
 get_resolution("A*01:AABJE") # intermediate
+get_resolution("A*01:AABJE", extended = TRUE) # intermediate - MAC
 get_resolution("A*24:09") # high
 get_resolution("A*24:09", extended = TRUE) # high - second field
 
