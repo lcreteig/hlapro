@@ -9,8 +9,9 @@
 #'    - anything using the serological/antigen nomenclature, e.g `A2`
 #'    - an XX code representing an allele group, e.g. `A*02:XX`
 #'  - **Intermediate**: any typing with ambiguities, such as
-#'    - a list using the forward slash notation, e.g. `HLA-A*23:26/HLA-A*23:39`
-#'    - a typing with multiple allele codes, e.g. `A*01:AABJE`
+#'    - a typing with multiple allele codes (MAC), e.g. `A*01:AABJE`
+#'    - an allele list using the forward slash notation (CAL),
+#'      e.g. `HLA-A*23:26/HLA-A*23:39`
 #'  - **High**: any typing with more than 2 field codes, e.g.
 #'    - `A*24:09` (minimum)
 #'    - `HLA-A*24:02:01:02L` (maximum)
@@ -19,6 +20,8 @@
 #' @param extended When `TRUE`, the returned resolution also contains:
 #'  - for high resolution: the number of fields ("second field", "third field",
 #'    "fourth field")
+#'  - for intermediate resolution: whether the allele is a list ("CAL") or a
+#'    multiple allele code ("MAC")
 #'  - for low resolution: whether the allele is a serological/molecular
 #'    split/broad or
 #'    [associated antigen](https://hla.alleles.org/antigens/broads_splits.html)
@@ -31,6 +34,7 @@
 #' get_resolution("A2") # low
 #' get_resolution("A2", extended = TRUE) # low - broad
 #' get_resolution("A*01:AABJE") # intermediate
+#' get_resolution("A*01:AABJE", extended = TRUE) # intermediate - MAC
 #' get_resolution("A*24:09") # high
 #' get_resolution("A*24:09", extended = TRUE) # high - second field
 #'
@@ -75,6 +79,9 @@ get_resolution <- function(allele, extended = FALSE) {
     ~ "molecular - broad",
     res == "low" & is_serology(allele) & !is.na(get_broad(allele))
     ~ "serology - broad",
+    res == "intermediate" & stringr::str_detect(allele, "\\/")
+    ~ "intermediate - CAL",
+    res == "intermediate" ~ "intermediate - MAC",
     res == "high" ~ stringr::str_c(
       res,
       " - ",

@@ -24,10 +24,13 @@ test_that("MACs are intermediate", {
 })
 
 test_that("Ambiguous alleles are handled", {
+  # v3
   expect_equal(get_resolution("C*01:02/C*01:03/C*01:04"), "intermediate")
   expect_equal(get_resolution("C*01:02:01/C*01:02:02"), "high")
   expect_equal(get_resolution("HLA-A*23:26/HLA-A*23:39"), "intermediate")
   expect_equal(get_resolution("DRB1*13:02/13:36/13:67/13:96"), "intermediate")
+  # v2
+  expect_equal(get_resolution("DRB4*0101/DRB4*0103/DRB4*0106"), "intermediate")
 })
 
 test_that(">2 field codes is high", {
@@ -78,9 +81,12 @@ test_that("extended mode works", {
   )
   expect_equal(
     get_resolution("C*01:02/C*01:03/C*01:04", extended = TRUE),
-    "intermediate"
+    "intermediate - CAL"
   )
-  expect_equal(get_resolution("A*01:AABJE", extended = TRUE), "intermediate")
+  expect_equal(
+    get_resolution("A*01:AABJE", extended = TRUE),
+    "intermediate - MAC"
+  )
   expect_equal(get_resolution("A2", extended = TRUE), "serology - broad")
   expect_equal(get_resolution("A32", extended = TRUE), "serology - split")
   expect_equal(get_resolution("A*02", extended = TRUE), "molecular - broad")
