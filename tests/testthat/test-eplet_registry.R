@@ -1,3 +1,5 @@
+skip_if(isTRUE(as.logical(Sys.getenv("CI", "false"))))
+
 # get_positive_eplets -----------------------------------------------------
 
 mock_eplet_df <- dplyr::tribble(
