@@ -1,4 +1,10 @@
-# hlapro (development version)
+# hlapro 0.4.2
+
+* Fix v3 allele groups with 4 digits incorrectly recognized as v2
+* When comparing two sets of alleles, `reorder_alleles()` did some unnecessary
+  reordering when NAs were present.
+* Add extended mode to `get_resolution` for intermediate alleles; now
+  distinguishes between CALs and MACs
 
 # hlapro 0.4.1
 
